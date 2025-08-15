@@ -22,18 +22,16 @@ public static class Themes
             TextSecondary = "#6B7280",
             Divider = "#E5E7EB",
         },
-        PaletteDark = new PaletteDark
+        PaletteDark = new()
         {
-            Primary = "#2563EB",
-            Secondary = "#64748B",
             Background = "#0B0F17",
             Surface = "#111827",
+            Primary = "#2563EB",
+            Secondary = "#64748B",
             AppbarBackground = "#0B0F17",
-            AppbarText = "#F9FAFB",
             DrawerBackground = "#0B0F17",
             TextPrimary = "#E5E7EB",
             TextSecondary = "#9CA3AF",
-            Divider = "#374151",
         },
         LayoutProperties = new LayoutProperties
         {

@@ -14,11 +14,25 @@
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudDrawer Variant="DrawerVariant.Mini" Elevation="1" Anchor="Anchor.Left">
             <MudNavMenu Dense>
-                <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
-                <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description">Runs</MudNavLink>
-                <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek">Scenes</MudNavLink>
-                <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome">Encounters</MudNavLink>
-                <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
+                <MudTooltip Text="Home" Placement="Placement.Right">
+                    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" />
+                </MudTooltip>
+
+                <MudTooltip Text="Runs" Placement="Placement.Right">
+                    <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description" />
+                </MudTooltip>
+
+                <MudTooltip Text="Scenes" Placement="Placement.Right">
+                    <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek" />
+                </MudTooltip>
+
+                <MudTooltip Text="Encounters" Placement="Placement.Right">
+                    <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome" />
+                </MudTooltip>
+
+                <MudTooltip Text="Rules" Placement="Placement.Right">
+                    <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook" />
+                </MudTooltip>
             </MudNavMenu>
             <MudSpacer />
             <MudNavMenu Dense>
