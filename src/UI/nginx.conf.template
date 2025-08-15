@@ -1,0 +1,32 @@
+server {
+  listen       80;
+  server_name  _;
+
+  # Helpful header to see “where” this came from at a glance
+  add_header X-App-Env "$APP_ENV" always;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # Don’t cache the app shell or SW – makes updates feel instant
+  location = /index.html               { add_header Cache-Control "no-store, no-cache, must-revalidate"; }
+  location = /service-worker.js        { add_header Cache-Control "no-store, no-cache, must-revalidate"; }
+  location = /service-worker.published.js { add_header Cache-Control "no-store, no-cache, must-revalidate"; }
+
+  # Cache-busted static assets (hashed filenames) can be cached “forever”
+  location ~* \.(?:css|js|wasm|png|jpe?g|gif|ico|svg|woff2?)$ {
+    try_files $uri =404;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
+
+  # SPA fallback – let Blazor handle client-side routes
+  location / {
+    try_files $uri /index.html;
+  }
+
+  # Gzip (enabled by your Dockerfile sed) – make sure we cover common types
+  gzip_types
+    text/plain text/css application/javascript application/json
+    application/wasm application/manifest+json image/svg+xml
+    font/woff2;
+}
