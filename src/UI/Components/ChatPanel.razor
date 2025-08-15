@@ -1,0 +1,19 @@
+﻿<div class="chat-container">
+    @foreach (var m in Messages)
+    {
+        if (m.Role == "user")
+        {
+            <MudPaper Class="user-message" Elevation="1">@m.Text</MudPaper>
+        }
+        else
+        {
+            <div class="ai-message">
+                <MudMarkdown Value="@m.Text" />
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public IReadOnlyList<ChatMessage> Messages { get; set; } = Array.Empty<ChatMessage>();
+}

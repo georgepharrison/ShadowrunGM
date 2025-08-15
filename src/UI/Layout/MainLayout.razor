@@ -1,0 +1,72 @@
+﻿@inherits LayoutComponentBase
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudText Typo="Typo.h6">Shadowrun GM</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@(_isDark ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                       OnClick="@ToggleTheme" />
+    </MudAppBar>
+
+    <MudThemeProvider Theme="@Themes.MinimalistTheme" @bind-IsDarkMode="_isDark" />
+    <MudPopoverProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+
+    <!-- Desktop/right rail -->
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudDrawer Anchor="Anchor.Right" Variant="DrawerVariant.Persistent" Open="true" Class="ai-drawer">
+            <ChatPanel Messages="@_demo" />
+        </MudDrawer>
+    </MudHidden>
+
+    <MudMainContent>
+        @Body
+
+        <!-- Mobile -->
+        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+            <MudFab Icon="@Icons.Material.Filled.Chat"
+                    Class="ai-fab"
+                    Color="Color.Primary"
+                    OnClick="@(()=> _mobileOpen = true)" />
+            <MudDrawer Anchor="Anchor.Bottom"
+                       Variant="DrawerVariant.Temporary"
+                       @bind-Open="_mobileOpen"
+                       Class="ai-drawer-mobile"
+                       Elevation="8"
+                       OverlayAutoClose="true">
+                <ChatPanel Messages="@_demo" />
+            </MudDrawer>
+        </MudHidden>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _isDark;
+    private bool _mobileOpen;
+
+    private readonly List<ChatMessage> _demo = new()
+    {
+        new("user","Start a new mission in the Redmond Barrens."),
+        new("ai","**GM:** Rain turns ash to sludge as neon flickers… *What do you do?*")
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Read initial truth from <html> class / localStorage (set by pre-head script)
+            _isDark = await JS.InvokeAsync<bool>("themeStorage.init");
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        _isDark = !_isDark;
+        await JS.InvokeVoidAsync("themeStorage.set", _isDark); // updates <html> class + localStorage
+        // MudThemeProvider updates instantly via @bind-IsDarkMode
+    }
+}
