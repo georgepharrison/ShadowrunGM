@@ -43,7 +43,7 @@ public static class Themes
         },
         LayoutProperties = new LayoutProperties
         {
-            DefaultBorderRadius = "12px",
+            DefaultBorderRadius = "6px",
             AppbarHeight = "48px",
             DrawerWidthRight = "360px"
         },
