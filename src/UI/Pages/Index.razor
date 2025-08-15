@@ -1,11 +1,195 @@
-﻿<PageTitle>Home</PageTitle>
+﻿@page "/"
+@using MudBlazor
+@inject NavigationManager Nav
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="p-6">
-    <MudText Typo="Typo.h5" Class="mb-2">Welcome, chummer.</MudText>
-    <MudText Class="mb-4">Create a character or jump into a mission.</MudText>
+<!-- Hero -->
+<MudContainer MaxWidth="MaxWidth.False" Class="hero">
+    <MudGrid Class="hero-grid">
+        <!-- Left: copy -->
+        <MudItem xs="12" md="6" Class="hero-copy">
+            <MudText Typo="Typo.h3">Shadowrun GM</MudText>
+            <MudText Typo="Typo.subtitle1" Class="subtitle">
+                A focused GM control panel for planning runs, tracking scenes, and keeping rules at your fingertips.
+            </MudText>
 
-    <MudStack Row="true" Spacing="2">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/characters/new">New Character</MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="/missions">Missions</MudButton>
-    </MudStack>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexStart" Class="cta-row">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => Nav.NavigateTo("/runs/new"))">
+                    Start a New Run
+                </MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="@(() => Nav.NavigateTo("/runs"))">
+                    Browse Runs
+                </MudButton>
+            </MudStack>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexStart" Spacing="1" Class="cta-row">
+                <MudCheckBox @bind-Value="_quickStartOpen"></MudCheckBox>
+                <MudText Typo="Typo.body2">Show quick-start on open</MudText>
+            </MudStack>
+        </MudItem>
+
+        <!-- Right: simple “hero art” placeholder -->
+        <MudItem xs="12" md="6" Class="hero-art">
+            <MudPaper Elevation="1" Class="feature-card" Style="max-width: 520px; padding: 1.25rem;">
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.h6">Quick-Start</MudText>
+
+                    <MudText Typo="Typo.body2" Class="subtitle">
+                        Spin up a one-shot in seconds. Choose a locale, a faction twist, and difficulty.
+                    </MudText>
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexStart" Spacing="2">
+                        <MudSelect T="string" Label="Locale" Value="_qsLocale" ValueChanged="@(v => _qsLocale = v)">
+                            <MudSelectItem Value="@("Redmond Barrens")" />
+                            <MudSelectItem Value="@("Downtown Seattle")" />
+                            <MudSelectItem Value="@("Puyallup")" />
+                        </MudSelect>
+
+                        <MudSelect T="string" Label="Twist" Value="_qsTwist" ValueChanged="@(v => _qsTwist = v)">
+                            <MudSelectItem Value="@("Corporate double-cross")" />
+                            <MudSelectItem Value="@("Gang turf war")" />
+                            <MudSelectItem Value="@("Awakened anomaly")" />
+                        </MudSelect>
+
+                        <MudSelect T="string" Label="Difficulty" Value="_qsDifficulty" ValueChanged="@(v => _qsDifficulty = v)">
+                            <MudSelectItem Value="@("Easy")" />
+                            <MudSelectItem Value="@("Standard")" />
+                            <MudSelectItem Value="@("Hard")" />
+                        </MudSelect>
+                    </MudStack>
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.FlexStart" Spacing="1">
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@GenerateQuickStart">
+                            Generate
+                        </MudButton>
+                        <MudText Typo="Typo.caption" Class="subtitle">@_qsStatus</MudText>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
+
+<!-- Features -->
+<MudContainer MaxWidth="MaxWidth.Large" Class="section features">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="1" Class="feature-card">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h6">Scene Tracker</MudText>
+                    <MudText Typo="Typo.body2">Pin phases, clocks, and consequences. Jump between scenes without losing state.</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="1" Class="feature-card">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h6">Encounter Library</MudText>
+                    <MudText Typo="Typo.body2">Curated obstacles with tags (Matrix, Social, Astral, Legwork). Drop-in, scale up or down.</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="1" Class="feature-card">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h6">Rulebook Snippets</MudText>
+                    <MudText Typo="Typo.body2">Fast lookups for common rulings, edge cases, and tables without page flipping.</MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<!-- Recent runs + quick refs -->
+<MudContainer MaxWidth="MaxWidth.Large" Class="section">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="1" Class="feature-card">
+                <MudText Typo="Typo.h6">Recent Runs</MudText>
+                <MudList T="string" Dense="true" Class="mt-2">
+                    @foreach (var run in _recentRuns)
+                    {
+                        <MudListItem Icon="@Icons.Material.Outlined.Description" Text="@run">
+                            <MudButton Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary"
+                                        OnClick="@(() => Nav.NavigateTo($"/runs/{Uri.EscapeDataString(run)}"))">
+                                Open
+                            </MudButton>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="1" Class="feature-card">
+                <MudText Typo="Typo.h6">Quick Reference</MudText>
+                <MudList T="string" Dense="true" Class="mt-2">
+                    @foreach (var refItem in _quickRefs)
+                    {
+                        <MudListItem Icon="@Icons.Material.Outlined.MenuBook" Text="@refItem">
+                            <MudButton Size="Size.Small" Variant="Variant.Text" Color="Color.Primary"
+                                        OnClick="@(()=> _snackbarOpen = true)">
+                                View
+                            </MudButton>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<!-- Bottom CTA -->
+<MudContainer MaxWidth="MaxWidth.Large" Class="section cta">
+    <MudPaper Elevation="0" Class="cta-panel">
+        <MudStack Spacing="1" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <MudText Typo="Typo.h6">Ready to roll initiative?</MudText>
+            <MudText Typo="Typo.body2" Class="subtitle">Kick off your next scene and keep the table humming.</MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => Nav.NavigateTo("/scenes"))">
+                    Go to Scenes
+                </MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@(() => Nav.NavigateTo("/encounters"))">
+                    Browse Encounters
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    // Quick-start UI state (mock only)
+    private bool _quickStartOpen = true;
+    private string _qsLocale = "Redmond Barrens";
+    private string _qsTwist = "Corporate double-cross";
+    private string _qsDifficulty = "Standard";
+    private string _qsStatus = string.Empty;
+
+    // Mock data for lists
+    private readonly List<string> _recentRuns =
+    [
+        "Ghosts in the Barrens",
+        "The Neon Heist",
+        "Black Lace, Red Tape"
+    ];
+
+    private readonly List<string> _quickRefs =
+    [
+        "Opposed Tests & Dice Pools",
+        "Damage Types & Soak",
+        "Matrix Actions (Common)",
+        "Vehicle Chase Beats"
+    ];
+
+    private void GenerateQuickStart()
+    {
+        // UI-only “generation” feedback
+        _qsStatus = $"Seeded: {_qsLocale} • {_qsTwist} • {_qsDifficulty}";
+        // In the real flow, we'd navigate to /runs/new with prefilled query params or state
+        // Nav.NavigateTo($"/runs/new?loc={Uri.EscapeDataString(_qsLocale)}&tw={Uri.EscapeDataString(_qsTwist)}&diff={_qsDifficulty}");
+    }
+
+    // Placeholder for “View” actions
+    private bool _snackbarOpen;
+}

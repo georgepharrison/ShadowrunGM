@@ -2,20 +2,60 @@
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
 
+<!-- Theme + providers -->
+<MudThemeProvider Theme="@Themes.MinimalistTheme" @bind-IsDarkMode="_isDark" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 <MudLayout>
-    <MudAppBar Elevation="0">
-        <MudText Typo="Typo.h6">Shadowrun GM</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@(_isDark ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
-                       OnClick="@ToggleTheme" />
-    </MudAppBar>
 
-    <MudThemeProvider Theme="@Themes.MinimalistTheme" @bind-IsDarkMode="_isDark" />
-    <MudPopoverProvider />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
+    <!-- DESKTOP: MdAndUp — mini left drawer, no app bar -->
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudDrawer Variant="DrawerVariant.Mini" Elevation="1" Anchor="Anchor.Left">
+            <MudNavMenu Dense>
+                <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
+                <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description">Runs</MudNavLink>
+                <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek">Scenes</MudNavLink>
+                <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome">Encounters</MudNavLink>
+                <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
+            </MudNavMenu>
+            <MudSpacer />
+            <MudNavMenu Dense>
+                <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                               Class="m-2"
+                               OnClick="@ToggleTheme" />
+            </MudNavMenu>
+        </MudDrawer>
+    </MudHidden>
 
-    <!-- Desktop/right rail -->
+    <!-- MOBILE: SmAndDown — app bar with hamburger + temporary left drawer -->
+    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+        <MudAppBar Elevation="0">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@(() => _leftOpenMobile = true)" />
+        </MudAppBar>
+
+        <MudDrawer Anchor="Anchor.Left"
+                   Variant="DrawerVariant.Temporary"
+                   @bind-Open="@_leftOpenMobile"
+                   Elevation="8">
+            <MudNavMenu Dense>
+                <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
+                <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description">Runs</MudNavLink>
+                <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek">Scenes</MudNavLink>
+                <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome">Encounters</MudNavLink>
+                <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
+            </MudNavMenu>
+            <MudSpacer />
+            <MudNavMenu Dense>
+                <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                               Class="m-2"
+                               OnClick="@ToggleTheme" />
+            </MudNavMenu>
+        </MudDrawer>
+    </MudHidden>
+
+    <!-- Right rail (unchanged) -->
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudDrawer Anchor="Anchor.Right" Variant="DrawerVariant.Persistent" Open="true" Class="ai-drawer">
             <ChatPanel Messages="@_demo" />
@@ -25,18 +65,11 @@
     <MudMainContent>
         @Body
 
-        <!-- Mobile -->
+        <!-- Mobile FAB + temporary bottom drawer (unchanged) -->
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
-            <MudFab StartIcon="@Icons.Material.Filled.Chat"
-                    Class="ai-fab"
-                    Color="Color.Primary"
-                    OnClick="@(()=> _mobileOpen = true)" />
-            <MudDrawer Anchor="Anchor.Bottom"
-                       Variant="DrawerVariant.Temporary"
-                       @bind-Open="_mobileOpen"
-                       Class="ai-drawer-mobile"
-                       Elevation="8"
-                       OverlayAutoClose="true">
+            <MudFab StartIcon="@Icons.Material.Filled.Chat" Class="ai-fab" Color="Color.Primary" OnClick="@(() => _mobileOpen = true)" />
+            <MudDrawer Anchor="Anchor.Bottom" Variant="DrawerVariant.Temporary" Open="@_mobileOpen"
+                       Class="ai-drawer-mobile" Elevation="8">
                 <ChatPanel Messages="@_demo" />
             </MudDrawer>
         </MudHidden>
@@ -46,6 +79,7 @@
 @code {
     private bool _isDark;
     private bool _mobileOpen;
+    private bool _leftOpenMobile;
 
     private readonly List<ChatMessage> _demo = new()
     {
@@ -57,7 +91,6 @@
     {
         if (firstRender)
         {
-            // Read initial truth from <html> class / localStorage (set by pre-head script)
             _isDark = await JS.InvokeAsync<bool>("themeStorage.init");
             StateHasChanged();
         }
@@ -66,7 +99,6 @@
     private async Task ToggleTheme()
     {
         _isDark = !_isDark;
-        await JS.InvokeVoidAsync("themeStorage.set", _isDark); // updates <html> class + localStorage
-        // MudThemeProvider updates instantly via @bind-IsDarkMode
+        await JS.InvokeVoidAsync("themeStorage.set", _isDark);
     }
 }

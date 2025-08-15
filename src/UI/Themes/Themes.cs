@@ -24,15 +24,15 @@ public static class Themes
         },
         PaletteDark = new PaletteDark
         {
-            Primary = "#4A90E2",
-            Secondary = "#9CA3AF",
-            Background = "#111827",
-            Surface = "#1F2937",
-            AppbarBackground = "#1F2937",
+            Primary = "#2563EB",
+            Secondary = "#64748B",
+            Background = "#0B0F17",
+            Surface = "#111827",
+            AppbarBackground = "#0B0F17",
             AppbarText = "#F9FAFB",
-            DrawerBackground = "#1F2937",
-            TextPrimary = "#F9FAFB",
-            TextSecondary = "#D1D5DB",
+            DrawerBackground = "#0B0F17",
+            TextPrimary = "#E5E7EB",
+            TextSecondary = "#9CA3AF",
             Divider = "#374151",
         },
         LayoutProperties = new LayoutProperties
@@ -43,7 +43,7 @@ public static class Themes
         },
         Typography = new Typography
         {
-            Default = new DefaultTypography { FontFamily = ["Inter", "Segoe UI", "Roboto", "sans-serif"], FontSize = "0.95rem" },
+            Default = new DefaultTypography { FontFamily = ["Inter", "Roboto", "system-ui", "-apple-system", "Segoe UI", "sans-serif"], FontSize = "0.95rem" },
             H1 = new H1Typography { FontSize = "2rem", FontWeight = "600" },
             H2 = new H2Typography { FontSize = "1.5rem", FontWeight = "500" },
             H3 = new H3Typography { FontSize = "1.25rem", FontWeight = "500" },
