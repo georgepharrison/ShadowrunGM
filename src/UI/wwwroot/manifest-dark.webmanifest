@@ -4,7 +4,7 @@
   "description": "AI-assisted Shadowrun 6e Game Master",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#111827",
+  "background_color": "#212121",
   "theme_color": "#4A90E2",
   "orientation": "any",
   "icons": [

@@ -6,7 +6,6 @@ public static class Themes
 {
     #region Public Members
 
-    // Single theme object with both palettes; we’ll toggle dark mode on the provider.
     public static readonly MudTheme MinimalistTheme = new()
     {
         PaletteLight = new PaletteLight
@@ -22,16 +21,25 @@ public static class Themes
             TextSecondary = "#6B7280",
             Divider = "#E5E7EB",
         },
-        PaletteDark = new()
+        PaletteDark = new PaletteDark
         {
-            Background = "#0B0F17",
-            Surface = "#111827",
-            Primary = "#2563EB",
-            Secondary = "#64748B",
-            AppbarBackground = "#0B0F17",
-            DrawerBackground = "#0B0F17",
+            // ChatGPT-like neutrals
+            Background = "#212121",
+            Surface = "#2A2A2A",
+            AppbarBackground = "#212121",
+            DrawerBackground = "#212121",
+
+            // Primary = ChatGPT green
+            Primary = "#10A37F",
+            // Keep a neutral secondary for subtle outlines/text
+            Secondary = "#8A8A8A",
+
+            // Text
             TextPrimary = "#E5E7EB",
-            TextSecondary = "#9CA3AF",
+            TextSecondary = "#B0B0B0",
+
+            // Optional: crisper dividers without bluish tint
+            Divider = "#3A3A3A",
         },
         LayoutProperties = new LayoutProperties
         {

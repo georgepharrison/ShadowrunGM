@@ -56,6 +56,22 @@ html.light {
 }
 
 html.dark {
-    background-color: #111827;
+    background-color: #212121;
     color-scheme: dark;
 }
+
+    html.dark .mud-paper,
+    html.dark .mud-drawer,
+    html.dark .mud-appbar {
+        box-shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25);
+    }
+
+    /* Subtle hover for list items on dark */
+    html.dark .mud-list-item:hover {
+        background: #333333;
+    }
+
+    /* Primary button hover a bit darker, still green */
+    html.dark .mud-button-filled-primary:hover {
+        filter: brightness(0.95);
+    }
