@@ -12,33 +12,54 @@
 
     <!-- DESKTOP: MdAndUp — mini left drawer, no app bar -->
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
-        <MudDrawer Variant="DrawerVariant.Mini" Elevation="1" Anchor="Anchor.Left">
+        <MudDrawer Variant="DrawerVariant.Mini" Elevation="1" Anchor="Anchor.Left" @bind-Open="_leftOpenDesktop">
             <MudNavMenu Dense>
-                <MudTooltip Text="Home" Placement="Placement.Right">
-                    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" />
-                </MudTooltip>
+                @if (_leftOpenDesktop)
+                {
+                    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
 
-                <MudTooltip Text="Runs" Placement="Placement.Right">
-                    <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description" />
-                </MudTooltip>
+                    <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
+                        <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                        <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                    </MudNavGroup>
 
-                <MudTooltip Text="Scenes" Placement="Placement.Right">
-                    <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek" />
-                </MudTooltip>
+                    <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
+                }
+                else
+                {
+                    <MudTooltip Text="Home" Placement="Placement.Right">
+                        <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" />
+                    </MudTooltip>
 
-                <MudTooltip Text="Encounters" Placement="Placement.Right">
-                    <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome" />
-                </MudTooltip>
+                    <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
+                        <MudTooltip Text="Campaign Hub" Placement="Placement.Right">
+                            <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Create Campaign" Placement="Placement.Right">
+                            <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                        </MudTooltip>
+                    </MudNavGroup>
 
-                <MudTooltip Text="Rules" Placement="Placement.Right">
-                    <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook" />
-                </MudTooltip>
+                    <MudTooltip Text="Rules" Placement="Placement.Right">
+                        <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook" />
+                    </MudTooltip>
+                }
             </MudNavMenu>
             <MudSpacer />
             <MudNavMenu Dense>
-                <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
-                               Class="m-2"
-                               OnClick="@ToggleTheme" />
+                <MudNavLink Href="/settings">
+                    <MudAvatar Size="Size.Medium" Variant="Variant.Outlined" Class="ml-n5">
+                        <MudImage Src="images/landing/hero-1.png"></MudImage>
+                    </MudAvatar>
+                </MudNavLink>
+                <MudStack Row="@_leftOpenDesktop" Class="ma-1" Spacing="0">
+                    <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" OnClick="@ToggleTheme" />
+                    @if (_leftOpenDesktop)
+                    {
+                        <MudSpacer />
+                    }
+                    <MudIconButton Icon="@(_leftOpenDesktop ? Icons.Material.Filled.KeyboardDoubleArrowLeft : Icons.Material.Filled.KeyboardDoubleArrowRight)" OnClick="@ToggleLeftDesktopDrawer" />
+                </MudStack>
             </MudNavMenu>
         </MudDrawer>
     </MudHidden>
@@ -55,16 +76,26 @@
                    Elevation="8">
             <MudNavMenu Dense>
                 <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
-                <MudNavLink Href="/runs" Icon="@Icons.Material.Filled.Description">Runs</MudNavLink>
-                <MudNavLink Href="/scenes" Icon="@Icons.Material.Filled.ViewWeek">Scenes</MudNavLink>
-                <MudNavLink Href="/encounters" Icon="@Icons.Material.Filled.AutoAwesome">Encounters</MudNavLink>
+
+                <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
+                    <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                    <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                </MudNavGroup>
+
                 <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
             </MudNavMenu>
             <MudSpacer />
             <MudNavMenu Dense>
-                <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
-                               Class="m-2"
-                               OnClick="@ToggleTheme" />
+                <MudNavLink Href="/settings">
+                    <MudAvatar Size="Size.Medium" Variant="Variant.Outlined" Class="ml-n5">
+                        <MudImage Src="images/landing/hero-1.png"></MudImage>
+                    </MudAvatar>
+                </MudNavLink>
+                <MudStack Row Class="ma-1" Spacing="0">
+                    <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" OnClick="@ToggleTheme" />
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => _leftOpenMobile = false)" />
+                </MudStack>
             </MudNavMenu>
         </MudDrawer>
     </MudHidden>
@@ -94,6 +125,12 @@
     private bool _isDark;
     private bool _mobileOpen;
     private bool _leftOpenMobile;
+    private bool _leftOpenDesktop;
+
+    private void ToggleLeftDesktopDrawer()
+    {
+        _leftOpenDesktop = !_leftOpenDesktop;
+    }
 
     private readonly List<ChatMessage> _demo = new()
     {

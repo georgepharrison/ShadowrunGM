@@ -94,29 +94,29 @@
     </MudPaper>
 </MudContainer>
 
-<!-- Recent runs + quick refs -->
+<!-- Recent campaigns + quick refs -->
 <MudContainer MaxWidth="MaxWidth.Large" Class="my-4">
     <MudGrid Spacing="4">
         <MudItem xs="12" md="6">
-            <MudText Typo="Typo.h6" Class="my-2">Recent Runs</MudText>
+            <MudText Typo="Typo.h6" Class="my-2">Recent Campaigns</MudText>
             <MudPaper Elevation="1" Class="pa-0">
                 <MudList T="string" Dense="true" Class="mt-2">
-                    @foreach (var run in _recentRuns)
+                    @foreach (var campaign in _recentCampaigns )
                     {
                         <MudListItem Icon="@Icons.Material.Outlined.Description">
                             <MudStack Row AlignItems="AlignItems.Center">
-                                @run
+                                @campaign
                                 <MudSpacer />
                                 <MudButton Size="Size.Small"
                                            Variant="Variant.Outlined"
                                            Color="Color.Primary"
-                                           OnClick="@(() => Nav.NavigateTo($"/runs/{Uri.EscapeDataString(run)}"))">
+                                           OnClick="@(() => Nav.NavigateTo($"/campaign-hub/{Uri.EscapeDataString(campaign)}"))">
                                     Open
                                 </MudButton>
                             </MudStack>
                         </MudListItem>
 
-                        if (run != _recentRuns.Last())
+                        if (campaign != _recentCampaigns.Last())
                         {
                             <MudDivider />
                         }
@@ -160,13 +160,13 @@
     <MudPaper Elevation="0" Class="pa-8">
         <MudStack Spacing="1" AlignItems="AlignItems.Center" Justify="Justify.Center">
             <MudText Typo="Typo.h5">Ready to roll initiative?</MudText>
-            <MudText Typo="Typo.body2">Kick off your next scene and keep the table humming.</MudText>
+            <MudText Typo="Typo.body2">Kick off your next campaign and keep the table humming.</MudText>
             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mt-4">
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large" OnClick="@(() => Nav.NavigateTo("/scenes"))">
-                    Go to Scenes
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Large" OnClick="@(() => Nav.NavigateTo("/campaign-hub/create"))">
+                    Create Campaign
                 </MudButton>
-                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@(() => Nav.NavigateTo("/encounters"))">
-                    Browse Encounters
+                <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="@(() => Nav.NavigateTo("/campaign-hub"))">
+                    Browse Campaigns
                 </MudButton>
             </MudStack>
         </MudStack>
@@ -182,11 +182,13 @@
     private string _qsStatus = string.Empty;
 
     // Mock data for lists
-    private readonly List<string> _recentRuns =
+    private readonly List<string> _recentCampaigns  =
     [
         "Ghosts in the Barrens",
         "The Neon Heist",
-        "Black Lace, Red Tape"
+        "Black Lace, Red Tape",
+        "Chrome & Shadows",
+        "Datajack Down"
     ];
 
     private readonly List<string> _quickRefs =
