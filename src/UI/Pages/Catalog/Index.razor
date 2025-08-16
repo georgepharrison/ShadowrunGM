@@ -1,0 +1,46 @@
+﻿@page "/catalog"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+    <MudText Typo="Typo.h5" Class="mb-4">Catalog</MudText>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Href="/catalog/powers" Class="h-full">
+                <MudCardContent>
+                    <MudIcon Icon="@Icons.Material.Filled.Bolt" />
+                    <MudText Typo="Typo.subtitle1">Powers</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Adept & critter powers</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Href="/catalog/spells" Class="h-full">
+                <MudCardContent>
+                    <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" />
+                    <MudText Typo="Typo.subtitle1">Spells</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Combat, detection, illusion…</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Href="/catalog/gear" Class="h-full">
+                <MudCardContent>
+                    <MudIcon Icon="@Icons.Material.Filled.Cases" />
+                    <MudText Typo="Typo.subtitle1">Gear</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Weapons, armor, equipment</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudCard Href="/catalog/augments" Class="h-full">
+                <MudCardContent>
+                    <MudIcon Icon="@Icons.Material.Filled.Memory" />
+                    <MudText Typo="Typo.subtitle1">Augments</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Cyberware, bioware, nano</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

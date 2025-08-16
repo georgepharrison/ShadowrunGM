@@ -1,0 +1,14 @@
+﻿@inherits ComponentBase
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-10 text-center">
+    <MudIcon Icon="@Icons.Material.Filled.Build" Size="Size.Large" Color="Color.Primary" />
+    <MudText Typo="Typo.h4" Class="mt-4">🚧 @Title</MudText>
+    <MudText Typo="Typo.body1" Class="mt-2">
+        @Message
+    </MudText>
+</MudContainer>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Coming Soon";
+    [Parameter] public string Message { get; set; } = "This page is under construction. Check back later!";
+}

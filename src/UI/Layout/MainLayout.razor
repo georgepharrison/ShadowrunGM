@@ -19,8 +19,16 @@
                     <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
 
                     <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
-                        <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
-                        <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                        <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                        <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                    </MudNavGroup>
+
+                    <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2">
+                        <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard">Catalog Hub</MudNavLink>
+                        <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt">Powers</MudNavLink>
+                        <MudNavLink Href="/catalog/spells" Icon="@Icons.Material.Filled.AutoAwesome">Spells</MudNavLink>
+                        <MudNavLink Href="/catalog/gear" Icon="@Icons.Material.Filled.Cases">Gear</MudNavLink>
+                        <MudNavLink Href="/catalog/augments" Icon="@Icons.Material.Filled.Memory">Augments</MudNavLink>
                     </MudNavGroup>
 
                     <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
@@ -33,10 +41,28 @@
 
                     <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
                         <MudTooltip Text="Campaign Hub" Placement="Placement.Right">
-                            <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                            <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
                         </MudTooltip>
                         <MudTooltip Text="Create Campaign" Placement="Placement.Right">
-                            <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                            <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                        </MudTooltip>
+                    </MudNavGroup>
+
+                    <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2">
+                        <MudTooltip Text="Catalog Hub" Placement="Placement.Right">
+                            <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard">Catalog Hub</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Powers" Placement="Placement.Right">
+                            <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt">Powers</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Spells" Placement="Placement.Right">
+                            <MudNavLink Href="/catalog/spells" Icon="@Icons.Material.Filled.AutoAwesome">Spells</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Gear" Placement="Placement.Right">
+                            <MudNavLink Href="/catalog/gear" Icon="@Icons.Material.Filled.Cases">Gear</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Augments" Placement="Placement.Right">
+                            <MudNavLink Href="/catalog/augments" Icon="@Icons.Material.Filled.Memory">Augments</MudNavLink>
                         </MudTooltip>
                     </MudNavGroup>
 
@@ -78,8 +104,16 @@
                 <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
 
                 <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
-                    <MudNavLink Href="/campaign-hub" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
-                    <MudNavLink Href="/campaign-hub/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                    <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
+                    <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2">
+                    <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard">Catalog Hub</MudNavLink>
+                    <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt">Powers</MudNavLink>
+                    <MudNavLink Href="/catalog/spells" Icon="@Icons.Material.Filled.AutoAwesome">Spells</MudNavLink>
+                    <MudNavLink Href="/catalog/gear" Icon="@Icons.Material.Filled.Cases">Gear</MudNavLink>
+                    <MudNavLink Href="/catalog/augments" Icon="@Icons.Material.Filled.Memory">Augments</MudNavLink>
                 </MudNavGroup>
 
                 <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
@@ -110,7 +144,7 @@
     <MudMainContent>
         @Body
 
-        <!-- Mobile FAB + temporary bottom drawer (unchanged) -->
+        <!-- Mobile FAB + temporary bottom drawer -->
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudFab StartIcon="@Icons.Material.Filled.Chat"
                     Class="ai-fab"

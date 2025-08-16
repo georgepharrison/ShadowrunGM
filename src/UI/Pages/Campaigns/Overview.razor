@@ -1,0 +1,16 @@
+﻿@page "/campaigns/{id}"
+
+<MudContainer Class="pa-6">
+    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-4">
+        Campaign overview coming soon!
+    </MudAlert>
+
+    <MudText Typo="Typo.h5">Campaign: @Id</MudText>
+    <MudText Typo="Typo.body2" Color="Color.Secondary">
+        Timeline, roster, world state, and available runs will appear here.
+    </MudText>
+</MudContainer>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+}
