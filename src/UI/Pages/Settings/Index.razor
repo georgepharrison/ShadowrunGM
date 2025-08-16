@@ -1,0 +1,84 @@
+﻿@page "/settings"
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+    <MudText Typo="Typo.h4" Class="mb-3">Settings</MudText>
+
+    <MudTabs>
+        <!-- Profile -->
+        <MudTabPanel Text="Profile" Icon="@Icons.Material.Filled.Person">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudStack Spacing="2">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudAvatar Size="Size.Large" Variant="Variant.Outlined">
+                            <MudImage Src="images/landing/hero-1.png" Alt="User avatar" />
+                        </MudAvatar>
+                        <MudButton Variant="Variant.Outlined" Disabled>
+                            Change Avatar (coming soon)
+                        </MudButton>
+                    </MudStack>
+
+                    <MudTextField Label="Display Name" Value="@("GM")" Disabled />
+                    <MudTextField Label="Email" Value="@("gm@example.com")" Disabled />
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        Profile editing coming soon.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+
+        <!-- Preferences -->
+        <MudTabPanel Text="Preferences" Icon="@Icons.Material.Filled.Tune">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudStack Spacing="2">
+                    <MudSwitch T="bool" @bind-Value="_prefDarkMode" Color="Color.Primary" Disabled>
+                        Dark Mode
+                    </MudSwitch>
+
+                    <MudSelect T="string" Label="Timezone" Disabled>
+                        <MudSelectItem Value="@("America/Chicago")">America/Chicago</MudSelectItem>
+                    </MudSelect>
+
+                    <MudDivider Class="my-2" />
+
+                    <MudText Typo="Typo.subtitle1">Content Rating</MudText>
+                    <MudRadioGroup T="string" @bind-Value="_contentRating">
+                        <MudRadio Value="@("Teen")">Teen</MudRadio>
+                        <MudRadio Value="@("Adult")">Adult</MudRadio>
+                        <MudRadio Value="@("Mature")">Mature</MudRadio>
+                        <MudRadio Value="@("NC - 17")">Uncensored (NC-17)</MudRadio>
+                    </MudRadioGroup>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        Controls how explicit descriptions, language, and themes can be.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+
+        <!-- Integrations -->
+        <MudTabPanel Text="Integrations" Icon="@Icons.Material.Filled.Extension">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                    Integrations (e.g., PDF import pipeline, storage) coming soon.
+                </MudAlert>
+            </MudPaper>
+        </MudTabPanel>
+
+        <!-- Data & Export -->
+        <MudTabPanel Text="Data & Export" Icon="@Icons.Material.Filled.Download">
+            <MudPaper Class="pa-4" Elevation="0">
+                <MudStack Spacing="2">
+                    <MudButton Variant="Variant.Outlined" Disabled>Export app data</MudButton>
+                    <MudButton Color="Color.Error" Variant="Variant.Outlined" Disabled>Clear local data</MudButton>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                        Data tools coming soon. During early dev, drafts are stored in localStorage.
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudTabPanel>
+    </MudTabs>
+</MudContainer>
+
+@code {
+    private bool _prefDarkMode;              // left disabled to avoid clashing with MainLayout theme toggle
+    private string _contentRating = "Teen";  // default; not persisted yet
+}
