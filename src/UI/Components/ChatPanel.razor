@@ -1,19 +1,107 @@
-﻿<div class="chat-container">
-    @foreach (var m in Messages)
-    {
-        if (m.Role == "user")
-        {
-            <MudPaper Class="user-message" Elevation="1">@m.Text</MudPaper>
-        }
-        else
-        {
-            <div class="ai-message">
-                <MudMarkdown Value="@m.Text" />
-            </div>
-        }
-    }
+﻿@using MudBlazor
+@inject IJSRuntime JS
+
+<div class="chatpanel-root">
+    <!-- Messages scroll area -->
+    <MudPaper Elevation="0" Class="chatpanel-messages pa-4">
+        <div @ref="_scrollHost" class="chatpanel-scroll">
+            @foreach (var m in _messages)
+            {
+                if (m.Role == "user")
+                {
+                    <MudPaper Class="chat-msg chat-msg-user" Elevation="1">@m.Text</MudPaper>
+                }
+                else
+                {
+                    <div class="chat-msg chat-msg-ai">
+                        <MudMarkdown Value="@m.Text" />
+                    </div>
+                }
+            }
+        </div>
+    </MudPaper>
+
+    <!-- Composer pinned bottom -->
+    <div class="chatpanel-composer">
+        <MudTextField T="string"
+                      @ref="_inputRef"
+                      AutoGrow
+                      MaxLines="5"
+                      Immediate="true"
+                      TextUpdateSuppression="false"
+                      @bind-Value="_draft"
+                      Placeholder="Type a message…"
+                      Variant="Variant.Outlined"
+                      Clearable
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Filled.Send"
+                      AdornmentColor="@(!_hasText ? Color.Default : Color.Primary)"
+                      OnAdornmentClick="@( _hasText ? SendMessage : null )"
+                      OnKeyDown="HandleKeyDown"
+                      KeyDownPreventDefault="_preventDefault"
+                      InputAttributes="@(new Dictionary<string, object> { { "enterkeyhint", "send" } })" />
+    </div>
 </div>
 
 @code {
-    [Parameter] public IReadOnlyList<ChatMessage> Messages { get; set; } = Array.Empty<ChatMessage>();
+    [Parameter] public bool ShowHeader { get; set; } = false;
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+    [Parameter] public IReadOnlyList<ChatMessage>? InitialMessages { get; set; }
+
+    private readonly List<ChatMessage> _messages = new();
+    private MudTextField<string>? _inputRef;
+    private ElementReference _scrollHost;
+    private string _draft = string.Empty;
+    private bool _preventDefault;
+    private bool _needsScroll;
+    private bool _hasText => !string.IsNullOrWhiteSpace(_draft);
+
+    protected override void OnInitialized()
+    {
+        if (InitialMessages is { Count: > 0 })
+            _messages.AddRange(InitialMessages);
+        else
+            _messages.Add(new("ai", "**GM:** Rain turns ash to sludge as neon flickers… *What do you do?*"));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_needsScroll)
+        {
+            _needsScroll = false;
+            // Requires the tiny helper you already added (chat-scroll.js)
+            await JS.InvokeVoidAsync("chatScroll.toBottom", _scrollHost, new { smooth = true, onlyIfNearBottom = 160 });
+        }
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        // Enter sends; Shift+Enter adds newline
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            _preventDefault = true;   // suppress newline
+            _ = SendMessage();        // fire-and-forget; textbox clears immediately
+        }
+        else
+        {
+            _preventDefault = false;  // allow normal typing/newlines
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        if (!_hasText) return;
+
+        var text = _draft.Trim();
+        _draft = string.Empty;
+
+        _messages.Add(new("user", text));
+        _messages.Add(new("ai", MockRespond(text)));
+
+        if (_inputRef is not null) await _inputRef.FocusAsync();
+        StateHasChanged();
+    }
+
+    private static string MockRespond(string userText) =>
+        $"**GM:** Interesting. *{userText}* — give me a quick Perception test while you do that.";
 }

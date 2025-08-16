@@ -13,6 +13,35 @@
     bottom: 1rem;
 }
 
+.ai-drawer-mobile {
+    height: 60vh; /* normal bottom sheet height */
+    max-height: 60vh;
+}
+
+    .ai-drawer-mobile.full {
+        height: 100% !important; /* take over screen */
+        max-height: 100% !important;
+    }
+
+.ai-message {
+    align-self: flex-start;
+    max-width: 80%;
+}
+
+.chat-sheet {
+    border: 1px solid var(--mud-palette-grey-light);
+    border-radius: var(--mud-default-borderradius);
+}
+
+.chat-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--mud-palette-surface);
+    padding: .25rem .25rem .25rem .25rem;
+    border-bottom: 1px solid var(--mud-palette-divider);
+}
+
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -29,9 +58,50 @@
     color: #111827;
 }
 
-.ai-message {
+.chatpanel-root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* (optional) header row above messages */
+.chatpanel-header {
+    padding: .25rem .25rem 0 .25rem;
+}
+
+/* Messages container and the actual scroll surface */
+.chatpanel-messages {
+    flex: 1 1 auto; /* <-- fills all available vertical space */
+    overflow: hidden; /* let inner div scroll instead */
+    display: flex;
+    flex-direction: column;
+}
+
+.chatpanel-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .375rem;
+}
+
+.chatpanel-composer {
+    flex: 0 0 auto; /* always sits at the bottom */
+    margin-top: .5rem;
+}
+
+/* Message bubbles */
+.chat-msg {
+    max-width: 90%;
+}
+
+.chat-msg-user {
+    align-self: flex-end;
+    padding: .25rem .5rem;
+}
+
+.chat-msg-ai {
     align-self: flex-start;
-    max-width: 80%;
 }
 
 .loading-progress {

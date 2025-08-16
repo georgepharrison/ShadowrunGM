@@ -58,7 +58,7 @@
                     {
                         <MudSpacer />
                     }
-                    <MudIconButton Icon="@(_leftOpenDesktop ? Icons.Material.Filled.KeyboardDoubleArrowLeft : Icons.Material.Filled.KeyboardDoubleArrowRight)" OnClick="@ToggleLeftDesktopDrawer" />
+                    <MudIconButton Icon="@(_leftOpenDesktop? Icons.Material.Filled.KeyboardDoubleArrowLeft : Icons.Material.Filled.KeyboardDoubleArrowRight)" OnClick="@ToggleLeftDesktopDrawer" />
                 </MudStack>
             </MudNavMenu>
         </MudDrawer>
@@ -103,7 +103,7 @@
     <!-- Right rail (unchanged) -->
     <MudHidden Breakpoint="Breakpoint.SmAndDown">
         <MudDrawer Anchor="Anchor.Right" Variant="DrawerVariant.Persistent" Open="true" Class="ai-drawer">
-            <ChatPanel Messages="@_demo" />
+            <ChatPanel />
         </MudDrawer>
     </MudHidden>
 
@@ -112,10 +112,38 @@
 
         <!-- Mobile FAB + temporary bottom drawer (unchanged) -->
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
-            <MudFab StartIcon="@Icons.Material.Filled.Chat" Class="ai-fab" Color="Color.Primary" OnClick="@(() => _mobileOpen = true)" />
-            <MudDrawer Anchor="Anchor.Bottom" Variant="DrawerVariant.Temporary" Open="@_mobileOpen"
-                       Class="ai-drawer-mobile" Elevation="8">
-                <ChatPanel Messages="@_demo" />
+            <MudFab StartIcon="@Icons.Material.Filled.Chat"
+                    Class="ai-fab"
+                    Color="Color.Primary"
+                    OnClick="@(() => _mobileOpen = true)" />
+
+            <MudDrawer Anchor="Anchor.Bottom"
+                       Variant="DrawerVariant.Temporary"
+                       @bind-Open="_mobileOpen"
+                       Class="@($"ai-drawer-mobile {(_mobileFullScreen ? "full" : "")}")"
+                       Elevation="8">
+
+                <MudPaper Class="chat-sheet d-flex flex-column" Style="height:100%;" Square>
+                    <!-- Header row -->
+                    <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="chat-header">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIconButton Icon="@(_mobileFullScreen? Icons.Material.Filled.FullscreenExit : Icons.Material.Filled.Fullscreen)"
+                                           AriaLabel="@(_mobileFullScreen ? "Exit full screen" : "Go full screen")"
+                                           OnClick="@(()=> _mobileFullScreen = !_mobileFullScreen)" />
+                            <MudText Typo="Typo.subtitle2">GM Chat</MudText>
+                        </MudStack>
+
+                        <!-- Always show the X -->
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       AriaLabel="Close chat"
+                                       OnClick="@(()=> { _mobileOpen = false; _mobileFullScreen = false; })" />
+                    </MudStack>
+
+                    <!-- Content -->
+                    <div style="flex:1; min-height:0;">
+                        <ChatPanel />
+                    </div>
+                </MudPaper>
             </MudDrawer>
         </MudHidden>
     </MudMainContent>
@@ -126,17 +154,12 @@
     private bool _mobileOpen;
     private bool _leftOpenMobile;
     private bool _leftOpenDesktop;
+    private bool _mobileFullScreen = false;
 
     private void ToggleLeftDesktopDrawer()
     {
         _leftOpenDesktop = !_leftOpenDesktop;
     }
-
-    private readonly List<ChatMessage> _demo = new()
-    {
-        new("user","Start a new mission in the Redmond Barrens."),
-        new("ai","**GM:** Rain turns ash to sludge as neon flickers… *What do you do?*")
-    };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
