@@ -1,4 +1,4 @@
-﻿# Local Dev & Mobile Testing (Docker + Nginx)
+﻿# Contributing & Local Development
 
 This guide shows how to build and run the Blazor WebAssembly UI in Docker behind Nginx, test it on your phone over LAN, and sanity-check PWA behavior.
 

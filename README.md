@@ -1,36 +1,52 @@
-﻿# ShadowrunGM 🎲  
-A modern Game Master assistant for Shadowrun, built with **Blazor WebAssembly**, **MudBlazor**, and **.NET 9**.  
+﻿# ShadowrunGM
 
-## ✨ Features (WIP)
-- Progressive Web App (PWA) with offline support  
-- Light/Dark theme toggle (remembers preference)  
-- Responsive layout with chat panel + mobile FAB  
-- Styled with [MudBlazor](https://mudblazor.com/) v8  
-- Ready for AI-powered game logic and event sourcing  
-- Built for modular monolith architecture with clear bounded contexts  
+A modern Game Master assistant for Shadowrun, built with **Blazor WebAssembly**, **ASP.NET Core**, and **AI integration via Semantic Kernel**.
 
 ---
 
-## 📦 Tech Stack
-- **Frontend/UI:** Blazor Standalone WebAssembly (.NET 9)  
-- **UI Library:** MudBlazor 8.11  
-- **Theming:** Custom light/dark palettes  
-- **PWA:** Service worker with auto-update prompts  
-- **Language:** C# 13 (preview)  
-- **Target Framework:** `net9.0`  
+## ✨ Features (MVP)
+
+* Campaign management with AI-powered GM assistant
+* Catalog browsing for powers, spells, gear, and augments
+* Character builder with Point-Buy system (100CP)
+* PDF rulebook import → structured domain tables
+* Light/dark theming with MudBlazor UI
+* Local + cloud AI model orchestration (for rules, narrative, and assistance)
 
 ---
 
-## 🚀 Getting Started
+## 📂 Project Structure
 
-### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- [Node.js](https://nodejs.org/) (optional, for asset pipelines or tooling)
-- A modern browser (Chromium, Firefox, or Safari)
+* **ShadowrunGM.UI/** → Blazor WebAssembly frontend
+* **ShadowrunGM.API/** → ASP.NET Core backend (CQRS, DDD, Semantic Kernel)
+* **ShadowrunGM.Import/** → PDF parsing + import pipeline
+* **ShadowrunGM.Tests/** → Unit + integration tests
+* **docs/** → Documentation (architecture, design, contributing)
 
-### Clone & Restore
-```bash
-git clone https://github.com/YOUR-USERNAME/ShadowrunGM.git
-cd ShadowrunGM/src/ShadowrunGM.UI
-dotnet restore
-```
+For detailed breakdowns, see:
+
+* [Architecture Overview](docs/engineering/architecture_overview.md)
+* [Solution Structure](docs/engineering/solution_structure.md)
+* [Semantic Kernel Plugins](docs/engineering/semantic_kernel_plugins.md)
+* [AI Models](docs/engineering/ai_models.md)
+
+---
+
+## 🛠 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, branching strategy, and coding standards.
+
+---
+
+## 📖 Documentation
+
+All documentation lives in the [docs/](docs/) folder. Key entry point: [docs/README.md](docs/README.md)
+
+---
+
+## 🚀 Next Steps
+
+* Implement catalog schema in Domain + Import pipeline
+* Hook up Semantic Kernel plugins for AI orchestration
+* Begin local Ollama testing on RTX 3090
+* Extend Overseer AI for player/GM interaction
