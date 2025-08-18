@@ -40,6 +40,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engineering", "engineering"
 		docs\engineering\solution_structure.md = docs\engineering\solution_structure.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "src\API\API.csproj", "{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{7548195B-7013-497D-9D81-B616846703F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7548195B-7013-497D-9D81-B616846703F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7548195B-7013-497D-9D81-B616846703F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{7548195B-7013-497D-9D81-B616846703F8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E22248EE-98D1-4A4F-A351-2A7FC29F093A} = {49538DE1-2331-493C-972C-B79509A7D121}
 		{460AA1B6-B6F6-401B-A72B-331310225A4B} = {49538DE1-2331-493C-972C-B79509A7D121}
+		{5E7E8C95-7EC6-43F8-AFD8-7FF325C3BE03} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7146838-7810-44C8-9E2E-F794B0081740}

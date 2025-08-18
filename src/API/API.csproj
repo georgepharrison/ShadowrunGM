@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>ShadowrunGM.UI</AssemblyName>
+    <RootNamespace>ShadowrunGM.UI</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Import\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Endpoints\" />
+    <Folder Include="Infrastructure\Configurations\" />
+    <Folder Include="Infrastructure\Import\" />
+    <Folder Include="Infrastructure\Migrations\" />
+    <Folder Include="SemanticKernel\" />
+    <Folder Include="Workers\" />
+  </ItemGroup>
+
+</Project>
