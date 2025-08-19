@@ -27,10 +27,6 @@ ShadowrunGM/
 │   ├── Infrastructure/         # EF Core, Repositories, Persistence
 │   └── SemanticKernel/         # Plugins, connectors, AI orchestration
 │
-├── ShadowrunGM.Import/         # Data import pipeline (PDF parsing, validation UI)
-│   ├── Services/               # OCR, parsing, validation
-│   └── Storage/                # Imported items before validation
-│
 ├── ShadowrunGM.Tests/          # Unit + Integration tests
 └── docs/                       # Project documentation
 ```
@@ -45,7 +41,6 @@ Plugins expose domain functionality in a **consistent schema** so both UI and AI
 * **CampaignsPlugin** → manage campaigns, characters, linked catalog items
 * **RulesPlugin** → query rulebook sections, glossary, dice mechanics
 * **SettingsPlugin** → manage user profiles, preferences, content rating
-* **ImportPlugin** → trigger workflows (PDF parse, validate content)
 
 ---
 

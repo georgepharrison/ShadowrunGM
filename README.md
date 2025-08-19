@@ -19,7 +19,6 @@ A modern Game Master assistant for Shadowrun, built with **Blazor WebAssembly**,
 
 * **ShadowrunGM.UI/** → Blazor WebAssembly frontend
 * **ShadowrunGM.API/** → ASP.NET Core backend (CQRS, DDD, Semantic Kernel)
-* **ShadowrunGM.Import/** → PDF parsing + import pipeline
 * **ShadowrunGM.Tests/** → Unit + integration tests
 * **docs/** → Documentation (architecture, design, contributing)
 
