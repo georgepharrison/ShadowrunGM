@@ -1,4 +1,4 @@
-﻿namespace ShadowrunGM.UI.Application.Common.Results;
+﻿namespace ShadowrunGM.API.Application.Common.Results;
 
 public sealed class GuidPropertyValidator<T> : PropertyValidator<T, Guid?, GuidPropertyValidator<T>>
 {

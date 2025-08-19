@@ -1,7 +1,7 @@
-﻿using ShadowrunGM.UI.Application.Common.Results.Rules;
+﻿using ShadowrunGM.API.Application.Common.Results.Rules;
 using System.Linq.Expressions;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public abstract class PropertyValidator<T, TProp, TRule>
     where TRule : PropertyValidator<T, TProp, TRule>

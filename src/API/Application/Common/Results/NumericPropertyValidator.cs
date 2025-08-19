@@ -1,7 +1,7 @@
-﻿using ShadowrunGM.UI.Application.Common.Results.Rules;
+﻿using ShadowrunGM.API.Application.Common.Results.Rules;
 using System.Numerics;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public sealed class NumericPropertyValidator<T, TNumeric> : PropertyValidator<T, TNumeric, NumericPropertyValidator<T, TNumeric>>
     where TNumeric : struct, INumber<TNumeric>

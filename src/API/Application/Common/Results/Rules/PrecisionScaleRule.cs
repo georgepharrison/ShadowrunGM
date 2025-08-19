@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace ShadowrunGM.UI.Application.Common.Results.Rules;
+namespace ShadowrunGM.API.Application.Common.Results.Rules;
 
 public sealed class PrecisionScaleRule<TNumeric>(int precision, int scale) : IRule<TNumeric>
     where TNumeric : struct, INumber<TNumeric>

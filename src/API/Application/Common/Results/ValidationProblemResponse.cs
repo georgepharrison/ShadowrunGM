@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 internal sealed class ValidationProblemResponse
 {

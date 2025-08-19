@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ShadowrunGM.UI.Application.Common.Results.Rules;
+namespace ShadowrunGM.API.Application.Common.Results.Rules;
 
 public partial class EmailRule : IRule<string>
 {

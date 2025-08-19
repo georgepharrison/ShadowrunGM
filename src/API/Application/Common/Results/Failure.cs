@@ -1,6 +1,6 @@
 ﻿using System.Security;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public partial class Result
 {

@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Numerics;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public class ValidationBuilder<T>
 {

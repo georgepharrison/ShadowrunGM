@@ -1,7 +1,7 @@
-﻿using ShadowrunGM.UI.Application.Common.Results.Rules;
+﻿using ShadowrunGM.API.Application.Common.Results.Rules;
 using System.Text.RegularExpressions;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public sealed class StringPropertyValidator<T> : PropertyValidator<T, string, StringPropertyValidator<T>>
 {

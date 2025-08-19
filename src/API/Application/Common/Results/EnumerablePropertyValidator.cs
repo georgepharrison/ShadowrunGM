@@ -1,6 +1,6 @@
-﻿using ShadowrunGM.UI.Application.Common.Results.Rules;
+﻿using ShadowrunGM.API.Application.Common.Results.Rules;
 
-namespace ShadowrunGM.UI.Application.Common.Results;
+namespace ShadowrunGM.API.Application.Common.Results;
 
 public sealed class EnumerablePropertyValidator<T, TItem> : PropertyValidator<T, IEnumerable<TItem>, EnumerablePropertyValidator<T, TItem>>
 {

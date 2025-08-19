@@ -1,4 +1,4 @@
-﻿namespace ShadowrunGM.UI.Application.Common.Results.Rules;
+﻿namespace ShadowrunGM.API.Application.Common.Results.Rules;
 
 public sealed class MaxCountRule<TItem>(int maxCount) : IRule<IEnumerable<TItem>>
 {
