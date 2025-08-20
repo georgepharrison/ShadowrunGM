@@ -20,4 +20,8 @@
     <Folder Include="Workers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ApiSdk\ApiSdk.csproj" />
+  </ItemGroup>
+
 </Project>

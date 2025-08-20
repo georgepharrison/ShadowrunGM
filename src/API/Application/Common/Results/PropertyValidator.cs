@@ -1,4 +1,5 @@
 ﻿using ShadowrunGM.API.Application.Common.Results.Rules;
+using ShadowrunGM.ApiSdk.Common.Results;
 using System.Linq.Expressions;
 
 namespace ShadowrunGM.API.Application.Common.Results;

@@ -1,4 +1,4 @@
-﻿namespace ShadowrunGM.API.Application.Common.Results;
+﻿namespace ShadowrunGM.ApiSdk.Common.Results;
 
 public partial class Result
 {

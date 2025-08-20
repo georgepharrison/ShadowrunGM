@@ -2,7 +2,7 @@
 using System.Security;
 using System.Text.Json.Serialization;
 
-namespace ShadowrunGM.API.Application.Common.Results;
+namespace ShadowrunGM.ApiSdk.Common.Results;
 
 public partial class Result<T> : IResult<T>
 {

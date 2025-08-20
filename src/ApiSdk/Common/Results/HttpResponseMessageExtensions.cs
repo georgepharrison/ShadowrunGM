@@ -4,7 +4,7 @@ using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
-namespace ShadowrunGM.API.Application.Common.Results;
+namespace ShadowrunGM.ApiSdk.Common.Results;
 
 public static class HttpResponseMessageExtensions
 {
