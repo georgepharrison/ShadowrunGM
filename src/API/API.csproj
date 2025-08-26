@@ -3,17 +3,27 @@
   <PropertyGroup>
     <AssemblyName>ShadowrunGM.API</AssemblyName>
     <RootNamespace>ShadowrunGM.API</RootNamespace>
+    <UserSecretsId>8048ed7d-e7b7-4972-98b3-f3bc819adf02</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.63.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.63.0-alpha" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
+    <PackageReference Include="Pgvector.EntityFrameworkCore" Version="0.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Application\Import\" />
     <Folder Include="Domain\" />
-    <Folder Include="Endpoints\" />
-    <Folder Include="Infrastructure\Configurations\" />
     <Folder Include="Infrastructure\Import\" />
     <Folder Include="Infrastructure\Migrations\" />
     <Folder Include="SemanticKernel\" />
