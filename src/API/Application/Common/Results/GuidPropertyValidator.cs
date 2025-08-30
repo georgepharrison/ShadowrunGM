@@ -4,8 +4,8 @@ public sealed class GuidPropertyValidator<T> : PropertyValidator<T, Guid?, GuidP
 {
     #region Internal Constructors
 
-    internal GuidPropertyValidator(ValidationBuilder<T> builder, string propertyName, string displayName, Guid? value)
-        : base(builder, propertyName, displayName, value)
+    internal GuidPropertyValidator(ValidationBuilder<T> builder, string displayName, Guid? value)
+        : base(builder, displayName, value)
     {
     }
 

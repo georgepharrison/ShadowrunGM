@@ -6,8 +6,8 @@ public sealed class EnumerablePropertyValidator<T, TItem> : PropertyValidator<T,
 {
     #region Internal Constructors
 
-    internal EnumerablePropertyValidator(ValidationBuilder<T> builder, string propertyName, string displayName, IEnumerable<TItem> value)
-        : base(builder, propertyName, displayName, value)
+    internal EnumerablePropertyValidator(ValidationBuilder<T> builder, string displayName, IEnumerable<TItem> value)
+        : base(builder, displayName, value)
     {
     }
 

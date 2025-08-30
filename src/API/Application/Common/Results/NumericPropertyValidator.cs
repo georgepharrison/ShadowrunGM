@@ -8,7 +8,8 @@ public sealed class NumericPropertyValidator<T, TNumeric> : PropertyValidator<T,
 {
     #region Internal Constructors
 
-    internal NumericPropertyValidator(ValidationBuilder<T> builder, string propertyName, string displayName, TNumeric value) : base(builder, propertyName, displayName, value)
+    internal NumericPropertyValidator(ValidationBuilder<T> builder, string displayName, TNumeric value)
+        : base(builder, displayName, value)
     {
     }
 

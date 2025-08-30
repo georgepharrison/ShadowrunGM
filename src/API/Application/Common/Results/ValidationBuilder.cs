@@ -27,10 +27,48 @@ public class ValidationBuilder<T>
         _errors.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
 
     public GuidPropertyValidator<T> RuleFor(Expression<Func<T, Guid?>> propertySelector, Guid? value, string? displayName = null) =>
-        CreateValidator(propertySelector, value, displayName, (builder, name, display, val) => new GuidPropertyValidator<T>(builder, name, display, val));
+        CreateValidator(propertySelector, value, displayName, (builder, display, val) => new GuidPropertyValidator<T>(builder, display, val));
 
     public StringPropertyValidator<T> RuleFor(Expression<Func<T, string>> propertySelector, string value, string? displayName = null) =>
-        CreateValidator(propertySelector, value, displayName, (builder, name, display, val) => new StringPropertyValidator<T>(builder, name, display, val));
+        CreateValidator(propertySelector, value, displayName, (builder, display, val) => new StringPropertyValidator<T>(builder, display, val));
+
+    public ValidationBuilder<T> RuleFor<TProp>(Expression<Func<T, TProp>> propertySelector, Result<TProp> result, out TProp? value)
+    {
+        value = result is null
+            ? default
+            : result.Match(
+                onSuccess: successValue => successValue,
+                onError: error =>
+                {
+                    AddError(GetPropertyName(propertySelector), error);
+                    return default!;
+                },
+                onSecurityException: error =>
+                {
+                    AddError(GetPropertyName(propertySelector), error);
+                    return default!;
+                },
+                onOperationCanceledException: error =>
+                {
+                    AddError(GetPropertyName(propertySelector), error);
+                    return default!;
+                },
+                onValidationException: failures =>
+                {
+                    foreach (KeyValuePair<string, string[]> item in failures)
+                    {
+                        if (!_errors.TryGetValue(item.Key, out List<string>? errors))
+                        {
+                            _errors[item.Key] = errors ??= [];
+                        }
+                        errors.AddRange(item.Value);
+                    }
+                    return default!;
+                }
+            );
+
+        return this;
+    }
 
     public NumericPropertyValidator<T, int> RuleFor(Expression<Func<T, int>> propertySelector, int value, string? displayName = null) =>
         CreateNumericValidator(propertySelector, value, displayName);
@@ -51,7 +89,7 @@ public class ValidationBuilder<T>
         CreateNumericValidator(propertySelector, value, displayName);
 
     public EnumerablePropertyValidator<T, TItem> RuleFor<TItem>(Expression<Func<T, IEnumerable<TItem>>> propertySelector, IEnumerable<TItem> value, string? displayName = null) =>
-        CreateValidator(propertySelector, value, displayName, (builder, name, display, val) => new EnumerablePropertyValidator<T, TItem>(builder, name, display, val));
+        CreateValidator(propertySelector, value, displayName, (builder, display, val) => new EnumerablePropertyValidator<T, TItem>(builder, display, val));
 
     #endregion Public Methods
 
@@ -79,17 +117,16 @@ public class ValidationBuilder<T>
             : throw new ArgumentException("Expression must be a property selector");
 
     private NumericPropertyValidator<T, TProp> CreateNumericValidator<TProp>(Expression<Func<T, TProp>> propertySelector, TProp value, string? displayName) where TProp : struct, INumber<TProp> =>
-        CreateValidator(propertySelector, value, displayName, (builder, name, display, val) => new NumericPropertyValidator<T, TProp>(builder, name, display, val));
+        CreateValidator(propertySelector, value, displayName, (builder, display, val) => new NumericPropertyValidator<T, TProp>(builder, display, val));
 
     private TValidator CreateValidator<TValidator, TProp>(
         Expression<Func<T, TProp>> propertySelector,
         TProp value,
         string? displayName,
-        Func<ValidationBuilder<T>, string, string, TProp, TValidator> factory)
+        Func<ValidationBuilder<T>, string, TProp, TValidator> factory)
     {
-        string propertyName = GetPropertyName(propertySelector);
-        string friendlyName = displayName ?? propertyName;
-        return factory(this, propertyName, friendlyName, value);
+        string propertyName = displayName ?? GetPropertyName(propertySelector);
+        return factory(this, propertyName, value);
     }
 
     #endregion Private Methods

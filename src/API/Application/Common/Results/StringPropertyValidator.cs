@@ -7,8 +7,8 @@ public sealed class StringPropertyValidator<T> : PropertyValidator<T, string, St
 {
     #region Internal Constructors
 
-    internal StringPropertyValidator(ValidationBuilder<T> builder, string propertyName, string displayName, string value)
-        : base(builder, propertyName, displayName, value)
+    internal StringPropertyValidator(ValidationBuilder<T> builder, string displayName, string value)
+        : base(builder, displayName, value)
     {
     }
 

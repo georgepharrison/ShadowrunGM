@@ -12,17 +12,15 @@ public abstract class PropertyValidator<T, TProp, TRule>
     private readonly ValidationBuilder<T> _builder;
     private readonly string _displayName;
     private readonly List<(IRule<TProp>? rule, string? customMessage, Func<TProp, bool>? condition)> _pendingRules = [];
-    private readonly string _propertyName;
     private readonly TProp _value;
 
     #endregion Private Members
 
     #region Internal Constructors
 
-    internal PropertyValidator(ValidationBuilder<T> builder, string propertyName, string displayName, TProp value)
+    internal PropertyValidator(ValidationBuilder<T> builder, string displayName, TProp value)
     {
         _builder = builder;
-        _propertyName = propertyName;
         _displayName = displayName;
         _value = value;
     }
@@ -78,6 +76,9 @@ public abstract class PropertyValidator<T, TProp, TRule>
         _pendingRules.Add((new NullRule<TProp>(), null, null));
         return (TRule)this;
     }
+
+    public ValidationBuilder<T> RuleFor<TDifferentProp>(Expression<Func<T, TDifferentProp>> propertySelector, Result<TDifferentProp> result, out TDifferentProp? value) =>
+        _builder.RuleFor(propertySelector, result, out value);
 
     public StringPropertyValidator<T> RuleFor(Expression<Func<T, string>> propertySelector, string value, string? displayName = null)
     {
@@ -200,7 +201,7 @@ public abstract class PropertyValidator<T, TProp, TRule>
                 {
                     string finalMessage = customMessage ?? error;
 
-                    _builder.AddError(_propertyName, finalMessage);
+                    _builder.AddError(_displayName, finalMessage);
                 }
             }
         }

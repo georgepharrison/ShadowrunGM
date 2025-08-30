@@ -14,10 +14,11 @@ public partial class Result : IResult
     private Result(ResultType resultType = ResultType.Success) =>
         ResultType = resultType;
 
-    private Result(string error, ResultType resultType)
+    private Result(string error, ResultType resultType, ResultFailureType resultFailureType)
     {
         Error = error;
         ResultType = resultType;
+        FailureType = resultFailureType;
     }
 
     private Result(string key, string error)
@@ -51,6 +52,51 @@ public partial class Result : IResult
     }
 
     #endregion Private Constructors
+
+    #region Public Methods
+
+    public static Result Combine(params Result[] results)
+    {
+        ArgumentNullException.ThrowIfNull(results);
+
+        Dictionary<string, List<string>> failures = [];
+
+        foreach (Result result in results.Where(r => r.IsFailure))
+        {
+            switch (result.FailureType)
+            {
+                case ResultFailureType.Error:
+                case ResultFailureType.Security:
+                case ResultFailureType.OperationCanceled:
+                    if (!failures.TryGetValue(result.FailureType.ToString(), out List<string>? errors))
+                    {
+                        failures[result.FailureType.ToString()] = errors ??= [];
+                    }
+                    errors.Add(result.Error);
+                    break;
+
+                case ResultFailureType.Validation:
+                    foreach (KeyValuePair<string, string[]> failure in result.Failures)
+                    {
+                        if (!failures.TryGetValue(failure.Key, out List<string>? resultFailures))
+                        {
+                            failures[failure.Key] = resultFailures ??= [];
+                        }
+                        resultFailures.AddRange(failure.Value);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return failures.Count > 0
+            ? Failure(failures.ToDictionary(x => x.Key, x => x.Value.ToArray()))
+            : Success();
+    }
+
+    #endregion Public Methods
 
     #region Internal Methods
 

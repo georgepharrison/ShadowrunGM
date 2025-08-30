@@ -6,8 +6,8 @@ public partial class Result
 {
     #region Public Methods
 
-    public static Result Failure(string error, ResultType resultType = ResultType.Error) =>
-        new(error ?? throw new ArgumentNullException(nameof(error)), resultType);
+    public static Result Failure(string error, ResultType resultType = ResultType.Error, ResultFailureType resultFailureType = ResultFailureType.Error) =>
+        new(error ?? throw new ArgumentNullException(nameof(error)), resultType, resultFailureType);
 
     public static Result Failure(string key, string error) =>
         new(key ?? throw new ArgumentNullException(nameof(key)), error ?? throw new ArgumentNullException(nameof(error)));
