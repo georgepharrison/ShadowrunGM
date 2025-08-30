@@ -268,12 +268,6 @@ The framework includes extensive validation rules:
 
 ## Common Development Commands
 
-### Platform Notes
-- **Development Environment**: Windows 11
-- **Use PowerShell commands**: Not bash/Unix commands
-- **No chmod or Unix file permissions**: Windows handles permissions differently
-- **Use dotnet CLI**: For all .NET operations (build, run, test, migrations)
-
 ### Build and Run
 ```bash
 # Build entire solution

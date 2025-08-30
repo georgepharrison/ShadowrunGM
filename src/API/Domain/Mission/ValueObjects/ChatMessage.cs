@@ -65,6 +65,35 @@ public sealed class ChatMessage : ValueObject
     }
 
     /// <summary>
+    /// Creates a new chat message with specified timestamp (for testing).
+    /// </summary>
+    /// <param name="sender">The message sender.</param>
+    /// <param name="content">The message content.</param>
+    /// <param name="type">The message type.</param>
+    /// <param name="timestamp">The message timestamp.</param>
+    /// <returns>A Result containing the new message or an error.</returns>
+    internal static Result<ChatMessage> CreateForTesting(string sender, string content, MessageType type, DateTime timestamp)
+    {
+        if (string.IsNullOrWhiteSpace(sender))
+            return Result.Failure<ChatMessage>("Message sender is required.");
+
+        if (string.IsNullOrWhiteSpace(content))
+            return Result.Failure<ChatMessage>("Message content is required.");
+
+        if (sender.Length > 50)
+            return Result.Failure<ChatMessage>("Sender name cannot exceed 50 characters.");
+
+        if (content.Length > 5000)
+            return Result.Failure<ChatMessage>("Message content cannot exceed 5000 characters.");
+
+        return Result.Success(new ChatMessage(
+            sender.Trim(),
+            content.Trim(),
+            type,
+            timestamp));
+    }
+
+    /// <summary>
     /// Gets the atomic values that define this value object.
     /// </summary>
     /// <returns>The collection of atomic values.</returns>

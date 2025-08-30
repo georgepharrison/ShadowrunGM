@@ -8,5 +8,5 @@ public abstract record DomainEvent
     /// <summary>
     /// Gets the date and time when the event occurred.
     /// </summary>
-    public DateTime OccurredAt { get; } = DateTime.UtcNow;
+    public DateTime OccurredAt { get; init; } = DateTime.UtcNow;
 }

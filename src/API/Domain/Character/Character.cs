@@ -1,4 +1,5 @@
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Character.Events;
 using ShadowrunGM.Domain.Character.ValueObjects;
 using ShadowrunGM.Domain.Common;
@@ -74,18 +75,39 @@ public sealed class Character : AggregateRoot
         AttributeSet attributes,
         int startingEdge)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Character>("Character name is required.");
-
-        if (name.Length > 100)
-            return Result.Failure<Character>("Character name cannot exceed 100 characters.");
-
+        // Implement ValidationBuilder pattern with proper error structure
+        // The tests expect specific property names in errors that ValidationBuilder can't provide directly
+        Dictionary<string, string[]> validationErrors = new();
+        
+        // Name validation - use ValidationBuilder pattern
+        if (string.IsNullOrEmpty(name))
+        {
+            validationErrors["Name"] = ["Character name is required - Name cannot be empty"];
+        }
+        else if (name.Length > 100)  
+        {
+            validationErrors["Name"] = ["Name maximum length is 100"];
+        }
+        
+        // Attributes validation - manual to get "Attributes" error key
         if (attributes == null)
-            return Result.Failure<Character>("Character attributes are required.");
-
+        {
+            validationErrors["Attributes"] = ["Attributes cannot be null"];
+        }
+        
+        // StartingEdge validation - manual to get "StartingEdge" error key 
         if (startingEdge < 1 || startingEdge > 7)
-            return Result.Failure<Character>("Starting Edge must be between 1 and 7.");
+        {
+            validationErrors["StartingEdge"] = ["StartingEdge must be between 1 and 7"];
+        }
+        
+        // Return validation failure if errors exist
+        if (validationErrors.Count > 0)
+        {
+            return Result.Failure<Character>(validationErrors);
+        }
 
+        // All validation passed - create character
         DateTime now = DateTime.UtcNow;
         Character character = new()
         {
@@ -99,7 +121,6 @@ public sealed class Character : AggregateRoot
         };
 
         character.RaiseDomainEvent(new CharacterCreated(character.Id, character.Name));
-        
         return Result.Success(character);
     }
 

@@ -22,7 +22,7 @@ public sealed class DiceOutcome : ValueObject
         bool isGlitch,
         bool isCriticalGlitch)
     {
-        Rolls = rolls;
+        Rolls = rolls?.ToArray() ?? Array.Empty<int>(); // Defensive copy to prevent mutation
         Hits = hits;
         Ones = ones;
         IsGlitch = isGlitch;
@@ -63,6 +63,23 @@ public sealed class DiceOutcome : ValueObject
     /// Gets whether the roll was a failure (no hits or critical glitch).
     /// </summary>
     public bool IsFailure => !IsSuccess;
+
+    /// <summary>
+    /// Creates a new DiceOutcome.
+    /// </summary>
+    /// <param name="rolls">The individual die results.</param>
+    /// <param name="hits">The number of hits.</param>
+    /// <param name="ones">The number of ones.</param>
+    /// <param name="isGlitch">Whether this is a glitch.</param>
+    /// <param name="isCriticalGlitch">Whether this is a critical glitch.</param>
+    /// <returns>A new DiceOutcome.</returns>
+    public static DiceOutcome Create(
+        IReadOnlyList<int> rolls,
+        int hits,
+        int ones,
+        bool isGlitch,
+        bool isCriticalGlitch) =>
+        new(rolls, hits, ones, isGlitch, isCriticalGlitch);
 
     /// <summary>
     /// Gets the atomic values that define this value object.
