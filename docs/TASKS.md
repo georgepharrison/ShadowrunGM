@@ -9,8 +9,8 @@
 - [x] **TASK-001**: Create solution with bounded contexts (Character, Mission, Campaign, Rules)
 - [x] **TASK-002**: Implement Character aggregate with factory method and Edge value object
 - [x] **TASK-003**: Create AttributeSet and ConditionMonitor value objects with validation
-- [ ] **TASK-004**: Setup CQRS source generators and Result pattern library
-- [ ] **TASK-005**: Define repository interfaces with async operations
+- [x] **TASK-004**: Setup CQRS source generators and Result pattern library
+- [x] **TASK-005**: Define repository interfaces with async operations
 
 ### Day 4-5: Database & Infrastructure
 - [ ] **TASK-006**: Configure Docker Compose for PostgreSQL with pgvector
