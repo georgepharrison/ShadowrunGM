@@ -2,6 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Standard Development Workflow
+
+**All tasks must follow this workflow automatically:**
+
+1. **Analyze First**: Use `@codebase-analyzer` to understand existing patterns before implementing new features
+2. **Test-Driven Development**: Use `tdd-implementation-specialist` and `tdd-test-writer` agents for tests-first approach
+3. **Auto-Documentation**: Run `@documentation-agent` after task completion to update docs and commit changes
+
+**Example implementation flow:**
+```bash
+# Step 1: Understand existing patterns (automatic)
+@codebase-analyzer I need to implement [feature]. Please analyze existing patterns for [relevant area].
+
+# Step 2: TDD Implementation (agents coordinate automatically)
+# Tests written first, then implementation follows
+
+# Step 3: Documentation and commit (automatic)
+@documentation-agent Please analyze the changes I just made and update any necessary documentation, then commit all changes with conventional commits following the project's existing commit patterns.
+```
+
+**This workflow applies to all tasks unless explicitly overridden.**
+
 ## Coding Standards
 
 ### Core Principles
