@@ -1,3 +1,4 @@
+using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -110,30 +111,30 @@ public sealed class AttributeSet : ValueObject
         int charisma)
     {
         if (!IsValidAttributeValue(body))
-            return Result<AttributeSet>.Failure($"Body attribute must be between 1 and 10. Value: {body}");
+            return Result.Failure<AttributeSet>($"Body attribute must be between 1 and 10. Value: {body}");
         
         if (!IsValidAttributeValue(agility))
-            return Result<AttributeSet>.Failure($"Agility attribute must be between 1 and 10. Value: {agility}");
+            return Result.Failure<AttributeSet>($"Agility attribute must be between 1 and 10. Value: {agility}");
         
         if (!IsValidAttributeValue(reaction))
-            return Result<AttributeSet>.Failure($"Reaction attribute must be between 1 and 10. Value: {reaction}");
+            return Result.Failure<AttributeSet>($"Reaction attribute must be between 1 and 10. Value: {reaction}");
         
         if (!IsValidAttributeValue(strength))
-            return Result<AttributeSet>.Failure($"Strength attribute must be between 1 and 10. Value: {strength}");
+            return Result.Failure<AttributeSet>($"Strength attribute must be between 1 and 10. Value: {strength}");
         
         if (!IsValidAttributeValue(willpower))
-            return Result<AttributeSet>.Failure($"Willpower attribute must be between 1 and 10. Value: {willpower}");
+            return Result.Failure<AttributeSet>($"Willpower attribute must be between 1 and 10. Value: {willpower}");
         
         if (!IsValidAttributeValue(logic))
-            return Result<AttributeSet>.Failure($"Logic attribute must be between 1 and 10. Value: {logic}");
+            return Result.Failure<AttributeSet>($"Logic attribute must be between 1 and 10. Value: {logic}");
         
         if (!IsValidAttributeValue(intuition))
-            return Result<AttributeSet>.Failure($"Intuition attribute must be between 1 and 10. Value: {intuition}");
+            return Result.Failure<AttributeSet>($"Intuition attribute must be between 1 and 10. Value: {intuition}");
         
         if (!IsValidAttributeValue(charisma))
-            return Result<AttributeSet>.Failure($"Charisma attribute must be between 1 and 10. Value: {charisma}");
+            return Result.Failure<AttributeSet>($"Charisma attribute must be between 1 and 10. Value: {charisma}");
 
-        return Result<AttributeSet>.Success(new AttributeSet(
+        return Result.Success(new AttributeSet(
             body, agility, reaction, strength, willpower, logic, intuition, charisma));
     }
 
@@ -145,7 +146,7 @@ public sealed class AttributeSet : ValueObject
     public static Result<AttributeSet> Create(Dictionary<string, int> attributes)
     {
         if (attributes == null)
-            return Result<AttributeSet>.Failure("Attributes dictionary cannot be null.");
+            return Result.Failure<AttributeSet>("Attributes dictionary cannot be null.");
 
         if (!TryGetAttribute(attributes, "Body", out int body) ||
             !TryGetAttribute(attributes, "Agility", out int agility) ||
@@ -156,7 +157,7 @@ public sealed class AttributeSet : ValueObject
             !TryGetAttribute(attributes, "Intuition", out int intuition) ||
             !TryGetAttribute(attributes, "Charisma", out int charisma))
         {
-            return Result<AttributeSet>.Failure("Missing required attributes. All attributes (Body, Agility, Reaction, Strength, Willpower, Logic, Intuition, Charisma) must be provided.");
+            return Result.Failure<AttributeSet>("Missing required attributes. All attributes (Body, Agility, Reaction, Strength, Willpower, Logic, Intuition, Charisma) must be provided.");
         }
 
         return Create(body, agility, reaction, strength, willpower, logic, intuition, charisma);

@@ -6,9 +6,9 @@
 ## Week 1: Foundation & Architecture
 
 ### Day 1-3: Project Structure & Domain
-- [ ] **TASK-001**: Create solution with bounded contexts (Character, Mission, Campaign, Rules)
-- [ ] **TASK-002**: Implement Character aggregate with factory method and Edge value object
-- [ ] **TASK-003**: Create AttributeSet and ConditionMonitor value objects with validation
+- [x] **TASK-001**: Create solution with bounded contexts (Character, Mission, Campaign, Rules)
+- [x] **TASK-002**: Implement Character aggregate with factory method and Edge value object
+- [x] **TASK-003**: Create AttributeSet and ConditionMonitor value objects with validation
 - [ ] **TASK-004**: Setup CQRS source generators and Result pattern library
 - [ ] **TASK-005**: Define repository interfaces with async operations
 

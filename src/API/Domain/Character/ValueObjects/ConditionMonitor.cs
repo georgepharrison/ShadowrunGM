@@ -1,3 +1,4 @@
+using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -100,18 +101,18 @@ public sealed class ConditionMonitor : ValueObject
         int stunDamage)
     {
         if (physicalBoxes < 8)
-            return Result<ConditionMonitor>.Failure("Physical boxes must be at least 8.");
+            return Result.Failure<ConditionMonitor>("Physical boxes must be at least 8.");
         
         if (stunBoxes < 8)
-            return Result<ConditionMonitor>.Failure("Stun boxes must be at least 8.");
+            return Result.Failure<ConditionMonitor>("Stun boxes must be at least 8.");
         
         if (physicalDamage < 0)
-            return Result<ConditionMonitor>.Failure("Physical damage cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Physical damage cannot be negative.");
         
         if (stunDamage < 0)
-            return Result<ConditionMonitor>.Failure("Stun damage cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Stun damage cannot be negative.");
 
-        return Result<ConditionMonitor>.Success(
+        return Result.Success(
             new ConditionMonitor(physicalBoxes, stunBoxes, physicalDamage, stunDamage));
     }
 
@@ -123,11 +124,11 @@ public sealed class ConditionMonitor : ValueObject
     public Result<ConditionMonitor> TakePhysicalDamage(int amount)
     {
         if (amount < 0)
-            return Result<ConditionMonitor>.Failure("Damage amount cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Damage amount cannot be negative.");
 
         int newDamage = PhysicalDamage + amount;
         
-        return Result<ConditionMonitor>.Success(
+        return Result.Success(
             new ConditionMonitor(PhysicalBoxes, StunBoxes, newDamage, StunDamage));
     }
 
@@ -139,7 +140,7 @@ public sealed class ConditionMonitor : ValueObject
     public Result<ConditionMonitor> TakeStunDamage(int amount)
     {
         if (amount < 0)
-            return Result<ConditionMonitor>.Failure("Damage amount cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Damage amount cannot be negative.");
 
         int newStunDamage = StunDamage + amount;
         int overflow = 0;
@@ -152,7 +153,7 @@ public sealed class ConditionMonitor : ValueObject
 
         int newPhysicalDamage = PhysicalDamage + overflow;
         
-        return Result<ConditionMonitor>.Success(
+        return Result.Success(
             new ConditionMonitor(PhysicalBoxes, StunBoxes, newPhysicalDamage, newStunDamage));
     }
 
@@ -164,11 +165,11 @@ public sealed class ConditionMonitor : ValueObject
     public Result<ConditionMonitor> HealPhysicalDamage(int amount)
     {
         if (amount < 0)
-            return Result<ConditionMonitor>.Failure("Heal amount cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Heal amount cannot be negative.");
 
         int newDamage = Math.Max(0, PhysicalDamage - amount);
         
-        return Result<ConditionMonitor>.Success(
+        return Result.Success(
             new ConditionMonitor(PhysicalBoxes, StunBoxes, newDamage, StunDamage));
     }
 
@@ -180,11 +181,11 @@ public sealed class ConditionMonitor : ValueObject
     public Result<ConditionMonitor> HealStunDamage(int amount)
     {
         if (amount < 0)
-            return Result<ConditionMonitor>.Failure("Heal amount cannot be negative.");
+            return Result.Failure<ConditionMonitor>("Heal amount cannot be negative.");
 
         int newDamage = Math.Max(0, StunDamage - amount);
         
-        return Result<ConditionMonitor>.Success(
+        return Result.Success(
             new ConditionMonitor(PhysicalBoxes, StunBoxes, PhysicalDamage, newDamage));
     }
 

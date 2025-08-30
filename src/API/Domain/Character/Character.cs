@@ -1,3 +1,4 @@
+using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Character.Events;
 using ShadowrunGM.Domain.Character.ValueObjects;
 using ShadowrunGM.Domain.Common;
@@ -74,16 +75,16 @@ public sealed class Character : AggregateRoot
         int startingEdge)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result<Character>.Failure("Character name is required.");
+            return Result.Failure<Character>("Character name is required.");
 
         if (name.Length > 100)
-            return Result<Character>.Failure("Character name cannot exceed 100 characters.");
+            return Result.Failure<Character>("Character name cannot exceed 100 characters.");
 
         if (attributes == null)
-            return Result<Character>.Failure("Character attributes are required.");
+            return Result.Failure<Character>("Character attributes are required.");
 
         if (startingEdge < 1 || startingEdge > 7)
-            return Result<Character>.Failure("Starting Edge must be between 1 and 7.");
+            return Result.Failure<Character>("Starting Edge must be between 1 and 7.");
 
         DateTime now = DateTime.UtcNow;
         Character character = new()
@@ -99,7 +100,7 @@ public sealed class Character : AggregateRoot
 
         character.RaiseDomainEvent(new CharacterCreated(character.Id, character.Name));
         
-        return Result<Character>.Success(character);
+        return Result.Success(character);
     }
 
     /// <summary>
@@ -120,7 +121,8 @@ public sealed class Character : AggregateRoot
         if (!characterResult.IsSuccess)
             return characterResult;
 
-        Character character = characterResult.Value;
+        if (!characterResult.TryGetValue(out Character? character) || character == null)
+            return characterResult;
 
         if (skills != null)
         {
@@ -128,11 +130,11 @@ public sealed class Character : AggregateRoot
             {
                 Result<Skill> addResult = character.AddSkill(skill.Name, skill.Rating, skill.Specialization);
                 if (!addResult.IsSuccess)
-                    return Result<Character>.Failure($"Failed to add skill {skill.Name}: {addResult.Error}");
+                    return Result.Failure<Character>($"Failed to add skill {skill.Name}: {addResult.Error}");
             }
         }
 
-        return Result<Character>.Success(character);
+        return Result.Success(character);
     }
 
     /// <summary>
@@ -144,19 +146,22 @@ public sealed class Character : AggregateRoot
     public Result<EdgeSpent> SpendEdge(int amount, string purpose)
     {
         if (string.IsNullOrWhiteSpace(purpose))
-            return Result<EdgeSpent>.Failure("Purpose for spending Edge is required.");
+            return Result.Failure<EdgeSpent>("Purpose for spending Edge is required.");
 
         Result<Edge> edgeResult = Edge.Spend(amount);
         if (!edgeResult.IsSuccess)
-            return Result<EdgeSpent>.Failure(edgeResult.Error);
+            return Result.Failure<EdgeSpent>(edgeResult.Error);
 
-        Edge = edgeResult.Value;
+        if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
+            return Result.Failure<EdgeSpent>("Failed to update Edge");
+        
+        Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
         EdgeSpent domainEvent = new(Id, amount, purpose);
         RaiseDomainEvent(domainEvent);
 
-        return Result<EdgeSpent>.Success(domainEvent);
+        return Result.Success(domainEvent);
     }
 
     /// <summary>
@@ -170,7 +175,10 @@ public sealed class Character : AggregateRoot
         if (!edgeResult.IsSuccess)
             return edgeResult;
 
-        Edge = edgeResult.Value;
+        if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
+            return edgeResult;
+        
+        Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
         return edgeResult;
@@ -196,7 +204,10 @@ public sealed class Character : AggregateRoot
         if (!edgeResult.IsSuccess)
             return edgeResult;
 
-        Edge = edgeResult.Value;
+        if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
+            return edgeResult;
+        
+        Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
         return edgeResult;
@@ -213,7 +224,10 @@ public sealed class Character : AggregateRoot
         if (!healthResult.IsSuccess)
             return healthResult;
 
-        Health = healthResult.Value;
+        if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
+            return healthResult;
+        
+        Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
         return healthResult;
@@ -230,7 +244,10 @@ public sealed class Character : AggregateRoot
         if (!healthResult.IsSuccess)
             return healthResult;
 
-        Health = healthResult.Value;
+        if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
+            return healthResult;
+        
+        Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
         return healthResult;
@@ -247,7 +264,10 @@ public sealed class Character : AggregateRoot
         if (!healthResult.IsSuccess)
             return healthResult;
 
-        Health = healthResult.Value;
+        if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
+            return healthResult;
+        
+        Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
         return healthResult;
@@ -264,7 +284,10 @@ public sealed class Character : AggregateRoot
         if (!healthResult.IsSuccess)
             return healthResult;
 
-        Health = healthResult.Value;
+        if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
+            return healthResult;
+        
+        Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
         return healthResult;
@@ -289,13 +312,16 @@ public sealed class Character : AggregateRoot
     public Result<Skill> AddSkill(string name, int rating, string? specialization = null)
     {
         if (_skills.Any(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase)))
-            return Result<Skill>.Failure($"Skill '{name}' already exists.");
+            return Result.Failure<Skill>($"Skill '{name}' already exists.");
 
         Result<Skill> skillResult = Skill.Create(name, rating, specialization);
         if (!skillResult.IsSuccess)
             return skillResult;
 
-        _skills.Add(skillResult.Value);
+        if (!skillResult.TryGetValue(out Skill? newSkill) || newSkill == null)
+            return skillResult;
+        
+        _skills.Add(newSkill);
         ModifiedAt = DateTime.UtcNow;
 
         return skillResult;
@@ -313,14 +339,17 @@ public sealed class Character : AggregateRoot
             string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
         if (skill == null)
-            return Result<Skill>.Failure($"Skill '{name}' not found.");
+            return Result.Failure<Skill>($"Skill '{name}' not found.");
 
         Result<Skill> updatedSkill = skill.WithRating(newRating);
         if (!updatedSkill.IsSuccess)
             return updatedSkill;
 
         int index = _skills.IndexOf(skill);
-        _skills[index] = updatedSkill.Value;
+        if (!updatedSkill.TryGetValue(out Skill? newSkill) || newSkill == null)
+            return updatedSkill;
+        
+        _skills[index] = newSkill;
         ModifiedAt = DateTime.UtcNow;
 
         return updatedSkill;

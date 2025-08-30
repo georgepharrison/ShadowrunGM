@@ -40,13 +40,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   IEnumerable<int> numbers = [1, 2, 3];
   ```
 
+- **Expression-bodied members**: Use for single-line methods, properties, and constructors
+  ```csharp
+  // ✅ Good - Methods
+  public string GetDisplayName() =>
+      $"{FirstName} {LastName}";
+  
+  public int CalculateTotalCost() =>
+      BaseCost + (Modifiers.Sum(m => m.Cost));
+  
+  // ✅ Good - Properties  
+  public bool IsActive =>
+      Status == CharacterStatus.Active && !IsArchived;
+  
+  public string FullDescription =>
+      string.IsNullOrEmpty(Description) 
+          ? Name 
+          : $"{Name}: {Description}";
+  
+  // ✅ Good - Constructors (when simple)
+  public CharacterId(Guid value) =>
+      Value = value != Guid.Empty ? value : throw new ArgumentException("CharacterId cannot be empty");
+  ```
+
 - **Primary constructors**: Use when available and appropriate
   ```csharp
   // ✅ Good for simple services
   public sealed class CharacterService(ICharacterRepository repository, IValidator validator)
   {
-      public async Task<Character> GetCharacterAsync(CharacterId id)
-          => await repository.GetByIdAsync(id);
+      public async Task<Character> GetCharacterAsync(CharacterId id) =>
+          await repository.GetByIdAsync(id);
   }
   ```
 
@@ -71,6 +94,114 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   private readonly List<Contact> _contacts = [];
   private Edge _currentEdge;
   ```
+
+### Result Pattern - CRITICAL REQUIREMENT
+
+**ALWAYS use the existing Result<T> pattern from `ShadowrunGM.ApiSdk.Common.Results` namespace.**
+
+**DO NOT create new Result classes.** The codebase has a comprehensive, production-ready Result pattern implementation that MUST be used for all error handling.
+
+#### Required Using Statements
+```csharp
+using ShadowrunGM.ApiSdk.Common.Results;
+```
+
+#### Success Cases
+```csharp
+// Non-generic success
+public Result ProcessCommand() =>
+    Result.Success();
+
+public Result ProcessWithWarning() =>
+    Result.Success(ResultType.Warning);
+
+// Generic success  
+public Result<Character> GetCharacter() =>
+    Result.Success(character);
+
+public Result<Character> GetCharacterWithInfo() =>
+    Result.Success(character, ResultType.Information);
+```
+
+#### Failure Cases
+```csharp
+// Simple error
+public Result<Character> ValidateCharacter() =>
+    Result.Failure<Character>("Character validation failed");
+
+// Validation errors (use the validation framework)
+public Result<Character> CreateCharacter(CreateCharacterRequest request)
+{
+    ValidationBuilder<Character> builder = new();
+    return builder
+        .RuleFor(x => x.Name, request.Name)
+            .NotEmpty()
+            .MaximumLength(50)
+        .RuleFor(x => x.Age, request.Age)
+            .GreaterThan(0)
+            .LessThan(120)
+        .Build(() => new Character(request.Name, request.Age));
+}
+
+// Security errors
+public Result<SecureData> GetSecureData() =>
+    Result.Failure<SecureData>(new SecurityException("Insufficient permissions"));
+
+// Multiple validation errors
+public Result ProcessMultipleFields()
+{
+    Dictionary<string, string[]> errors = new()
+    {
+        ["Name"] = ["Name is required", "Name must be less than 50 characters"],
+        ["Email"] = ["Invalid email format"]
+    };
+    return Result.Failure(errors);
+}
+```
+
+#### Pattern Matching
+```csharp
+// Simple pattern matching
+return characterResult.Match(
+    onSuccess: character => ProcessCharacter(character),
+    onFailure: error => HandleError(error));
+
+// Full pattern matching
+return characterResult.Match(
+    onSuccess: character => ProcessSuccess(character),
+    onError: error => HandleError(error),
+    onSecurityException: error => HandleSecurity(error), 
+    onValidationException: errors => HandleValidation(errors),
+    onOperationCanceledException: error => HandleCancellation(error));
+```
+
+#### HTTP Response Integration
+```csharp
+// Automatic HTTP response conversion
+HttpResponseMessage response = await httpClient.GetAsync("/api/characters/1");
+Result<Character> result = await response.ToResultFromJsonAsync<Character>();
+
+// With custom JSON options
+Result<Character> result = await response.ToResultFromJsonAsync<Character>(jsonOptions);
+
+// Non-generic result
+Result result = await response.ToResultAsync();
+```
+
+#### Available Validation Rules
+The framework includes extensive validation rules:
+
+**String validation**: `NotEmpty()`, `MinimumLength()`, `MaximumLength()`, `ExactLength()`, `EmailAddress()`, `Matches(regex)`
+
+**Numeric validation**: `GreaterThan()`, `LessThan()`, `GreaterThanOrEqualTo()`, `LessThanOrEqualTo()`, `InclusiveBetween()`, `ExclusiveBetween()`, `PrecisionScale()`
+
+**Collection validation**: `MinCount()`, `MaxCount()`, `Count()`, `Unique()`
+
+**General validation**: `NotNull()`, `Null()`, `Equal()`, `NotEqual()`, `Must()`, `Empty()`
+
+**Conditional validation**: `When()`, `Unless()`
+
+**Custom messages**: `WithMessage("Custom error message")`
 
 ### Documentation Standards
 - **XML documentation on ALL public members**: Methods, properties, classes, interfaces
@@ -136,6 +267,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Security considerations
 
 ## Common Development Commands
+
+### Platform Notes
+- **Development Environment**: Windows 11
+- **Use PowerShell commands**: Not bash/Unix commands
+- **No chmod or Unix file permissions**: Windows handles permissions differently
+- **Use dotnet CLI**: For all .NET operations (build, run, test, migrations)
 
 ### Build and Run
 ```bash

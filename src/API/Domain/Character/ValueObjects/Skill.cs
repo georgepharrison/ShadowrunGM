@@ -1,3 +1,4 @@
+using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -54,18 +55,18 @@ public sealed class Skill : ValueObject
     public static Result<Skill> Create(string name, int rating, string? specialization = null)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result<Skill>.Failure("Skill name is required.");
+            return Result.Failure<Skill>("Skill name is required.");
 
         if (name.Length > 50)
-            return Result<Skill>.Failure("Skill name cannot exceed 50 characters.");
+            return Result.Failure<Skill>("Skill name cannot exceed 50 characters.");
 
         if (rating < 0 || rating > 12)
-            return Result<Skill>.Failure("Skill rating must be between 0 and 12.");
+            return Result.Failure<Skill>("Skill rating must be between 0 and 12.");
 
         if (!string.IsNullOrWhiteSpace(specialization) && specialization.Length > 50)
-            return Result<Skill>.Failure("Specialization cannot exceed 50 characters.");
+            return Result.Failure<Skill>("Specialization cannot exceed 50 characters.");
 
-        return Result<Skill>.Success(new Skill(
+        return Result.Success(new Skill(
             name.Trim(),
             rating,
             string.IsNullOrWhiteSpace(specialization) ? null : specialization.Trim()));

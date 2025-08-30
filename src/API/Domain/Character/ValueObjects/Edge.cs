@@ -1,3 +1,4 @@
+using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -71,12 +72,12 @@ public sealed class Edge : ValueObject
     public Result<Edge> Spend(int amount)
     {
         if (amount <= 0)
-            return Result<Edge>.Failure("Spend amount must be positive.");
+            return Result.Failure<Edge>("Spend amount must be positive.");
 
         if (amount > Current)
-            return Result<Edge>.Failure($"Cannot spend {amount} Edge. Only {Current} available.");
+            return Result.Failure<Edge>($"Cannot spend {amount} Edge. Only {Current} available.");
 
-        return Result<Edge>.Success(new Edge(Current - amount, Max));
+        return Result.Success(new Edge(Current - amount, Max));
     }
 
     /// <summary>
@@ -87,10 +88,10 @@ public sealed class Edge : ValueObject
     public Result<Edge> Regain(int amount)
     {
         if (amount <= 0)
-            return Result<Edge>.Failure("Regain amount must be positive.");
+            return Result.Failure<Edge>("Regain amount must be positive.");
 
         int newCurrent = Math.Min(Current + amount, Max);
-        return Result<Edge>.Success(new Edge(newCurrent, Max));
+        return Result.Success(new Edge(newCurrent, Max));
     }
 
     /// <summary>
@@ -110,17 +111,17 @@ public sealed class Edge : ValueObject
     public Result<Edge> Burn(int amount = 1)
     {
         if (amount <= 0)
-            return Result<Edge>.Failure("Burn amount must be positive.");
+            return Result.Failure<Edge>("Burn amount must be positive.");
 
         if (amount > Max)
-            return Result<Edge>.Failure($"Cannot burn {amount} Edge. Maximum is only {Max}.");
+            return Result.Failure<Edge>($"Cannot burn {amount} Edge. Maximum is only {Max}.");
 
         int newMax = Max - amount;
         if (newMax < 1)
-            return Result<Edge>.Failure("Cannot burn Edge below 1.");
+            return Result.Failure<Edge>("Cannot burn Edge below 1.");
 
         int newCurrent = Math.Min(Current, newMax);
-        return Result<Edge>.Success(new Edge(newCurrent, newMax));
+        return Result.Success(new Edge(newCurrent, newMax));
     }
 
     /// <summary>
