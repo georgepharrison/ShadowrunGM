@@ -1,4 +1,5 @@
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -54,22 +55,27 @@ public sealed class Skill : ValueObject
     /// <returns>A Result containing the new Skill or an error.</returns>
     public static Result<Skill> Create(string name, int rating, string? specialization = null)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Skill>("Skill name is required.");
+        ValidationBuilder<Skill> builder = new();
 
-        if (name.Length > 50)
-            return Result.Failure<Skill>("Skill name cannot exceed 50 characters.");
-
-        if (rating < 0 || rating > 12)
-            return Result.Failure<Skill>("Skill rating must be between 0 and 12.");
-
+        // Manual validation for specialization (since ValidationBuilder doesn't handle conditional validation easily)
         if (!string.IsNullOrWhiteSpace(specialization) && specialization.Length > 50)
-            return Result.Failure<Skill>("Specialization cannot exceed 50 characters.");
+        {
+            builder.AddError("Specialization", "Specialization cannot exceed 50 characters.");
+        }
 
-        return Result.Success(new Skill(
-            name.Trim(),
-            rating,
-            string.IsNullOrWhiteSpace(specialization) ? null : specialization.Trim()));
+        return builder
+            .RuleFor(x => x.Name, name, "Skill name")
+                .NotEmpty()
+                .WithMessage("Skill name is required")
+                .MaximumLength(50)
+                .WithMessage("Skill name cannot exceed 50 characters")
+            .RuleFor(x => x.Rating, rating, "Skill rating")
+                .InclusiveBetween(0, 12)
+                .WithMessage("Skill rating must be between 0 and 12")
+            .Build(() => new Skill(
+                name.Trim(),
+                rating,
+                string.IsNullOrWhiteSpace(specialization) ? null : specialization.Trim()));
     }
 
     /// <summary>

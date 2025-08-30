@@ -1,4 +1,5 @@
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Mission;
@@ -45,23 +46,7 @@ public sealed class ChatMessage : ValueObject
     /// <returns>A Result containing the new message or an error.</returns>
     public static Result<ChatMessage> Create(string sender, string content, MessageType type)
     {
-        if (string.IsNullOrWhiteSpace(sender))
-            return Result.Failure<ChatMessage>("Message sender is required.");
-
-        if (string.IsNullOrWhiteSpace(content))
-            return Result.Failure<ChatMessage>("Message content is required.");
-
-        if (sender.Length > 50)
-            return Result.Failure<ChatMessage>("Sender name cannot exceed 50 characters.");
-
-        if (content.Length > 5000)
-            return Result.Failure<ChatMessage>("Message content cannot exceed 5000 characters.");
-
-        return Result.Success(new ChatMessage(
-            sender.Trim(),
-            content.Trim(),
-            type,
-            DateTime.UtcNow));
+        return ValidateAndCreate(sender, content, type, DateTime.UtcNow);
     }
 
     /// <summary>
@@ -74,23 +59,32 @@ public sealed class ChatMessage : ValueObject
     /// <returns>A Result containing the new message or an error.</returns>
     internal static Result<ChatMessage> CreateForTesting(string sender, string content, MessageType type, DateTime timestamp)
     {
-        if (string.IsNullOrWhiteSpace(sender))
-            return Result.Failure<ChatMessage>("Message sender is required.");
+        return ValidateAndCreate(sender, content, type, timestamp);
+    }
 
-        if (string.IsNullOrWhiteSpace(content))
-            return Result.Failure<ChatMessage>("Message content is required.");
+    /// <summary>
+    /// Validates the input and creates a new chat message.
+    /// </summary>
+    private static Result<ChatMessage> ValidateAndCreate(string sender, string content, MessageType type, DateTime timestamp)
+    {
+        ValidationBuilder<ChatMessage> builder = new();
 
-        if (sender.Length > 50)
-            return Result.Failure<ChatMessage>("Sender name cannot exceed 50 characters.");
-
-        if (content.Length > 5000)
-            return Result.Failure<ChatMessage>("Message content cannot exceed 5000 characters.");
-
-        return Result.Success(new ChatMessage(
-            sender.Trim(),
-            content.Trim(),
-            type,
-            timestamp));
+        return builder
+            .RuleFor(x => x.Sender, sender, "Message sender")
+                .NotEmpty()
+                .WithMessage("Message sender is required")
+                .MaximumLength(50)
+                .WithMessage("Sender name cannot exceed 50 characters")
+            .RuleFor(x => x.Content, content, "Message content")
+                .NotEmpty()
+                .WithMessage("Message content is required")
+                .MaximumLength(5000)
+                .WithMessage("Message content cannot exceed 5000 characters")
+            .Build(() => new ChatMessage(
+                sender.Trim(),
+                content.Trim(),
+                type,
+                timestamp));
     }
 
     /// <summary>

@@ -75,39 +75,34 @@ public sealed class Character : AggregateRoot
         AttributeSet attributes,
         int startingEdge)
     {
-        // Implement ValidationBuilder pattern with proper error structure
-        // The tests expect specific property names in errors that ValidationBuilder can't provide directly
-        Dictionary<string, string[]> validationErrors = new();
+        ValidationBuilder<Character> builder = new();
         
-        // Name validation - use ValidationBuilder pattern
-        if (string.IsNullOrEmpty(name))
+        // Add manual validations first (since ValidationBuilder doesn't support all types)
+        if (attributes is null)
         {
-            validationErrors["Name"] = ["Character name is required - Name cannot be empty"];
-        }
-        else if (name.Length > 100)  
-        {
-            validationErrors["Name"] = ["Name maximum length is 100"];
+            builder.AddError("Attributes", "Attributes cannot be null");
         }
         
-        // Attributes validation - manual to get "Attributes" error key
-        if (attributes == null)
-        {
-            validationErrors["Attributes"] = ["Attributes cannot be null"];
-        }
-        
-        // StartingEdge validation - manual to get "StartingEdge" error key 
         if (startingEdge < 1 || startingEdge > 7)
         {
-            validationErrors["StartingEdge"] = ["StartingEdge must be between 1 and 7"];
-        }
-        
-        // Return validation failure if errors exist
-        if (validationErrors.Count > 0)
-        {
-            return Result.Failure<Character>(validationErrors);
+            builder.AddError("StartingEdge", "StartingEdge must be between 1 and 7 (inclusive)");
         }
 
-        // All validation passed - create character
+        // Use ValidationBuilder fluent API for string validation  
+        return builder
+            .RuleFor(x => x.Name, name, "Character name")
+                .NotEmpty()
+                .WithMessage("Character name is required - Name cannot be empty")
+                .MaximumLength(100)
+                .WithMessage("Name maximum length is 100")
+            .Build(() => CreateCharacterInstance(name, attributes!, startingEdge));
+    }
+
+    /// <summary>
+    /// Factory method for creating the character instance after validation passes.
+    /// </summary>
+    private static Character CreateCharacterInstance(string name, AttributeSet attributes, int startingEdge)
+    {
         DateTime now = DateTime.UtcNow;
         Character character = new()
         {
@@ -121,7 +116,7 @@ public sealed class Character : AggregateRoot
         };
 
         character.RaiseDomainEvent(new CharacterCreated(character.Id, character.Name));
-        return Result.Success(character);
+        return character;
     }
 
     /// <summary>

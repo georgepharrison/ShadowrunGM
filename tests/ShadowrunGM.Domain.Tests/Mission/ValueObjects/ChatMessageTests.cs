@@ -141,7 +141,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message sender is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Sender");
+            result.Failures["Sender"][0].ShouldBe("Message sender is required");
         }
 
         [Fact]
@@ -156,7 +158,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message sender is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Sender");
+            result.Failures["Sender"][0].ShouldBe("Message sender is required");
         }
 
         [Fact]
@@ -171,7 +175,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message sender is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Sender");
+            result.Failures["Sender"][0].ShouldBe("Message sender is required");
         }
 
         [Fact]
@@ -203,7 +209,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Sender name cannot exceed 50 characters.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Sender");
+            result.Failures["Sender"][0].ShouldBe("Sender name cannot exceed 50 characters");
         }
 
         [Theory]
@@ -241,7 +249,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message content is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Content");
+            result.Failures["Content"][0].ShouldBe("Message content is required");
         }
 
         [Fact]
@@ -256,7 +266,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message content is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Content");
+            result.Failures["Content"][0].ShouldBe("Message content is required");
         }
 
         [Fact]
@@ -271,7 +283,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message content is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Content");
+            result.Failures["Content"][0].ShouldBe("Message content is required");
         }
 
         [Fact]
@@ -303,7 +317,9 @@ public sealed class ChatMessageTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message content cannot exceed 5000 characters.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Content");
+            result.Failures["Content"][0].ShouldBe("Message content cannot exceed 5000 characters");
         }
 
         [Fact]
@@ -592,7 +608,7 @@ public sealed class ChatMessageTests
         }
 
         [Fact]
-        public void Create_WithMultipleValidationErrors_ShouldReturnFirstError()
+        public void Create_WithMultipleValidationErrors_ShouldReturnAllErrors()
         {
             // Arrange - Both sender and content are invalid
             string emptySender = string.Empty;
@@ -601,9 +617,13 @@ public sealed class ChatMessageTests
             // Act
             Result<ChatMessage> result = ChatMessage.Create(emptySender, emptyContent, MessageType.Player);
 
-            // Assert - Should return the first validation error encountered
+            // Assert - ValidationBuilder should accumulate all validation errors
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Message sender is required.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("Sender");
+            result.Failures.ShouldContainKey("Content");
+            result.Failures["Sender"][0].ShouldBe("Message sender is required");
+            result.Failures["Content"][0].ShouldBe("Message content is required");
         }
 
         [Fact]
