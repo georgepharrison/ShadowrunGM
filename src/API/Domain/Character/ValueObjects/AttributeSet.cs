@@ -1,4 +1,5 @@
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -143,60 +144,74 @@ public sealed class AttributeSet : ValueObject
         int willpower,
         int logic,
         int intuition,
-        int charisma)
-    {
-        if (!IsValidAttributeValue(body))
-            return Result.Failure<AttributeSet>($"Body attribute must be between 1 and 10. Value: {body}");
-        
-        if (!IsValidAttributeValue(agility))
-            return Result.Failure<AttributeSet>($"Agility attribute must be between 1 and 10. Value: {agility}");
-        
-        if (!IsValidAttributeValue(reaction))
-            return Result.Failure<AttributeSet>($"Reaction attribute must be between 1 and 10. Value: {reaction}");
-        
-        if (!IsValidAttributeValue(strength))
-            return Result.Failure<AttributeSet>($"Strength attribute must be between 1 and 10. Value: {strength}");
-        
-        if (!IsValidAttributeValue(willpower))
-            return Result.Failure<AttributeSet>($"Willpower attribute must be between 1 and 10. Value: {willpower}");
-        
-        if (!IsValidAttributeValue(logic))
-            return Result.Failure<AttributeSet>($"Logic attribute must be between 1 and 10. Value: {logic}");
-        
-        if (!IsValidAttributeValue(intuition))
-            return Result.Failure<AttributeSet>($"Intuition attribute must be between 1 and 10. Value: {intuition}");
-        
-        if (!IsValidAttributeValue(charisma))
-            return Result.Failure<AttributeSet>($"Charisma attribute must be between 1 and 10. Value: {charisma}");
-
-        return Result.Success(new AttributeSet(
-            body, agility, reaction, strength, willpower, logic, intuition, charisma));
-    }
+        int charisma) =>
+        new ValidationBuilder<AttributeSet>()
+            .RuleFor(x => x.Body, body)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Body attribute must be between 1 and 10")
+            .RuleFor(x => x.Agility, agility) 
+                .InclusiveBetween(1, 10)
+                .WithMessage("Agility attribute must be between 1 and 10")
+            .RuleFor(x => x.Reaction, reaction)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Reaction attribute must be between 1 and 10")
+            .RuleFor(x => x.Strength, strength)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Strength attribute must be between 1 and 10")
+            .RuleFor(x => x.Willpower, willpower)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Willpower attribute must be between 1 and 10")
+            .RuleFor(x => x.Logic, logic)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Logic attribute must be between 1 and 10")
+            .RuleFor(x => x.Intuition, intuition)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Intuition attribute must be between 1 and 10")
+            .RuleFor(x => x.Charisma, charisma)
+                .InclusiveBetween(1, 10)
+                .WithMessage("Charisma attribute must be between 1 and 10")
+            .Build(() => new AttributeSet(body, agility, reaction, strength, willpower, logic, intuition, charisma));
 
     /// <summary>
     /// Creates a new AttributeSet from a dictionary of attribute values.
     /// </summary>
     /// <param name="attributes">Dictionary mapping attribute names to values.</param>
     /// <returns>A Result containing the new AttributeSet or an error.</returns>
-    public static Result<AttributeSet> Create(Dictionary<string, int> attributes)
-    {
-        if (attributes == null)
-            return Result.Failure<AttributeSet>("Attributes dictionary cannot be null.");
-
-        if (!TryGetAttribute(attributes, "Body", out int body) ||
-            !TryGetAttribute(attributes, "Agility", out int agility) ||
-            !TryGetAttribute(attributes, "Reaction", out int reaction) ||
-            !TryGetAttribute(attributes, "Strength", out int strength) ||
-            !TryGetAttribute(attributes, "Willpower", out int willpower) ||
-            !TryGetAttribute(attributes, "Logic", out int logic) ||
-            !TryGetAttribute(attributes, "Intuition", out int intuition) ||
-            !TryGetAttribute(attributes, "Charisma", out int charisma))
-        {
-            return Result.Failure<AttributeSet>("Missing required attributes. All attributes (Body, Agility, Reaction, Strength, Willpower, Logic, Intuition, Charisma) must be provided.");
-        }
-
-        return Create(body, agility, reaction, strength, willpower, logic, intuition, charisma);
-    }
+    public static Result<AttributeSet> Create(Dictionary<string, int> attributes) =>
+        new ValidationBuilder<AttributeSet>()
+            .RuleFor(x => x.Body, GetAttributeValue(attributes, "Body"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Body attribute must be between 1 and 10")
+            .RuleFor(x => x.Agility, GetAttributeValue(attributes, "Agility"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Agility attribute must be between 1 and 10")
+            .RuleFor(x => x.Reaction, GetAttributeValue(attributes, "Reaction"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Reaction attribute must be between 1 and 10")
+            .RuleFor(x => x.Strength, GetAttributeValue(attributes, "Strength"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Strength attribute must be between 1 and 10")
+            .RuleFor(x => x.Willpower, GetAttributeValue(attributes, "Willpower"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Willpower attribute must be between 1 and 10")
+            .RuleFor(x => x.Logic, GetAttributeValue(attributes, "Logic"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Logic attribute must be between 1 and 10")
+            .RuleFor(x => x.Intuition, GetAttributeValue(attributes, "Intuition"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Intuition attribute must be between 1 and 10")
+            .RuleFor(x => x.Charisma, GetAttributeValue(attributes, "Charisma"))
+                .InclusiveBetween(1, 10)
+                .WithMessage("Charisma attribute must be between 1 and 10")
+            .Build(() => new AttributeSet(
+                GetAttributeValue(attributes, "Body"),
+                GetAttributeValue(attributes, "Agility"),
+                GetAttributeValue(attributes, "Reaction"),
+                GetAttributeValue(attributes, "Strength"),
+                GetAttributeValue(attributes, "Willpower"),
+                GetAttributeValue(attributes, "Logic"),
+                GetAttributeValue(attributes, "Intuition"),
+                GetAttributeValue(attributes, "Charisma")));
 
     /// <summary>
     /// Creates a new AttributeSet bypassing validation for testing purposes.
@@ -235,6 +250,17 @@ public sealed class AttributeSet : ValueObject
             }
         }
         return false;
+    }
+
+    private static int GetAttributeValue(Dictionary<string, int>? attributes, string name)
+    {
+        if (attributes == null)
+            throw new ArgumentNullException(nameof(attributes), "Attributes dictionary cannot be null");
+
+        if (TryGetAttribute(attributes, name, out int value))
+            return value;
+            
+        throw new ArgumentException($"{name} attribute is required", name);
     }
 
     private static bool IsValidAttributeValue(int value)

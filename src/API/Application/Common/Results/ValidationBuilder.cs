@@ -91,6 +91,9 @@ public class ValidationBuilder<T>
     public EnumerablePropertyValidator<T, TItem> RuleFor<TItem>(Expression<Func<T, IEnumerable<TItem>>> propertySelector, IEnumerable<TItem> value, string? displayName = null) =>
         CreateValidator(propertySelector, value, displayName, (builder, display, val) => new EnumerablePropertyValidator<T, TItem>(builder, display, val));
 
+    public GenericPropertyValidator<T, TProp> RuleFor<TProp>(Expression<Func<T, TProp>> propertySelector, TProp value, string? displayName = null) =>
+        CreateValidator(propertySelector, value, displayName, (builder, display, val) => new GenericPropertyValidator<T, TProp>(builder, display, val));
+
     #endregion Public Methods
 
     #region Internal Methods

@@ -67,41 +67,63 @@ public sealed class Character : AggregateRoot
     /// Creates a new character with the specified attributes.
     /// </summary>
     /// <param name="name">The character's name.</param>
-    /// <param name="attributes">The character's attributes.</param>
+    /// <param name="body">The Body attribute value.</param>
+    /// <param name="agility">The Agility attribute value.</param>
+    /// <param name="reaction">The Reaction attribute value.</param>
+    /// <param name="strength">The Strength attribute value.</param>
+    /// <param name="willpower">The Willpower attribute value.</param>
+    /// <param name="logic">The Logic attribute value.</param>
+    /// <param name="intuition">The Intuition attribute value.</param>
+    /// <param name="charisma">The Charisma attribute value.</param>
     /// <param name="startingEdge">The character's starting Edge value.</param>
     /// <returns>A Result containing the new character or an error.</returns>
     public static Result<Character> Create(
         string name,
-        AttributeSet attributes,
-        int startingEdge)
-    {
-        ValidationBuilder<Character> builder = new();
-        
-        // Add manual validations first (since ValidationBuilder doesn't support all types)
-        if (attributes is null)
-        {
-            builder.AddError("Attributes", "Attributes cannot be null");
-        }
-        
-        if (startingEdge < 1 || startingEdge > 7)
-        {
-            builder.AddError("StartingEdge", "StartingEdge must be between 1 and 7 (inclusive)");
-        }
-
-        // Use ValidationBuilder fluent API for string validation  
-        return builder
-            .RuleFor(x => x.Name, name, "Character name")
+        int body,
+        int agility,
+        int reaction,
+        int strength,
+        int willpower,
+        int logic,
+        int intuition,
+        int charisma,
+        int startingEdge) =>
+        new ValidationBuilder<Character>()
+            .RuleFor(x => x.Name, name)
                 .NotEmpty()
-                .WithMessage("Character name is required - Name cannot be empty")
+                .WithMessage("Character name is required")
                 .MaximumLength(100)
                 .WithMessage("Name maximum length is 100")
-            .Build(() => CreateCharacterInstance(name, attributes!, startingEdge));
-    }
+            .RuleFor(x => x.Attributes, AttributeSet.Create(body, agility, reaction, strength, willpower, logic, intuition, charisma), out AttributeSet? validatedAttributes)
+            .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
+            .Build(() => CreateCharacterInstanceFromResults(name, validatedAttributes!, validatedEdge!));
 
     /// <summary>
-    /// Factory method for creating the character instance after validation passes.
+    /// Creates a new character with the specified attributes from a dictionary.
     /// </summary>
-    private static Character CreateCharacterInstance(string name, AttributeSet attributes, int startingEdge)
+    /// <param name="name">The character's name.</param>
+    /// <param name="attributes">Dictionary of attribute values.</param>
+    /// <param name="startingEdge">The character's starting Edge value.</param>
+    /// <returns>A Result containing the new character or an error.</returns>
+    public static Result<Character> Create(
+        string name,
+        Dictionary<string, int> attributes,
+        int startingEdge) =>
+        new ValidationBuilder<Character>()
+            .RuleFor(x => x.Name, name)
+                .NotEmpty()
+                .WithMessage("Character name is required")
+                .MaximumLength(100)
+                .WithMessage("Name maximum length is 100")
+            .RuleFor(x => x.Attributes, AttributeSet.Create(attributes), out AttributeSet? validatedAttributes)
+            .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
+            .Build(() => CreateCharacterInstanceFromResults(name, validatedAttributes!, validatedEdge!));
+
+
+    /// <summary>
+    /// Factory method for creating the character instance from validated value objects.
+    /// </summary>
+    private static Character CreateCharacterInstanceFromResults(string name, AttributeSet attributes, Edge edge)
     {
         DateTime now = DateTime.UtcNow;
         Character character = new()
@@ -109,7 +131,7 @@ public sealed class Character : AggregateRoot
             Id = CharacterId.New(),
             Name = name.Trim(),
             Attributes = attributes,
-            Edge = Edge.Create(startingEdge),
+            Edge = edge,
             Health = ConditionMonitor.ForAttributes(attributes),
             CreatedAt = now,
             ModifiedAt = now
@@ -120,10 +142,10 @@ public sealed class Character : AggregateRoot
     }
 
     /// <summary>
-    /// Creates a new character with skills.
+    /// Creates a new character with skills from pre-validated AttributeSet.
     /// </summary>
     /// <param name="name">The character's name.</param>
-    /// <param name="attributes">The character's attributes.</param>
+    /// <param name="attributes">The character's attributes (already validated).</param>
     /// <param name="startingEdge">The character's starting Edge value.</param>
     /// <param name="skills">The character's initial skills.</param>
     /// <returns>A Result containing the new character or an error.</returns>
@@ -131,26 +153,35 @@ public sealed class Character : AggregateRoot
         string name,
         AttributeSet attributes,
         int startingEdge,
-        IEnumerable<Skill> skills)
+        IEnumerable<Skill> skills) =>
+        new ValidationBuilder<Character>()
+            .RuleFor(x => x.Name, name)
+                .NotEmpty()
+                .WithMessage("Character name is required")
+                .MaximumLength(100)
+                .WithMessage("Name maximum length is 100")
+            .RuleFor(x => x.Attributes, Result.Success(attributes ?? throw new ArgumentNullException(nameof(attributes))), out AttributeSet? validatedAttributes)
+            .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
+            .Build(() => CreateCharacterWithSkills(name, validatedAttributes!, validatedEdge!, skills));
+
+    /// <summary>
+    /// Factory method for creating character with skills from validated objects.
+    /// </summary>
+    private static Character CreateCharacterWithSkills(string name, AttributeSet attributes, Edge edge, IEnumerable<Skill> skills)
     {
-        Result<Character> characterResult = Create(name, attributes, startingEdge);
-        if (!characterResult.IsSuccess)
-            return characterResult;
-
-        if (!characterResult.TryGetValue(out Character? character) || character == null)
-            return characterResult;
-
+        Character character = CreateCharacterInstanceFromResults(name, attributes, edge);
+        
         if (skills != null)
         {
             foreach (Skill skill in skills)
             {
                 Result<Skill> addResult = character.AddSkill(skill.Name, skill.Rating, skill.Specialization);
                 if (!addResult.IsSuccess)
-                    return Result.Failure<Character>($"Failed to add skill {skill.Name}: {addResult.Error}");
+                    throw new InvalidOperationException($"Failed to add skill {skill.Name}: {addResult.Error}");
             }
         }
 
-        return Result.Success(character);
+        return character;
     }
 
     /// <summary>

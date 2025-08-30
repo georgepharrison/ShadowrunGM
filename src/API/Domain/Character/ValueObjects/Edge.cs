@@ -47,10 +47,13 @@ public sealed class Edge : ValueObject
     /// Creates a new Edge value object.
     /// </summary>
     /// <param name="startingEdge">The starting Edge value (both current and max).</param>
-    /// <returns>A new Edge instance.</returns>
-    public static Edge Create(int startingEdge)
+    /// <returns>A Result containing a new Edge instance or validation errors.</returns>
+    public static Result<Edge> Create(int startingEdge)
     {
-        return new Edge(startingEdge, startingEdge);
+        if (startingEdge < 1 || startingEdge > 7)
+            return Result.Failure<Edge>("Edge must be between 1 and 7 (inclusive)");
+
+        return Result.Success(new Edge(startingEdge, startingEdge));
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
@@ -98,23 +99,21 @@ public sealed class ConditionMonitor : ValueObject
         int physicalBoxes,
         int stunBoxes,
         int physicalDamage,
-        int stunDamage)
-    {
-        if (physicalBoxes < 8)
-            return Result.Failure<ConditionMonitor>("Physical boxes must be at least 8.");
-        
-        if (stunBoxes < 8)
-            return Result.Failure<ConditionMonitor>("Stun boxes must be at least 8.");
-        
-        if (physicalDamage < 0)
-            return Result.Failure<ConditionMonitor>("Physical damage cannot be negative.");
-        
-        if (stunDamage < 0)
-            return Result.Failure<ConditionMonitor>("Stun damage cannot be negative.");
-
-        return Result.Success(
-            new ConditionMonitor(physicalBoxes, stunBoxes, physicalDamage, stunDamage));
-    }
+        int stunDamage) =>
+        new ValidationBuilder<ConditionMonitor>()
+            .RuleFor(x => x.PhysicalBoxes, physicalBoxes)
+                .GreaterThanOrEqualTo(8)
+                .WithMessage("Physical boxes must be at least 8")
+            .RuleFor(x => x.StunBoxes, stunBoxes)
+                .GreaterThanOrEqualTo(8)
+                .WithMessage("Stun boxes must be at least 8")
+            .RuleFor(x => x.PhysicalDamage, physicalDamage)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Physical damage cannot be negative")
+            .RuleFor(x => x.StunDamage, stunDamage)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Stun damage cannot be negative")
+            .Build(() => new ConditionMonitor(physicalBoxes, stunBoxes, physicalDamage, stunDamage));
 
     /// <summary>
     /// Takes Physical damage.
