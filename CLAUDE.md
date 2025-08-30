@@ -8,7 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 1. **Analyze First**: Use `@codebase-analyzer` to understand existing patterns before implementing new features
 2. **Test-Driven Development**: Use `tdd-implementation-specialist` and `tdd-test-writer` agents for tests-first approach
-3. **Auto-Documentation**: Run `@documentation-agent` after task completion to update docs and commit changes
+3. **Mark Tasks Complete**: Update `docs/TASKS.md` to mark completed tasks with `[x]`
+4. **Auto-Documentation**: Run `@documentation-agent` after task completion to update docs and commit changes
 
 **Example implementation flow:**
 ```bash
@@ -18,9 +19,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Step 2: TDD Implementation (agents coordinate automatically)
 # Tests written first, then implementation follows
 
-# Step 3: Documentation and commit (automatic)
+# Step 3: Mark tasks complete in TASKS.md (CRITICAL STEP)
+# Update [ ] to [x] for completed tasks in docs/TASKS.md
+
+# Step 4: Documentation and commit (automatic)
 @documentation-agent Please analyze the changes I just made and update any necessary documentation, then commit all changes with conventional commits following the project's existing commit patterns.
 ```
+
+**CRITICAL: Always update docs/TASKS.md task checkboxes when completing tasks. This is required for proper project tracking.**
 
 **This workflow applies to all tasks unless explicitly overridden.**
 

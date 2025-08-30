@@ -42,6 +42,11 @@ When analyzing a codebase, you will:
 - Suggest approaches that align with established architectural decisions
 - Highlight potential conflicts or areas requiring careful integration
 
+**6. Task Tracking Reminder**
+- Always remind the implementation team to update docs/TASKS.md with [x] for completed tasks
+- This is critical for proper project tracking and should not be forgotten
+- Emphasize this requirement in implementation recommendations
+
 **Output Structure:**
 Provide your analysis in this structured format:
 
@@ -80,6 +85,7 @@ Provide your analysis in this structured format:
 - Existing code examples to use as templates
 - Gaps that need to be filled
 - Potential integration points and dependencies
+- **CRITICAL: Remember to update docs/TASKS.md with [x] for completed tasks**
 
 **CODE EXAMPLES**
 - Relevant snippets showing established patterns
@@ -89,3 +95,5 @@ Provide your analysis in this structured format:
 Always focus on actionable insights that will help developers implement new features consistently with existing patterns. When you identify gaps or inconsistencies, provide specific recommendations for resolution. Include concrete code examples from the existing codebase to illustrate patterns and serve as implementation templates.
 
 Pay special attention to the project's CLAUDE.md file and any established coding standards, ensuring your recommendations align with the documented practices and architectural decisions.
+
+**IMPORTANT: Always end your analysis by reminding the team to update docs/TASKS.md checkboxes when completing tasks. This is a critical project tracking requirement.**
