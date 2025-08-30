@@ -40,6 +40,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   IEnumerable<int> numbers = [1, 2, 3];
   ```
 
+- **File-scoped namespaces**: Use file-scoped namespace declarations
+  ```csharp
+  // ✅ Good
+  namespace ShadowrunGM.Domain.Character;
+  
+  public sealed class Character
+  {
+      // Implementation
+  }
+  ```
+
+- **Sealed classes where appropriate**: Mark classes as sealed when not designed for inheritance
+  ```csharp
+  // ✅ Good
+  public sealed class CharacterId : ValueObject<CharacterId>
+  public sealed class ValidationProblemResponse
+  ```
+
+- **Record types for data containers**: Use records for DTOs, events, and simple data structures
+  ```csharp
+  // ✅ Good
+  public sealed record CharacterCreated(CharacterId Id, string Name);
+  public sealed record CreateCharacterRequest(string Name, AttributeSet Attributes);
+  ```
+
 - **Expression-bodied members**: Use for single-line methods, properties, and constructors
   ```csharp
   // ✅ Good - Methods
@@ -71,6 +96,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
       public async Task<Character> GetCharacterAsync(CharacterId id) =>
           await repository.GetByIdAsync(id);
   }
+  
+  // ✅ Good for records
+  public sealed record EdgeSpent(CharacterId CharacterId, int Amount, string Purpose);
   ```
 
 - **Private fields over constructor parameters**: For complex classes
@@ -95,6 +123,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   private Edge _currentEdge;
   ```
 
+- **Nullable reference types**: Use nullable annotations consistently
+  ```csharp
+  // ✅ Good
+  public string Name { get; private set; } = string.Empty;
+  public AttributeSet? Attributes { get; private set; }
+  
+  public Result<Character> GetCharacter(string? name)
+  {
+      if (name is null)
+          return Result.Failure<Character>("Name cannot be null");
+      // Implementation
+  }
+  ```
+
+- **Region organization**: Use regions to organize class members consistently
+  ```csharp
+  public sealed class Character
+  {
+      #region Private Members
+      private readonly List<Skill> _skills = [];
+      #endregion Private Members
+      
+      #region Public Constructors
+      public Character(string name) => Name = name;
+      #endregion Public Constructors
+      
+      #region Public Properties
+      public string Name { get; private init; }
+      #endregion Public Properties
+      
+      #region Public Methods
+      public Result<Edge> SpendEdge(int amount) => Edge.Spend(amount);
+      #endregion Public Methods
+  }
+  ```
+
+- **Strategic accessibility modifiers**: Use internal/private constructors appropriately
+  ```csharp
+  // ✅ Good - Prevent external instantiation
+  private Character() { }
+  
+  // ✅ Good - Allow test access
+  internal ValidationBuilder(Dictionary<string, List<string>> errors) => _errors = errors;
+  ```
+
 ### Result Pattern - CRITICAL REQUIREMENT
 
 **ALWAYS use the existing Result<T> pattern from `ShadowrunGM.ApiSdk.Common.Results` namespace.**
@@ -104,6 +177,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 #### Required Using Statements
 ```csharp
 using ShadowrunGM.ApiSdk.Common.Results;
+using ShadowrunGM.API.Application.Common.Results; // For ValidationBuilder
 ```
 
 #### Success Cases
@@ -158,6 +232,28 @@ public Result ProcessMultipleFields()
     return Result.Failure(errors);
 }
 ```
+
+#### Result<T> Composition with ValidationBuilder
+```csharp
+// Use Result<T> composition for nested validation
+public static Result<Character> Create(string name, AttributeSet attributes, int startingEdge) =>
+    new ValidationBuilder<Character>()
+        .RuleFor(x => x.Name, name)
+            .NotEmpty()
+            .MaximumLength(100)
+        .RuleFor(x => x.Attributes, AttributeSet.Create(attributes), out AttributeSet? validatedAttributes)
+        .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
+        .Build(() => new Character(name, validatedAttributes!, validatedEdge!));
+
+// Combine multiple Results
+Result combinedResult = Result.Combine(result1, result2, result3);
+```
+
+#### ValidationBuilder Features
+- **Result<T> Integration**: `RuleFor(x => x.Property, someResult, out value)` automatically extracts failures
+- **Result Combination**: `Result.Combine()` merges multiple Result objects intelligently  
+- **Out Parameter Pattern**: Access successful values from Result<T> for object construction
+- **Nested Validation**: Compose validation across value object creation methods
 
 #### Pattern Matching
 ```csharp
