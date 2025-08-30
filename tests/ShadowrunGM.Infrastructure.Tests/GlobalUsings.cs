@@ -1,0 +1,15 @@
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using NSubstitute;
+global using Shouldly;
+global using ShadowrunGM.ApiSdk.Common.Results;
+global using ShadowrunGM.API.Infrastructure;
+global using ShadowrunGM.Domain.Character;
+global using ShadowrunGM.Domain.Character.ValueObjects;
+global using ShadowrunGM.Infrastructure.Tests.TestHelpers;
+global using Xunit;

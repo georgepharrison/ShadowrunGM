@@ -10,6 +10,7 @@ using ShadowrunGM.API.Importing.Jobs;
 using ShadowrunGM.API.Importing.Persistence;
 using ShadowrunGM.API.Importing.Storage;
 using ShadowrunGM.API.Infrastructure;
+using ShadowrunGM.API.Infrastructure.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -73,5 +74,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapImportEndpoints();
+
+// Ensure database is created and seeded
+await app.EnsureDatabaseCreatedAndSeededAsync();
 
 app.Run();

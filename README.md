@@ -31,6 +31,40 @@ For detailed breakdowns, see:
 
 ---
 
+## 🏗 Infrastructure
+
+### Database Setup
+
+The project uses **PostgreSQL with pgvector** for AI-powered features:
+
+```bash
+# Start PostgreSQL with Docker Compose
+docker-compose up -d postgres
+
+# Apply Entity Framework migrations
+cd src/API && dotnet ef database update
+
+# Run the API (includes automatic data seeding)
+dotnet run
+```
+
+See [Database Setup Guide](docs/database-setup.md) for detailed configuration.
+
+### Key Infrastructure Components
+
+* **Docker Compose** - PostgreSQL + pgvector for local development
+* **Entity Framework Core** - Domain entity persistence with PostgreSQL
+* **Repository Pattern** - Data access with comprehensive Result<T> error handling
+* **Data Seeding** - Automatic Shadowrun 6e equipment and content population
+* **TDD Implementation** - Full test coverage with xUnit and Shouldly
+
+For implementation details, see:
+* [Infrastructure Layer README](src/API/Infrastructure/README.md)
+* [CharacterRepository Implementation](docs/engineering/character-repository-implementation.md)  
+* [Data Seeding Strategy](docs/engineering/data-seeding-strategy.md)
+
+---
+
 ## 🛠 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, branching strategy, and coding standards.
@@ -43,9 +77,17 @@ All documentation lives in the [docs/](docs/) folder. Key entry point: [docs/REA
 
 ---
 
-## 🚀 Next Steps
+## 🚀 Current Status
 
-* Implement catalog schema in Domain + Import pipeline
+**Completed Infrastructure (Days 4-5):**
+* ✅ Docker Compose PostgreSQL with pgvector setup
+* ✅ Entity Framework migrations with Character aggregate support
+* ✅ CharacterRepository implementation with comprehensive TDD
+* ✅ Game items seed data with baseline Shadowrun 6e equipment
+* ✅ Result<T> pattern integration throughout data layer
+
+**Next Steps:**
 * Hook up Semantic Kernel plugins for AI orchestration
-* Begin local Ollama testing on RTX 3090
+* Begin local Ollama testing on RTX 3090  
 * Extend Overseer AI for player/GM interaction
+* Implement CQRS command/query handlers for Character operations
