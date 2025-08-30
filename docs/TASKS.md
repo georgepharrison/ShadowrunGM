@@ -25,10 +25,10 @@
 - [x] **TASK-005**: Define repository interfaces with async operations
 
 ### Day 4-5: Database & Infrastructure
-- [ ] **TASK-006**: Configure Docker Compose for PostgreSQL with pgvector
-- [ ] **TASK-007**: Create initial EF Core migrations with structured tables (game_items, magic_abilities)
-- [ ] **TASK-008**: Implement CharacterRepository with EF Core mapping
-- [ ] **TASK-009**: Setup basic seed data for game_items table
+- [x] **TASK-006**: Configure Docker Compose for PostgreSQL with pgvector
+- [x] **TASK-007**: Create initial EF Core migrations with structured tables (game_items, magic_abilities)
+- [x] **TASK-008**: Implement CharacterRepository with EF Core mapping
+- [x] **TASK-009**: Setup basic seed data for game_items table
 
 ### Day 6-7: Mobile UI Foundation
 - [ ] **TASK-010**: Configure MudBlazor with mobile-first dark theme
