@@ -4,6 +4,19 @@ using System.Linq.Expressions;
 
 namespace ShadowrunGM.API.Application.Common.Results;
 
+/// <summary>
+/// Abstract base class for all property validators, providing core validation functionality and fluent interface patterns
+/// for building complex validation rules. This class enables type-safe validation chaining and integration with the
+/// ValidationBuilder&lt;T&gt; framework.
+/// </summary>
+/// <typeparam name="T">The type of object being validated.</typeparam>
+/// <typeparam name="TProp">The type of property being validated.</typeparam>
+/// <typeparam name="TRule">The concrete validator type (used for fluent interface return types).</typeparam>
+/// <remarks>
+/// This class implements the Fluent Interface pattern to enable method chaining and provides a bridge between
+/// property-specific validators and the main ValidationBuilder. It manages pending validation rules and applies
+/// them when transitioning between properties or building the final result.
+/// </remarks>
 public abstract class PropertyValidator<T, TProp, TRule>
     where TRule : PropertyValidator<T, TProp, TRule>
 {
@@ -18,6 +31,12 @@ public abstract class PropertyValidator<T, TProp, TRule>
 
     #region Internal Constructors
 
+    /// <summary>
+    /// Initializes a new instance of the PropertyValidator class.
+    /// </summary>
+    /// <param name="builder">The parent ValidationBuilder that manages the overall validation process.</param>
+    /// <param name="displayName">The display name for this property, used in error messages.</param>
+    /// <param name="value">The actual value being validated.</param>
     internal PropertyValidator(ValidationBuilder<T> builder, string displayName, TProp value)
     {
         _builder = builder;
@@ -29,12 +48,33 @@ public abstract class PropertyValidator<T, TProp, TRule>
 
     #region Public Methods
 
+    /// <summary>
+    /// Applies all pending validation rules for this property and builds the final Result&lt;T&gt;.
+    /// </summary>
+    /// <param name="factory">A factory function to create the validated object when all validations pass.</param>
+    /// <returns>A Result&lt;T&gt; containing either the successfully created object or validation errors.</returns>
+    /// <remarks>
+    /// This method is a convenience shortcut that applies pending rules for the current property
+    /// and immediately builds the final result. It's equivalent to calling the ValidationBuilder's
+    /// Build method after all property validations are complete.
+    /// </remarks>
     public Result<T> Build(Func<T> factory)
     {
         ApplyPendingRules();
         return _builder.Build(factory);
     }
 
+    /// <summary>
+    /// Validates that the property value is considered "empty" according to type-specific rules.
+    /// </summary>
+    /// <returns>The concrete validator type for method chaining.</returns>
+    /// <remarks>
+    /// Empty validation varies by type:
+    /// - Strings: null or empty string
+    /// - Collections: null or empty collection
+    /// - Nullable types: null value
+    /// - Value types: default value
+    /// </remarks>
     public TRule Empty()
     {
         _pendingRules.Add((new EmptyRule<TProp>(), null, null));
@@ -47,6 +87,19 @@ public abstract class PropertyValidator<T, TProp, TRule>
         return (TRule)this;
     }
 
+    /// <summary>
+    /// Validates the property using a custom condition function with a specified error message.
+    /// </summary>
+    /// <param name="condition">A function that returns true if the value is valid.</param>
+    /// <param name="errorMessage">The error message to use if validation fails.</param>
+    /// <returns>The concrete validator type for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// builder.RuleFor(x => x.Username, request.Username)
+    ///     .Must(username => !ReservedUsernames.Contains(username), "Username is reserved")
+    ///     .Must(username => IsUniqueUsername(username), "Username already exists");
+    /// </code>
+    /// </example>
     public TRule Must(Func<TProp, bool> condition, string errorMessage)
     {
         _pendingRules.Add((new MustRule<TProp>(condition, errorMessage), null, null));
@@ -137,12 +190,37 @@ public abstract class PropertyValidator<T, TProp, TRule>
     public TRule Unless(Func<TProp, bool> condition) =>
         When(value => !condition(value));
 
+    /// <summary>
+    /// Applies a conditional check to the last validation rule, only executing it when the condition is true.
+    /// </summary>
+    /// <param name="condition">A function that determines whether to apply the previous validation rule.</param>
+    /// <returns>The concrete validator type for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// builder.RuleFor(x => x.ConfirmPassword, request.ConfirmPassword)
+    ///     .Equal(request.Password)
+    ///     .When(value => !string.IsNullOrEmpty(request.Password))
+    ///     .WithMessage("Passwords must match when password is provided");
+    /// </code>
+    /// </example>
     public TRule When(Func<TProp, bool> condition)
     {
         UpdateLastRuleCondition(condition);
         return (TRule)this;
     }
 
+    /// <summary>
+    /// Overrides the default error message for the last validation rule with a custom message.
+    /// </summary>
+    /// <param name="customMessage">The custom error message to use instead of the default.</param>
+    /// <returns>The concrete validator type for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// builder.RuleFor(x => x.Age, request.Age)
+    ///     .GreaterThan(0)
+    ///     .WithMessage("Character age must be positive - negative ages are not allowed in Shadowrun");
+    /// </code>
+    /// </example>
     public TRule WithMessage(string customMessage)
     {
         UpdateLastValidationMessage(customMessage);
