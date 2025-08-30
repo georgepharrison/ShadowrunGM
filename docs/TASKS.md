@@ -31,10 +31,10 @@
 - [x] **TASK-009**: Setup basic seed data for game_items table
 
 ### Day 6-7: Mobile UI Foundation
-- [ ] **TASK-010**: Configure MudBlazor with mobile-first dark theme
-- [ ] **TASK-011**: Create responsive layout optimized for Pixel 8 (375px width)
-- [ ] **TASK-012**: Build point-buy character creation form with MudCard
-- [ ] **TASK-013**: Implement character display component with Edge tracking
+- [x] **TASK-010**: Configure MudBlazor with mobile-first dark theme
+- [x] **TASK-011**: Create responsive layout optimized for Pixel 8 (375px width)
+- [x] **TASK-012**: Build point-buy character creation form with MudCard
+- [x] **TASK-013**: Implement character display component with Edge tracking
 
 **Week 1 Success Criteria**: Domain models compile, DB migrations run, mobile UI renders
 

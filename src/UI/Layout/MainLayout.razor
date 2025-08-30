@@ -23,6 +23,11 @@
                         <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
                     </MudNavGroup>
 
+                    <MudNavGroup Title="Characters" Icon="@Icons.Material.Filled.Person">
+                        <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.People">My Characters</MudNavLink>
+                        <MudNavLink Href="/characters/create" Icon="@Icons.Material.Filled.PersonAdd">Create Character</MudNavLink>
+                    </MudNavGroup>
+
                     <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2">
                         <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard">Catalog Hub</MudNavLink>
                         <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt">Powers</MudNavLink>
@@ -45,6 +50,15 @@
                         </MudTooltip>
                         <MudTooltip Text="Create Campaign" Placement="Placement.Right">
                             <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
+                        </MudTooltip>
+                    </MudNavGroup>
+
+                    <MudNavGroup Title="Characters" Icon="@Icons.Material.Filled.Person">
+                        <MudTooltip Text="My Characters" Placement="Placement.Right">
+                            <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.People">My Characters</MudNavLink>
+                        </MudTooltip>
+                        <MudTooltip Text="Create Character" Placement="Placement.Right">
+                            <MudNavLink Href="/characters/create" Icon="@Icons.Material.Filled.PersonAdd">Create Character</MudNavLink>
                         </MudTooltip>
                     </MudNavGroup>
 
@@ -92,45 +106,76 @@
 
     <!-- MOBILE: SmAndDown — app bar with hamburger + temporary left drawer -->
     <MudHidden Breakpoint="Breakpoint.MdAndUp">
-        <MudAppBar Elevation="0">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@(() => _leftOpenMobile = true)" />
+        <MudAppBar Elevation="0" Class="mobile-appbar">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+                          OnClick="@(() => _leftOpenMobile = true)"
+                          Class="mobile-button"
+                          Size="Size.Large" />
+            
+            <!-- Mobile app title -->
+            <MudText Typo="Typo.h6" Class="flex-grow-1 text-center">
+                ShadowrunGM
+            </MudText>
+            
+            <!-- Theme toggle on mobile app bar -->
+            <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" 
+                          OnClick="@ToggleTheme"
+                          Class="mobile-button"
+                          Size="Size.Large" />
         </MudAppBar>
 
         <MudDrawer Anchor="Anchor.Left"
                    Variant="DrawerVariant.Temporary"
                    @bind-Open="@_leftOpenMobile"
-                   Elevation="8">
-            <MudNavMenu Dense>
-                <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
-
-                <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark">
-                    <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.ViewModule">Campaign Hub</MudNavLink>
-                    <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle">Create Campaign</MudNavLink>
-                </MudNavGroup>
-
-                <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2">
-                    <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard">Catalog Hub</MudNavLink>
-                    <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt">Powers</MudNavLink>
-                    <MudNavLink Href="/catalog/spells" Icon="@Icons.Material.Filled.AutoAwesome">Spells</MudNavLink>
-                    <MudNavLink Href="/catalog/gear" Icon="@Icons.Material.Filled.Cases">Gear</MudNavLink>
-                    <MudNavLink Href="/catalog/augments" Icon="@Icons.Material.Filled.Memory">Augments</MudNavLink>
-                </MudNavGroup>
-
-                <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook">Rules</MudNavLink>
-            </MudNavMenu>
-            <MudSpacer />
-            <MudNavMenu Dense>
-                <MudNavLink Href="/settings">
-                    <MudAvatar Size="Size.Medium" Variant="Variant.Outlined" Class="ml-n5">
-                        <MudImage Src="images/landing/hero-1.png"></MudImage>
-                    </MudAvatar>
-                </MudNavLink>
-                <MudStack Row Class="ma-1" Spacing="0">
-                    <MudIconButton Icon="@(_isDark? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" OnClick="@ToggleTheme" />
-                    <MudSpacer />
-                    <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => _leftOpenMobile = false)" />
+                   Elevation="8"
+                   Width="280px">
+            <!-- Mobile drawer header -->
+            <div class="mobile-drawer-header pa-4">
+                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.h6">Navigation</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                                  OnClick="@(() => _leftOpenMobile = false)"
+                                  Size="Size.Large" />
                 </MudStack>
+            </div>
+            
+            <MudNavMenu Dense="false" Class="mobile-nav">
+                <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" Class="mobile-nav-item">Home</MudNavLink>
+
+                <MudNavGroup Title="Campaigns" Icon="@Icons.Material.Filled.CollectionsBookmark" Class="mobile-nav-group">
+                    <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.ViewModule" Class="mobile-nav-item">Campaign Hub</MudNavLink>
+                    <MudNavLink Href="/campaigns/create" Icon="@Icons.Material.Filled.AddCircle" Class="mobile-nav-item">Create Campaign</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavGroup Title="Characters" Icon="@Icons.Material.Filled.Person" Class="mobile-nav-group">
+                    <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.People" Class="mobile-nav-item">My Characters</MudNavLink>
+                    <MudNavLink Href="/characters/create" Icon="@Icons.Material.Filled.PersonAdd" Class="mobile-nav-item">Create Character</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavGroup Title="Catalog" Icon="@Icons.Material.Filled.Inventory2" Class="mobile-nav-group">
+                    <MudNavLink Href="/catalog" Icon="@Icons.Material.Filled.Dashboard" Class="mobile-nav-item">Catalog Hub</MudNavLink>
+                    <MudNavLink Href="/catalog/powers" Icon="@Icons.Material.Filled.Bolt" Class="mobile-nav-item">Powers</MudNavLink>
+                    <MudNavLink Href="/catalog/spells" Icon="@Icons.Material.Filled.AutoAwesome" Class="mobile-nav-item">Spells</MudNavLink>
+                    <MudNavLink Href="/catalog/gear" Icon="@Icons.Material.Filled.Cases" Class="mobile-nav-item">Gear</MudNavLink>
+                    <MudNavLink Href="/catalog/augments" Icon="@Icons.Material.Filled.Memory" Class="mobile-nav-item">Augments</MudNavLink>
+                </MudNavGroup>
+
+                <MudNavLink Href="/rules" Icon="@Icons.Material.Filled.MenuBook" Class="mobile-nav-item">Rules</MudNavLink>
             </MudNavMenu>
+            
+            <MudSpacer />
+            
+            <!-- Mobile drawer footer -->
+            <div class="mobile-drawer-footer pa-4">
+                <MudNavLink Href="/settings" Class="mobile-nav-item">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                        <MudAvatar Size="Size.Medium" Variant="Variant.Outlined">
+                            <MudImage Src="images/landing/hero-1.png"></MudImage>
+                        </MudAvatar>
+                        <MudText>Profile & Settings</MudText>
+                    </MudStack>
+                </MudNavLink>
+            </div>
         </MudDrawer>
     </MudHidden>
 
@@ -141,14 +186,15 @@
         </MudDrawer>
     </MudHidden>
 
-    <MudMainContent>
+    <MudMainContent Class="mobile-optimized">
         @Body
 
         <!-- Mobile FAB + temporary bottom drawer -->
         <MudHidden Breakpoint="Breakpoint.MdAndUp">
             <MudFab StartIcon="@Icons.Material.Filled.Chat"
-                    Class="ai-fab"
+                    Class="ai-fab mobile-button"
                     Color="Color.Primary"
+                    Size="Size.Large"
                     OnClick="@(() => _mobileOpen = true)" />
 
             <MudDrawer Anchor="Anchor.Bottom"
@@ -157,20 +203,24 @@
                        Class="@($"ai-drawer-mobile {(_mobileFullScreen ? "full" : "")}")"
                        Elevation="8">
 
-                <MudPaper Class="chat-sheet d-flex flex-column" Style="height:100%;" Square>
+                <MudPaper Class="chat-sheet d-flex flex-column mobile-card" Style="height:100%;" Square>
                     <!-- Header row -->
                     <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="chat-header">
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                             <MudIconButton Icon="@(_mobileFullScreen? Icons.Material.Filled.FullscreenExit : Icons.Material.Filled.Fullscreen)"
                                            AriaLabel="@(_mobileFullScreen ? "Exit full screen" : "Go full screen")"
-                                           OnClick="@(()=> _mobileFullScreen = !_mobileFullScreen)" />
-                            <MudText Typo="Typo.subtitle2">GM Chat</MudText>
+                                           OnClick="@(()=> _mobileFullScreen = !_mobileFullScreen)"
+                                           Class="mobile-button"
+                                           Size="Size.Large" />
+                            <MudText Typo="Typo.subtitle1" Class="font-weight-medium">GM Chat</MudText>
                         </MudStack>
 
                         <!-- Always show the X -->
                         <MudIconButton Icon="@Icons.Material.Filled.Close"
                                        AriaLabel="Close chat"
-                                       OnClick="@(()=> { _mobileOpen = false; _mobileFullScreen = false; })" />
+                                       OnClick="@(()=> { _mobileOpen = false; _mobileFullScreen = false; })"
+                                       Class="mobile-button"
+                                       Size="Size.Large" />
                     </MudStack>
 
                     <!-- Content -->

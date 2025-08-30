@@ -153,7 +153,7 @@ html.dark {
     overflow: hidden; /* hide any crop edges */
 }
 
-    /* MudCarousel adds padding inside items—remove for edge-to-edge imagery */
+    /* MudCarousel adds padding inside itemsï¿½remove for edge-to-edge imagery */
     .hero-carousel .mud-carousel-item {
         padding: 0;
     }
@@ -176,3 +176,233 @@ html.dark .hero-img {
 /*
 .hero-carousel { aspect-ratio: 21 / 9; height: auto; }
 */
+
+/* ==== MOBILE-FIRST ENHANCEMENTS FOR PIXEL 8 (375px) ==== */
+
+/* Touch-optimized UI components */
+@media (max-width: 600px) {
+    /* Minimum touch target size - 44px for accessibility */
+    .mud-button,
+    .mud-icon-button,
+    .mud-input,
+    .mud-select {
+        min-height: 44px;
+    }
+
+    /* Larger tap targets for mobile navigation */
+    .mud-nav-link {
+        min-height: 48px;
+        padding: 12px 16px;
+    }
+
+    /* Mobile-optimized spacing */
+    .mud-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    /* Mobile chat optimizations */
+    .chat-container {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .user-message,
+    .chat-msg-ai {
+        padding: 12px 16px;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    /* Mobile form optimizations */
+    .mud-input-control {
+        margin-bottom: 16px;
+    }
+
+    .mud-card {
+        margin-bottom: 16px;
+    }
+
+    /* Optimized for Pixel 8 specific width (375px) */
+    .mobile-optimized {
+        max-width: 375px;
+        margin: 0 auto;
+    }
+}
+
+/* Pixel 8 specific optimizations */
+@media (max-width: 375px) {
+    /* Tighter spacing for narrow screens */
+    .mud-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* Adjust hero carousel for very small screens */
+    .hero-carousel {
+        height: clamp(180px, 30vh, 280px);
+        border-radius: 8px;
+    }
+
+    /* Compact navigation for narrow screens */
+    .mud-nav-link {
+        padding: 10px 12px;
+        font-size: 0.875rem;
+    }
+}
+
+/* Enhanced dark mode for mobile */
+@media (max-width: 600px) {
+    html.dark {
+        /* Deeper background for OLED screens */
+        background-color: #000000;
+    }
+
+    html.dark .mud-paper,
+    html.dark .mud-card {
+        background-color: #1A1A1A;
+        /* Enhanced shadow for mobile dark mode */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    html.dark .mud-appbar {
+        background-color: #000000;
+        border-bottom: 1px solid #333333;
+    }
+
+    /* Better contrast for mobile dark mode text */
+    html.dark .mud-typography-body1,
+    html.dark .mud-typography-body2 {
+        color: #F0F0F0;
+    }
+}
+
+/* Mobile-first component utilities */
+.mobile-card {
+    border-radius: 12px;
+    margin: 8px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.mobile-input {
+    border-radius: 8px;
+    font-size: 16px; /* Prevents zoom on iOS */
+}
+
+.mobile-button {
+    border-radius: 8px;
+    min-height: 44px;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+/* Edge tracking specific styles */
+.edge-display {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--mud-palette-primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 0 0 8px 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Character creation form optimizations */
+.character-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+.attribute-section {
+    background: var(--mud-palette-surface);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--mud-palette-divider);
+}
+
+/* Point-buy display */
+.points-remaining {
+    position: sticky;
+    top: 56px; /* Below app bar */
+    z-index: 50;
+    background: var(--mud-palette-warning);
+    color: var(--mud-palette-warning-text);
+    padding: 8px 16px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Mobile layout enhancements */
+.mobile-appbar {
+    height: 56px !important;
+    padding: 0 12px;
+}
+
+.mobile-drawer-header {
+    background: var(--mud-palette-surface);
+    border-bottom: 1px solid var(--mud-palette-divider);
+}
+
+.mobile-drawer-footer {
+    background: var(--mud-palette-surface);
+    border-top: 1px solid var(--mud-palette-divider);
+}
+
+.mobile-nav .mud-nav-link,
+.mobile-nav-item {
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 1rem;
+}
+
+.mobile-nav-group .mud-nav-group-header {
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Pixel 8 specific layout optimizations */
+@media (max-width: 375px) {
+    .mobile-appbar {
+        padding: 0 8px;
+    }
+    
+    .mobile-nav .mud-nav-link,
+    .mobile-nav-item {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .ai-fab {
+        right: 12px;
+        bottom: 12px;
+    }
+}
+
+/* Enhanced mobile dark mode for drawer */
+@media (max-width: 600px) {
+    html.dark .mobile-drawer-header,
+    html.dark .mobile-drawer-footer {
+        background-color: #1A1A1A;
+        border-color: #333333;
+    }
+    
+    html.dark .mobile-nav .mud-nav-link:hover,
+    html.dark .mobile-nav-item:hover {
+        background-color: #333333;
+    }
+}
+
+/* Responsive utilities */
+.show-mobile { display: none; }
+.hide-mobile { display: block; }
+
+@media (max-width: 600px) {
+    .show-mobile { display: block; }
+    .hide-mobile { display: none; }
+}

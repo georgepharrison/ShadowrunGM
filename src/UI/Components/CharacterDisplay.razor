@@ -1,0 +1,486 @@
+@using ShadowrunGM.ApiSdk.Common.Results
+@inject ISnackbar Snackbar
+
+<MudPaper Class="mobile-card character-display" Elevation="2">
+    @if (Character is not null)
+    {
+        <!-- Character Header -->
+        <div class="character-header pa-4">
+            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h5" Class="font-weight-bold">@Character.Name</MudText>
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary">
+                        Created @Character.CreatedAt.ToString("MMM dd, yyyy")
+                    </MudText>
+                </MudStack>
+                
+                <!-- Character Actions -->
+                <MudStack Row Spacing="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="@(() => OnEditClicked?.Invoke(Character))"
+                                   Disabled="@(OnEditClicked is null)"
+                                   Title="Edit Character" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Size="Size.Small"
+                                   Color="Color.Error"
+                                   OnClick="@(() => OnDeleteClicked?.Invoke(Character))"
+                                   Disabled="@(OnDeleteClicked is null)"
+                                   Title="Delete Character" />
+                </MudStack>
+            </MudStack>
+        </div>
+
+        <!-- Edge Display - Prominent -->
+        <div class="edge-display">
+            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Star" Color="Color.Warning" />
+                    <MudText Typo="Typo.h6" Class="font-weight-bold text-white">
+                        Edge: @Character.EdgeCurrent / @Character.EdgeMax
+                    </MudText>
+                </MudStack>
+                
+                <!-- Edge Action Buttons -->
+                <MudStack Row Spacing="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove"
+                                   Size="Size.Small"
+                                   Color="Color.Surface"
+                                   OnClick="@(() => SpendEdge())"
+                                   Disabled="@(!Character.HasEdge || _isProcessingEdge)"
+                                   Title="Spend Edge" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                   Size="Size.Small"
+                                   Color="Color.Surface"
+                                   OnClick="@(() => RegainEdge())"
+                                   Disabled="@(Character.IsAtMax || _isProcessingEdge)"
+                                   Title="Regain Edge" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                   Size="Size.Small"
+                                   Color="Color.Surface"
+                                   OnClick="@(() => RefreshEdge())"
+                                   Disabled="@(Character.IsAtMax || _isProcessingEdge)"
+                                   Title="Refresh All Edge" />
+                </MudStack>
+            </MudStack>
+        </div>
+
+        <!-- Attributes Grid -->
+        <div class="attributes-section pa-4">
+            <MudText Typo="Typo.h6" Class="mb-3 font-weight-medium">Attributes</MudText>
+            
+            <MudGrid Spacing="2">
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Body</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Body</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Agility</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Agility</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Reaction</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Reaction</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Strength</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Strength</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Willpower</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Willpower</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Logic</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Logic</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Intuition</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Intuition</MudText>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="attribute-display">
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">Charisma</MudText>
+                        <MudText Typo="Typo.h6" Class="font-weight-bold">@Character.Charisma</MudText>
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        <!-- Derived Attributes -->
+        <div class="derived-attributes-section pa-4 pt-0">
+            <MudText Typo="Typo.h6" Class="mb-3 font-weight-medium">Derived Attributes</MudText>
+            
+            <MudGrid Spacing="2">
+                <MudItem xs="6" sm="3">
+                    <div class="derived-attribute-display">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Info" />
+                            <MudText Typo="Typo.caption">Initiative</MudText>
+                            <MudChip Color="Color.Info" Size="Size.Small">
+                                @Character.Initiative
+                            </MudChip>
+                        </MudStack>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="derived-attribute-display">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.FitnessCenter" Color="Color.Success" />
+                            <MudText Typo="Typo.caption">Physical</MudText>
+                            <MudChip Color="Color.Success" Size="Size.Small">
+                                @Character.PhysicalLimit
+                            </MudChip>
+                        </MudStack>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="derived-attribute-display">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Psychology" Color="Color.Warning" />
+                            <MudText Typo="Typo.caption">Mental</MudText>
+                            <MudChip Color="Color.Warning" Size="Size.Small">
+                                @Character.MentalLimit
+                            </MudChip>
+                        </MudStack>
+                    </div>
+                </MudItem>
+                <MudItem xs="6" sm="3">
+                    <div class="derived-attribute-display">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Secondary" />
+                            <MudText Typo="Typo.caption">Social</MudText>
+                            <MudChip Color="Color.Secondary" Size="Size.Small">
+                                @Character.SocialLimit
+                            </MudChip>
+                        </MudStack>
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        <!-- Condition Monitor -->
+        <div class="condition-monitor-section pa-4 pt-0">
+            <MudText Typo="Typo.h6" Class="mb-3 font-weight-medium">Condition Monitor</MudText>
+            
+            <MudGrid Spacing="2">
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.body2" Class="font-weight-medium">Physical Damage</MudText>
+                        <MudProgressLinear Value="@GetPhysicalDamagePercentage()" Color="Color.Error" Size="Size.Large" />
+                        <MudText Typo="Typo.caption">
+                            @Character.PhysicalDamage / @Character.PhysicalBoxes boxes
+                        </MudText>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.body2" Class="font-weight-medium">Stun Damage</MudText>
+                        <MudProgressLinear Value="@GetStunDamagePercentage()" Color="Color.Warning" Size="Size.Large" />
+                        <MudText Typo="Typo.caption">
+                            @Character.StunDamage / @Character.StunBoxes boxes
+                        </MudText>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        @if (ShowActions && (OnViewClicked is not null || OnEditClicked is not null))
+        {
+            <!-- Action Buttons -->
+            <div class="character-actions pa-4 pt-0">
+                <MudStack Row Spacing="2" Justify="Justify.Center">
+                    @if (OnViewClicked is not null)
+                    {
+                        <MudButton Color="Color.Primary"
+                                   Variant="Variant.Outlined"
+                                   StartIcon="@Icons.Material.Filled.Visibility"
+                                   OnClick="@(() => OnViewClicked(Character))"
+                                   Class="mobile-button">
+                            View Details
+                        </MudButton>
+                    }
+                    
+                    @if (OnEditClicked is not null)
+                    {
+                        <MudButton Color="Color.Secondary"
+                                   Variant="Variant.Filled"
+                                   StartIcon="@Icons.Material.Filled.Edit"
+                                   OnClick="@(() => OnEditClicked(Character))"
+                                   Class="mobile-button">
+                            Edit Character
+                        </MudButton>
+                    }
+                </MudStack>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Loading or No Character State -->
+        <div class="pa-4">
+            <MudSkeleton Height="120px" />
+            <MudSkeleton Height="40px" Class="mt-2" />
+            <MudSkeleton Height="40px" Class="mt-2" />
+        </div>
+    }
+</MudPaper>
+
+<!-- Spend Edge Dialog -->
+<MudDialog @bind-IsVisible="_showSpendEdgeDialog" Options="_dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Star" Class="mr-3" /> Spend Edge
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudText>Why are you spending Edge?</MudText>
+            <MudTextField @bind-Value="_edgePurpose"
+                          Label="Purpose"
+                          Placeholder="e.g., 'Reroll failed dice', 'Add dice to pool'"
+                          MaxLength="100"
+                          HelperText="Optional description for tracking" />
+            
+            <MudNumericField @bind-Value="_edgeAmount"
+                             Label="Amount to Spend"
+                             Min="1"
+                             Max="@Character?.EdgeCurrent"
+                             HelpText="@($"You have {Character?.EdgeCurrent} Edge available")" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _showSpendEdgeDialog = false)">Cancel</MudButton>
+        <MudButton Color="Color.Primary" 
+                   Variant="Variant.Filled"
+                   OnClick="ConfirmSpendEdge"
+                   Disabled="@(_edgeAmount <= 0 || _edgeAmount > (Character?.EdgeCurrent ?? 0))">
+            Spend Edge
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public CharacterDto? Character { get; set; }
+    [Parameter] public bool ShowActions { get; set; } = true;
+    [Parameter] public EventCallback<CharacterDto> OnViewClicked { get; set; }
+    [Parameter] public EventCallback<CharacterDto> OnEditClicked { get; set; }
+    [Parameter] public EventCallback<CharacterDto> OnDeleteClicked { get; set; }
+    [Parameter] public EventCallback<EdgeSpentEventArgs> OnEdgeSpent { get; set; }
+
+    private bool _isProcessingEdge = false;
+    private bool _showSpendEdgeDialog = false;
+    private int _edgeAmount = 1;
+    private string _edgePurpose = string.Empty;
+
+    private readonly DialogOptions _dialogOptions = new()
+    {
+        MaxWidth = MaxWidth.Small,
+        FullWidth = true,
+        CloseOnEscapeKey = true
+    };
+
+    private double GetPhysicalDamagePercentage()
+    {
+        if (Character is null || Character.PhysicalBoxes == 0) return 0;
+        return (double)Character.PhysicalDamage / Character.PhysicalBoxes * 100;
+    }
+
+    private double GetStunDamagePercentage()
+    {
+        if (Character is null || Character.StunBoxes == 0) return 0;
+        return (double)Character.StunDamage / Character.StunBoxes * 100;
+    }
+
+    private async Task SpendEdge()
+    {
+        if (Character is null || !Character.HasEdge) return;
+        
+        _edgeAmount = 1;
+        _edgePurpose = string.Empty;
+        _showSpendEdgeDialog = true;
+        await Task.CompletedTask;
+    }
+
+    private async Task ConfirmSpendEdge()
+    {
+        if (Character is null || _edgeAmount <= 0 || _edgeAmount > Character.EdgeCurrent)
+        {
+            return;
+        }
+
+        _isProcessingEdge = true;
+        _showSpendEdgeDialog = false;
+
+        try
+        {
+            EdgeSpentEventArgs eventArgs = new(Character.Id, _edgeAmount, _edgePurpose);
+            await OnEdgeSpent.InvokeAsync(eventArgs);
+            
+            Snackbar.Add($"Spent {_edgeAmount} Edge: {_edgePurpose}", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to spend Edge: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isProcessingEdge = false;
+        }
+    }
+
+    private async Task RegainEdge()
+    {
+        if (Character is null || Character.IsAtMax) return;
+
+        _isProcessingEdge = true;
+
+        try
+        {
+            EdgeSpentEventArgs eventArgs = new(Character.Id, -1, "Regained 1 Edge");
+            await OnEdgeSpent.InvokeAsync(eventArgs);
+            
+            Snackbar.Add("Regained 1 Edge", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to regain Edge: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isProcessingEdge = false;
+        }
+    }
+
+    private async Task RefreshEdge()
+    {
+        if (Character is null || Character.IsAtMax) return;
+
+        _isProcessingEdge = true;
+
+        try
+        {
+            int toRestore = Character.EdgeMax - Character.EdgeCurrent;
+            EdgeSpentEventArgs eventArgs = new(Character.Id, -toRestore, "Refreshed all Edge");
+            await OnEdgeSpent.InvokeAsync(eventArgs);
+            
+            Snackbar.Add("Refreshed all Edge", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to refresh Edge: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isProcessingEdge = false;
+        }
+    }
+
+    public sealed record CharacterDto(
+        string Id,
+        string Name,
+        DateTime CreatedAt,
+        int Body, int Agility, int Reaction, int Strength,
+        int Willpower, int Logic, int Intuition, int Charisma,
+        int EdgeCurrent, int EdgeMax,
+        int PhysicalDamage, int PhysicalBoxes,
+        int StunDamage, int StunBoxes)
+    {
+        public bool HasEdge => EdgeCurrent > 0;
+        public bool IsAtMax => EdgeCurrent >= EdgeMax;
+        public int Initiative => Reaction + Intuition;
+        public int PhysicalLimit => (Strength * 2 + Body + Reaction) / 3;
+        public int MentalLimit => (Logic * 2 + Intuition + Willpower) / 3;
+        public int SocialLimit => (Charisma * 2 + Willpower + Body) / 3;
+    }
+
+    public sealed record EdgeSpentEventArgs(string CharacterId, int Amount, string Purpose);
+}
+
+<style>
+    .character-display {
+        border: 2px solid var(--mud-palette-divider);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .character-header {
+        background: var(--mud-palette-surface);
+        border-bottom: 1px solid var(--mud-palette-divider);
+    }
+
+    .edge-display {
+        background: var(--mud-palette-primary);
+        color: white;
+        padding: 12px 16px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .attribute-display {
+        text-align: center;
+        padding: 12px;
+        background: var(--mud-palette-surface);
+        border-radius: 8px;
+        border: 1px solid var(--mud-palette-divider);
+    }
+
+    .derived-attribute-display {
+        padding: 8px;
+        border-radius: 8px;
+        background: var(--mud-palette-background);
+        border: 1px solid var(--mud-palette-divider);
+    }
+
+    .condition-monitor-section .mud-progress-linear {
+        height: 12px;
+        border-radius: 6px;
+    }
+
+    /* Dark mode enhancements */
+    html.dark .character-display {
+        border-color: #333333;
+        background: #1A1A1A;
+    }
+
+    html.dark .character-header {
+        background: #1A1A1A;
+        border-bottom-color: #333333;
+    }
+
+    html.dark .attribute-display,
+    html.dark .derived-attribute-display {
+        background: #2A2A2A;
+        border-color: #333333;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 600px) {
+        .character-display {
+            border-radius: 12px;
+        }
+        
+        .edge-display {
+            padding: 8px 12px;
+        }
+        
+        .attribute-display {
+            padding: 8px;
+        }
+    }
+</style>
