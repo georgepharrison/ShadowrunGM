@@ -3,6 +3,29 @@
 *3-4 week implementation with proper patterns*  
 *Mobile-first for Google Pixel 8*
 
+## Task Completion Workflow
+
+### Per-Task Documentation Protocol
+For each completed task, before moving to the next:
+
+```bash
+# Complete the task implementation
+# Then run documentation agent
+@documentation-agent Please analyze the changes I just made and update any necessary documentation, then commit all changes with conventional commits following the project's existing commit patterns.
+```
+
+### Integration with Development Flow
+When working through tasks:
+
+1. **Implement the task** (e.g., TASK-014: Implement CreateCharacterCommand)
+2. **Run documentation agent** to catch any missing XML docs or domain changes
+3. **Agent commits documentation updates** automatically
+4. **Move to next task** with clean, documented codebase
+
+This ensures that documentation stays current with each task completion rather than becoming a debt that accumulates.
+
+---
+
 ## Week 1: Foundation & Architecture
 
 ### Day 1-3: Project Structure & Domain
@@ -208,6 +231,7 @@ public sealed class SpendEdgeHandler : ICommandHandler<SpendEdgeCommand, EdgeSpe
 - [ ] Domain logic has unit tests
 - [ ] CQRS handlers execute successfully
 - [ ] Mobile UI works on Pixel 8
+- [ ] **Documentation agent has analyzed and updated docs**
 - [ ] No compiler warnings
 
 ### Per Week
