@@ -1,5 +1,4 @@
 @page "/characters/create"
-@using ShadowrunGM.ApiSdk.Common.Results
 @inject ISnackbar Snackbar
 
 <PageTitle>Create Character - ShadowrunGM</PageTitle>
@@ -46,10 +45,10 @@
                             <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
                                 <MudStack Spacing="1">
                                     <MudText Typo="Typo.body1" Class="font-weight-medium">
-                                        @attribute.Value.DisplayName
+                                        @(attribute.Value.DisplayName)
                                     </MudText>
                                     <MudText Typo="Typo.caption" Class="mud-text-secondary">
-                                        @attribute.Value.Description
+                                        @(attribute.Value.Description)
                                     </MudText>
                                 </MudStack>
                                 
@@ -60,10 +59,10 @@
                                                    Size="Size.Small"
                                                    Class="mobile-button" />
                                     
-                                    <MudChip Color="@GetAttributeColor(attribute.Value.Value)"
+                                    <MudChip T="string" Color="@GetAttributeColor(attribute.Value.Value)"
                                              Size="Size.Large"
                                              Class="attribute-value">
-                                        @attribute.Value.Value
+                                        @(attribute.Value.Value)
                                     </MudChip>
                                     
                                     <MudIconButton Icon="@Icons.Material.Filled.Add"
@@ -91,25 +90,25 @@
                 <MudItem xs="6">
                     <MudStack AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.caption">Initiative</MudText>
-                        <MudChip Color="Color.Info">@(_attributes["Reaction"].Value + _attributes["Intuition"].Value)</MudChip>
+                        <MudChip T="string" Color="Color.Info">@(_attributes["Reaction"].Value + _attributes["Intuition"].Value)</MudChip>
                     </MudStack>
                 </MudItem>
                 <MudItem xs="6">
                     <MudStack AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.caption">Physical Limit</MudText>
-                        <MudChip Color="Color.Success">@CalculatePhysicalLimit()</MudChip>
+                        <MudChip T="string" Color="Color.Success">@CalculatePhysicalLimit()</MudChip>
                     </MudStack>
                 </MudItem>
                 <MudItem xs="6">
                     <MudStack AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.caption">Mental Limit</MudText>
-                        <MudChip Color="Color.Warning">@CalculateMentalLimit()</MudChip>
+                        <MudChip T="string" Color="Color.Warning">@CalculateMentalLimit()</MudChip>
                     </MudStack>
                 </MudItem>
                 <MudItem xs="6">
                     <MudStack AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.caption">Social Limit</MudText>
-                        <MudChip Color="Color.Secondary">@CalculateSocialLimit()</MudChip>
+                        <MudChip T="string" Color="Color.Secondary">@CalculateSocialLimit()</MudChip>
                     </MudStack>
                 </MudItem>
             </MudGrid>
@@ -316,7 +315,7 @@
         font-size: 1.1rem;
     }
 
-    @media (max-width: 600px) {
+    @@media (max-width: 600px) {
         .attributes-grid {
             gap: 12px;
         }

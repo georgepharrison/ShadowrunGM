@@ -1,4 +1,3 @@
-@using ShadowrunGM.ApiSdk.Common.Results
 @inject ISnackbar Snackbar
 
 <MudPaper Class="mobile-card character-display" Elevation="2">
@@ -18,14 +17,14 @@
                 <MudStack Row Spacing="1">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Size="Size.Small"
-                                   OnClick="@(() => OnEditClicked?.Invoke(Character))"
-                                   Disabled="@(OnEditClicked is null)"
+                                   OnClick="@(() => OnEditClicked.InvokeAsync(Character))"
+                                   Disabled="@(!OnEditClicked.HasDelegate)"
                                    Title="Edit Character" />
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                    Size="Size.Small"
                                    Color="Color.Error"
-                                   OnClick="@(() => OnDeleteClicked?.Invoke(Character))"
-                                   Disabled="@(OnDeleteClicked is null)"
+                                   OnClick="@(() => OnDeleteClicked.InvokeAsync(Character))"
+                                   Disabled="@(!OnDeleteClicked.HasDelegate)"
                                    Title="Delete Character" />
                 </MudStack>
             </MudStack>
@@ -131,7 +130,7 @@
                         <MudStack AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.Speed" Color="Color.Info" />
                             <MudText Typo="Typo.caption">Initiative</MudText>
-                            <MudChip Color="Color.Info" Size="Size.Small">
+                            <MudChip T="string" Color="Color.Info" Size="Size.Small">
                                 @Character.Initiative
                             </MudChip>
                         </MudStack>
@@ -142,7 +141,7 @@
                         <MudStack AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.FitnessCenter" Color="Color.Success" />
                             <MudText Typo="Typo.caption">Physical</MudText>
-                            <MudChip Color="Color.Success" Size="Size.Small">
+                            <MudChip T="string" Color="Color.Success" Size="Size.Small">
                                 @Character.PhysicalLimit
                             </MudChip>
                         </MudStack>
@@ -153,7 +152,7 @@
                         <MudStack AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.Psychology" Color="Color.Warning" />
                             <MudText Typo="Typo.caption">Mental</MudText>
-                            <MudChip Color="Color.Warning" Size="Size.Small">
+                            <MudChip T="string" Color="Color.Warning" Size="Size.Small">
                                 @Character.MentalLimit
                             </MudChip>
                         </MudStack>
@@ -164,7 +163,7 @@
                         <MudStack AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.Groups" Color="Color.Secondary" />
                             <MudText Typo="Typo.caption">Social</MudText>
-                            <MudChip Color="Color.Secondary" Size="Size.Small">
+                            <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
                                 @Character.SocialLimit
                             </MudChip>
                         </MudStack>
@@ -199,28 +198,28 @@
             </MudGrid>
         </div>
 
-        @if (ShowActions && (OnViewClicked is not null || OnEditClicked is not null))
+        @if (ShowActions && (OnViewClicked.HasDelegate || OnEditClicked.HasDelegate))
         {
             <!-- Action Buttons -->
             <div class="character-actions pa-4 pt-0">
                 <MudStack Row Spacing="2" Justify="Justify.Center">
-                    @if (OnViewClicked is not null)
+                    @if (OnViewClicked.HasDelegate)
                     {
                         <MudButton Color="Color.Primary"
                                    Variant="Variant.Outlined"
                                    StartIcon="@Icons.Material.Filled.Visibility"
-                                   OnClick="@(() => OnViewClicked(Character))"
+                                   OnClick="@(() => OnViewClicked.InvokeAsync(Character))"
                                    Class="mobile-button">
                             View Details
                         </MudButton>
                     }
                     
-                    @if (OnEditClicked is not null)
+                    @if (OnEditClicked.HasDelegate)
                     {
                         <MudButton Color="Color.Secondary"
                                    Variant="Variant.Filled"
                                    StartIcon="@Icons.Material.Filled.Edit"
-                                   OnClick="@(() => OnEditClicked(Character))"
+                                   OnClick="@(() => OnEditClicked.InvokeAsync(Character))"
                                    Class="mobile-button">
                             Edit Character
                         </MudButton>
@@ -256,10 +255,10 @@
                           MaxLength="100"
                           HelperText="Optional description for tracking" />
             
-            <MudNumericField @bind-Value="_edgeAmount"
+            <MudNumericField T="int" @bind-Value="_edgeAmount"
                              Label="Amount to Spend"
                              Min="1"
-                             Max="@Character?.EdgeCurrent"
+                             Max="@(Character?.EdgeCurrent ?? 0)"
                              HelpText="@($"You have {Character?.EdgeCurrent} Edge available")" />
         </MudStack>
     </DialogContent>
@@ -470,7 +469,7 @@
     }
 
     /* Mobile optimizations */
-    @media (max-width: 600px) {
+    @@media (max-width: 600px) {
         .character-display {
             border-radius: 12px;
         }

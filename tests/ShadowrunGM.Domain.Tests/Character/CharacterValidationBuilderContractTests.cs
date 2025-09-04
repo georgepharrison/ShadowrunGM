@@ -1,8 +1,5 @@
-using Shouldly;
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character.ValueObjects;
-using ShadowrunGM.Domain.Tests.TestHelpers;
-using Xunit;
 
 namespace ShadowrunGM.Domain.Tests.Character;
 
@@ -37,7 +34,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge);
+            ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge, []);
 
         // Assert - ValidationBuilder should provide structured validation errors
         result.IsFailure.ShouldBeTrue();
@@ -81,7 +78,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, validEdge);
+            ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, validEdge, []);
 
         // Assert - ValidationBuilder factory should create Character correctly
         result.IsSuccess.ShouldBeTrue();
@@ -116,7 +113,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(tooLongName, validAttributes, validEdge);
+            ShadowrunGM.Domain.Character.Character.Create(tooLongName, validAttributes, validEdge, []);
 
         // Assert - Only MaximumLength rule should fire (NotEmpty should pass)
         result.IsFailure.ShouldBeTrue();
@@ -146,7 +143,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, invalidEdge);
+            ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, invalidEdge, []);
 
         // Assert - Only StartingEdge validation should fail
         result.IsFailure.ShouldBeTrue();
@@ -177,7 +174,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge);
+            ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge, []);
 
         // Assert - Property names should match exactly what's in RuleFor expressions
         result.IsFailure.ShouldBeTrue();
@@ -209,7 +206,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(emptyName, validAttributes, validEdge);
+            ShadowrunGM.Domain.Character.Character.Create(emptyName, validAttributes, validEdge, []);
 
         // Assert - Error messages should be domain-specific and user-friendly
         result.IsFailure.ShouldBeTrue();
@@ -236,7 +233,7 @@ public sealed class CharacterValidationBuilderContractTests
 
         // Act
         Result<ShadowrunGM.Domain.Character.Character> result = 
-            ShadowrunGM.Domain.Character.Character.Create(invalidName, validAttributes, validEdge);
+            ShadowrunGM.Domain.Character.Character.Create(invalidName, validAttributes, validEdge, []);
 
         // Assert - Factory should not execute, no Character instance should be created
         result.IsFailure.ShouldBeTrue();

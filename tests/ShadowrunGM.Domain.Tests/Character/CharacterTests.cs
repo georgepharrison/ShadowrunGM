@@ -1,10 +1,6 @@
-using Shouldly;
-using ShadowrunGM.ApiSdk.Common.Results;
-using ShadowrunGM.Domain.Character;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character.Events;
 using ShadowrunGM.Domain.Character.ValueObjects;
-using ShadowrunGM.Domain.Tests.TestHelpers;
-using Xunit;
 
 namespace ShadowrunGM.Domain.Tests.Character;
 
@@ -26,7 +22,7 @@ public sealed class CharacterTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge, []);
 
             // Assert
             result.IsSuccess.ShouldBeTrue();
@@ -53,7 +49,7 @@ public sealed class CharacterTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge, []);
 
             // Assert
             result.IsSuccess.ShouldBeTrue();
@@ -79,7 +75,7 @@ public sealed class CharacterTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge, []);
 
             // Assert
             result.IsSuccess.ShouldBeTrue();
@@ -733,7 +729,7 @@ public sealed class CharacterTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(characterName, attributes, startingEdge, []);
 
             // Assert
             result.IsSuccess.ShouldBeTrue();
