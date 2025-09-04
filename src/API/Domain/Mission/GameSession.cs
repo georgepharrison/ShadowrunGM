@@ -1,4 +1,4 @@
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character;
 using ShadowrunGM.Domain.Common;
 using ShadowrunGM.Domain.Mission.Events;

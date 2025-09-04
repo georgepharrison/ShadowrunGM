@@ -1,7 +1,7 @@
 ﻿using ShadowrunGM.API.Importing.Abstractions;
 using ShadowrunGM.API.Importing.Contracts;
 using ShadowrunGM.API.Importing.Jobs;
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 
 namespace ShadowrunGM.API.Importing.Builder;
 

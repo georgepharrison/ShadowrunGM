@@ -4,5 +4,5 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using Xunit;
 global using Shouldly;
-global using ShadowrunGM.ApiSdk.Common.Results;
 global using ShadowrunGM.Domain.Tests.TestHelpers;
+global using FlowRight.Core.Results;

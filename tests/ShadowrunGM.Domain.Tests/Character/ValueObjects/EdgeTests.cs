@@ -17,7 +17,7 @@ public sealed class EdgeTests
         public void Create_WithValidStartingEdge_ShouldSetCurrentAndMaxToSameValue(int startingEdge)
         {
             // Act
-            Edge edge = Edge.Create(startingEdge);
+            Edge edge = Edge.CreateWithValues(startingEdge, startingEdge);
 
             // Assert
             edge.Current.ShouldBe(startingEdge);
@@ -30,7 +30,7 @@ public sealed class EdgeTests
         public void Create_WithMinimumEdge_ShouldSucceed()
         {
             // Act
-            Edge edge = Edge.Create(1);
+            Edge edge = Edge.CreateWithValues(1, 1);
 
             // Assert
             edge.Current.ShouldBe(1);
@@ -42,11 +42,14 @@ public sealed class EdgeTests
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Create_WithInvalidStartingEdge_ShouldThrowException(int invalidStartingEdge)
+        public void Create_WithInvalidStartingEdge_ShouldReturnFailure(int invalidStartingEdge)
         {
-            // Act & Assert
-            Should.Throw<ArgumentException>(() => Edge.Create(invalidStartingEdge))
-                .Message.ShouldContain("Maximum Edge must be at least 1");
+            // Act
+            Result<Edge> result = Edge.Create(invalidStartingEdge);
+            
+            // Assert
+            result.IsFailure.ShouldBeTrue();
+            result.Error.ShouldContain("Edge must be between 1 and 7");
         }
     }
 
@@ -116,7 +119,7 @@ public sealed class EdgeTests
         public void Spend_WithValidAmount_ShouldReduceCurrentEdge()
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act
             Result<Edge> result = edge.Spend(2);
@@ -135,7 +138,7 @@ public sealed class EdgeTests
         public void Spend_AllAvailableEdge_ShouldResultInZeroCurrent()
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
 
             // Act
             Result<Edge> result = edge.Spend(3);
@@ -171,7 +174,7 @@ public sealed class EdgeTests
         public void Spend_WithZeroOrNegativeAmount_ShouldReturnFailure(int invalidAmount)
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act
             Result<Edge> result = edge.Spend(invalidAmount);
@@ -199,7 +202,7 @@ public sealed class EdgeTests
         public void Spend_ShouldBeImmutable_OriginalEdgeUnchanged()
         {
             // Arrange
-            Edge originalEdge = Edge.Create(5);
+            Edge originalEdge = Edge.CreateWithValues(5, 5);
 
             // Act
             Result<Edge> result = originalEdge.Spend(2);
@@ -283,7 +286,7 @@ public sealed class EdgeTests
         public void Regain_WithZeroOrNegativeAmount_ShouldReturnFailure(int invalidAmount)
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
 
             // Act
             Result<Edge> result = edge.Regain(invalidAmount);
@@ -297,7 +300,7 @@ public sealed class EdgeTests
         public void Regain_WhenAlreadyAtMax_ShouldRemainAtMax()
         {
             // Arrange
-            Edge edge = Edge.Create(5); // Already at max
+            Edge edge = Edge.CreateWithValues(5, 5); // Already at max
 
             // Act
             Result<Edge> result = edge.Regain(2);
@@ -352,7 +355,7 @@ public sealed class EdgeTests
         public void Refresh_WhenAlreadyAtMax_ShouldRemainUnchanged()
         {
             // Arrange
-            Edge edge = Edge.Create(4); // Already at max
+            Edge edge = Edge.CreateWithValues(4, 4); // Already at max
 
             // Act
             Edge refreshedEdge = edge.Refresh();
@@ -405,7 +408,7 @@ public sealed class EdgeTests
         public void Burn_WithValidAmount_ShouldReduceBothCurrentAndMax()
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act
             Result<Edge> result = edge.Burn(2);
@@ -424,7 +427,7 @@ public sealed class EdgeTests
         public void Burn_WithDefaultAmount_ShouldBurnOnePoint()
         {
             // Arrange
-            Edge edge = Edge.Create(4);
+            Edge edge = Edge.CreateWithValues(4, 4);
 
             // Act
             Result<Edge> result = edge.Burn(); // Default amount = 1
@@ -479,7 +482,7 @@ public sealed class EdgeTests
         public void Burn_MoreThanMaxAvailable_ShouldReturnFailure()
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
 
             // Act
             Result<Edge> result = edge.Burn(4); // Can't burn more than max
@@ -493,7 +496,7 @@ public sealed class EdgeTests
         public void Burn_ToReduceMaxBelowOne_ShouldReturnFailure()
         {
             // Arrange
-            Edge edge = Edge.Create(2);
+            Edge edge = Edge.CreateWithValues(2, 2);
 
             // Act
             Result<Edge> result = edge.Burn(2); // Would leave max = 0
@@ -507,7 +510,7 @@ public sealed class EdgeTests
         public void Burn_ExactlyToOneMaximum_ShouldSucceed()
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
 
             // Act
             Result<Edge> result = edge.Burn(2); // Max becomes 1
@@ -529,7 +532,7 @@ public sealed class EdgeTests
         public void Burn_WithZeroOrNegativeAmount_ShouldReturnFailure(int invalidAmount)
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act
             Result<Edge> result = edge.Burn(invalidAmount);
@@ -609,7 +612,7 @@ public sealed class EdgeTests
         public void Edge_ShouldBeImmutable()
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act & Assert - Value object should have no public setters
             typeof(Edge).GetProperty("Current")?.SetMethod.ShouldBeNull();
@@ -633,7 +636,7 @@ public sealed class EdgeTests
         public void ToString_WhenAtMax_ShouldShowSameValues()
         {
             // Arrange
-            Edge edge = Edge.Create(4);
+            Edge edge = Edge.CreateWithValues(4, 4);
 
             // Act
             string stringRepresentation = edge.ToString();
@@ -646,7 +649,7 @@ public sealed class EdgeTests
         public void Edge_WithNullComparison_ShouldNotBeEqual()
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
 
             // Act & Assert
             edge.ShouldNotBe(null);
@@ -657,7 +660,7 @@ public sealed class EdgeTests
         public void Edge_WithDifferentType_ShouldNotBeEqual()
         {
             // Arrange
-            Edge edge = Edge.Create(3);
+            Edge edge = Edge.CreateWithValues(3, 3);
             object differentType = "not an edge";
 
             // Act & Assert
@@ -671,7 +674,7 @@ public sealed class EdgeTests
         public void SpendRefreshSequence_ShouldWorkCorrectly()
         {
             // Arrange
-            Edge edge = Edge.Create(5);
+            Edge edge = Edge.CreateWithValues(5, 5);
 
             // Act - Spend then refresh
             Result<Edge> spentResult = edge.Spend(3);
@@ -688,7 +691,7 @@ public sealed class EdgeTests
         public void SpendBurnSequence_ShouldWorkCorrectly()
         {
             // Arrange
-            Edge edge = Edge.Create(6);
+            Edge edge = Edge.CreateWithValues(6, 6);
 
             // Act - Spend then burn
             Result<Edge> spentResult = edge.Spend(2); // 4/6
@@ -709,7 +712,7 @@ public sealed class EdgeTests
         public void ComplexEdgeManipulation_ShouldMaintainInvariants()
         {
             // Arrange
-            Edge edge = Edge.Create(7);
+            Edge edge = Edge.CreateWithValues(7, 7);
 
             // Act - Complex sequence
             Result<Edge> step1 = edge.Spend(3); // 4/7

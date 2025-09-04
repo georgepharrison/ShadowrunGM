@@ -1,8 +1,5 @@
-using Shouldly;
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character.ValueObjects;
-using ShadowrunGM.Domain.Tests.TestHelpers;
-using Xunit;
 
 namespace ShadowrunGM.Domain.Tests.Character;
 
@@ -24,7 +21,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, startingEdge, []);
 
             // Assert - This test will FAIL until ValidationBuilder is implemented
             // Current implementation returns single error string, ValidationBuilder should return structured errors
@@ -45,7 +42,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(nullName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(nullName, attributes, startingEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder NotEmpty rule is implemented
             result.IsFailure.ShouldBeTrue();
@@ -65,7 +62,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, startingEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder MaximumLength rule is implemented
             result.IsFailure.ShouldBeTrue();
@@ -86,7 +83,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, startingEdge, []);
 
             // Assert - This should work with current implementation
             result.IsSuccess.ShouldBeTrue();
@@ -108,7 +105,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, nullAttributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, nullAttributes, startingEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder NotNull rule is implemented
             result.IsFailure.ShouldBeTrue();
@@ -128,7 +125,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, startingEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, validAttributes, startingEdge, []);
 
             // Assert - This should work with current implementation
             result.IsSuccess.ShouldBeTrue();
@@ -150,7 +147,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, tooLowEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, tooLowEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder InclusiveBetween rule is implemented
             result.IsFailure.ShouldBeTrue();
@@ -171,7 +168,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, tooHighEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, tooHighEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder InclusiveBetween rule is implemented
             result.IsFailure.ShouldBeTrue();
@@ -194,7 +191,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, validEdge, []);
 
             // Assert - This should work with current implementation
             result.IsSuccess.ShouldBeTrue();
@@ -217,7 +214,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge);
+                ShadowrunGM.Domain.Character.Character.Create(emptyName, nullAttributes, invalidEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder accumulates all errors
             // Current implementation stops at first error (manual if statements)
@@ -247,7 +244,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, validEdge, []);
 
             // Assert - This will FAIL until ValidationBuilder is implemented
             // Current implementation uses generic Error type
@@ -266,7 +263,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, validEdge, []);
 
             // Assert - This defines the expected ValidationBuilder error structure
             result.IsFailure.ShouldBeTrue();
@@ -300,7 +297,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(emptyName, attributes, validEdge, []);
 
             // Assert - NotEmpty rule should produce this specific error pattern
             result.IsFailure.ShouldBeTrue();
@@ -326,7 +323,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(tooLongName, attributes, validEdge, []);
 
             // Assert - MaximumLength rule should produce this specific error pattern
             result.IsFailure.ShouldBeTrue();
@@ -353,7 +350,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, nullAttributes, validEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, nullAttributes, validEdge, []);
 
             // Assert - NotNull rule should produce this specific error pattern
             result.IsFailure.ShouldBeTrue();
@@ -379,7 +376,7 @@ public sealed class CharacterValidationTests
 
             // Act
             Result<ShadowrunGM.Domain.Character.Character> result = 
-                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, invalidEdge);
+                ShadowrunGM.Domain.Character.Character.Create(validName, attributes, invalidEdge, []);
 
             // Assert - InclusiveBetween rule should produce this specific error pattern
             result.IsFailure.ShouldBeTrue();

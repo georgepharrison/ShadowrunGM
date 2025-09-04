@@ -1,4 +1,4 @@
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character.ValueObjects;
 
 namespace ShadowrunGM.Domain.Tests.TestHelpers;

@@ -1,4 +1,4 @@
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character.ValueObjects;
 
 namespace ShadowrunGM.Domain.Tests.TestHelpers;
@@ -177,7 +177,7 @@ public sealed class CharacterBuilder
     /// <exception cref="InvalidOperationException">Thrown if the Character creation fails.</exception>
     public ShadowrunGM.Domain.Character.Character Build()
     {
-        Result<ShadowrunGM.Domain.Character.Character> result = ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge);
+        Result<ShadowrunGM.Domain.Character.Character> result = ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills ?? []);
 
         if (!result.IsSuccess)
         {
@@ -200,9 +200,7 @@ public sealed class CharacterBuilder
     /// <exception cref="InvalidOperationException">Thrown if the Character creation fails.</exception>
     public ShadowrunGM.Domain.Character.Character BuildWithSkills()
     {
-        Result<ShadowrunGM.Domain.Character.Character> result = _skills != null
-            ? ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills)
-            : ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge);
+        Result<ShadowrunGM.Domain.Character.Character> result = ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills ?? []);
 
         if (!result.IsSuccess)
         {
@@ -223,7 +221,7 @@ public sealed class CharacterBuilder
     /// </summary>
     /// <returns>A Result containing the Character or an error.</returns>
     public Result<ShadowrunGM.Domain.Character.Character> TryBuild() =>
-        ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge);
+        ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills ?? []);
 
     /// <summary>
     /// Attempts to build a Character using Character.Create() with skills, returning the Result.
@@ -231,7 +229,5 @@ public sealed class CharacterBuilder
     /// </summary>
     /// <returns>A Result containing the Character or an error.</returns>
     public Result<ShadowrunGM.Domain.Character.Character> TryBuildWithSkills() =>
-        _skills != null
-            ? ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills)
-            : ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge);
+        ShadowrunGM.Domain.Character.Character.Create(_name, _attributes, _startingEdge, _skills ?? []);
 }
