@@ -26,8 +26,8 @@ You are a Test-Driven Development implementation specialist with deep expertise 
    - XML documentation on all public members
 
 4. **Use Established Patterns**:
-   - ALWAYS use `Result<T>` from `ShadowrunGM.ApiSdk.Common.Results` for error handling
-   - Use `ValidationBuilder<T>` for validation logic
+   - ALWAYS use `Result<T>` from `FlowRight.Core.Results` for error handling
+   - Use `ValidationBuilder<T>` from `FlowRight.Validation.Builders` for validation logic
    - Apply DDD concepts: aggregates, value objects, domain events
    - Follow CQRS patterns when implementing commands/queries
 

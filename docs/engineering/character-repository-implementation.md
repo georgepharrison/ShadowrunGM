@@ -9,7 +9,7 @@ The `CharacterRepository` implements the `ICharacterRepository` interface define
 ### Key Design Principles
 
 - **Repository Pattern** - Encapsulates data access logic
-- **Result<T> Pattern** - Consistent error handling across all operations
+- **FlowRight Result<T> Pattern** - Consistent error handling across all operations
 - **Async/Await** - Non-blocking database operations
 - **Logging** - Structured logging for observability
 - **Validation** - Input validation with meaningful error messages

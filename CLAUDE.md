@@ -198,14 +198,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Result Pattern - CRITICAL REQUIREMENT
 
-**ALWAYS use the existing Result<T> pattern from `ShadowrunGM.ApiSdk.Common.Results` namespace.**
+**ALWAYS use the FlowRight libraries for Result<T> pattern and validation.**
 
-**DO NOT create new Result classes.** The codebase has a comprehensive, production-ready Result pattern implementation that MUST be used for all error handling.
+**DO NOT create new Result classes.** The codebase uses FlowRight libraries which provide a comprehensive, production-ready Result pattern implementation and validation framework that MUST be used for all error handling.
 
 #### Required Using Statements
 ```csharp
-using ShadowrunGM.ApiSdk.Common.Results;
-using ShadowrunGM.API.Application.Common.Results; // For ValidationBuilder
+using FlowRight.Core.Results;
+using FlowRight.Validation.Builders; // For ValidationBuilder
 ```
 
 #### Success Cases
@@ -232,18 +232,17 @@ public Result<Character> ValidateCharacter() =>
     Result.Failure<Character>("Character validation failed");
 
 // Validation errors (use the validation framework)
-public Result<Character> CreateCharacter(CreateCharacterRequest request)
-{
-    ValidationBuilder<Character> builder = new();
-    return builder
-        .RuleFor(x => x.Name, request.Name)
+public static Result<Character> CreateCharacter(string name, int age) =>
+    new ValidationBuilder<Character>()
+        .RuleFor(x => x.Name, name)
             .NotEmpty()
-            .MaximumLength(50)
-        .RuleFor(x => x.Age, request.Age)
+            .MaxLength(50)
+            .WithMessage("Character name must be between 1 and 50 characters")
+        .RuleFor(x => x.Age, age)
             .GreaterThan(0)
             .LessThan(120)
-        .Build(() => new Character(request.Name, request.Age));
-}
+            .WithMessage("Character age must be between 1 and 119")
+        .Build(() => new Character(name, age));
 
 // Security errors
 public Result<SecureData> GetSecureData() =>
@@ -268,20 +267,33 @@ public static Result<Character> Create(string name, AttributeSet attributes, int
     new ValidationBuilder<Character>()
         .RuleFor(x => x.Name, name)
             .NotEmpty()
-            .MaximumLength(100)
+            .MaxLength(100)
+            .WithMessage("Character name must be between 1 and 100 characters")
         .RuleFor(x => x.Attributes, AttributeSet.Create(attributes), out AttributeSet? validatedAttributes)
         .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
         .Build(() => new Character(name, validatedAttributes!, validatedEdge!));
 
-// Combine multiple Results
-Result combinedResult = Result.Combine(result1, result2, result3);
+// Real example from the codebase - AttributeSet validation
+public static Result<AttributeSet> Create(int body, int agility, int reaction, int strength, 
+    int willpower, int logic, int intuition, int charisma) =>
+    new ValidationBuilder<AttributeSet>()
+        .RuleFor(x => x.Body, body)
+            .InclusiveBetween(1, 10)
+            .WithMessage("Body attribute must be between 1 and 10")
+        .RuleFor(x => x.Agility, agility) 
+            .InclusiveBetween(1, 10)
+            .WithMessage("Agility attribute must be between 1 and 10")
+        // ... other attributes
+        .Build(() => new AttributeSet(body, agility, reaction, strength, willpower, logic, intuition, charisma));
 ```
 
-#### ValidationBuilder Features
+#### FlowRight ValidationBuilder Features
 - **Result<T> Integration**: `RuleFor(x => x.Property, someResult, out value)` automatically extracts failures
-- **Result Combination**: `Result.Combine()` merges multiple Result objects intelligently  
+- **Fluent Validation**: Chain validation rules with method chaining
+- **Custom Messages**: Use `WithMessage()` for user-friendly error messages
 - **Out Parameter Pattern**: Access successful values from Result<T> for object construction
 - **Nested Validation**: Compose validation across value object creation methods
+- **Type-Safe Building**: Build() method only executes factory when all validations pass
 
 #### Pattern Matching
 ```csharp
@@ -299,25 +311,12 @@ return characterResult.Match(
     onOperationCanceledException: error => HandleCancellation(error));
 ```
 
-#### HTTP Response Integration
-```csharp
-// Automatic HTTP response conversion
-HttpResponseMessage response = await httpClient.GetAsync("/api/characters/1");
-Result<Character> result = await response.ToResultFromJsonAsync<Character>();
+#### FlowRight Validation Rules
+The FlowRight validation framework includes extensive validation rules:
 
-// With custom JSON options
-Result<Character> result = await response.ToResultFromJsonAsync<Character>(jsonOptions);
+**String validation**: `NotEmpty()`, `MinLength()`, `MaxLength()`, `ExactLength()`, `EmailAddress()`, `Matches(regex)`
 
-// Non-generic result
-Result result = await response.ToResultAsync();
-```
-
-#### Available Validation Rules
-The framework includes extensive validation rules:
-
-**String validation**: `NotEmpty()`, `MinimumLength()`, `MaximumLength()`, `ExactLength()`, `EmailAddress()`, `Matches(regex)`
-
-**Numeric validation**: `GreaterThan()`, `LessThan()`, `GreaterThanOrEqualTo()`, `LessThanOrEqualTo()`, `InclusiveBetween()`, `ExclusiveBetween()`, `PrecisionScale()`
+**Numeric validation**: `GreaterThan()`, `LessThan()`, `GreaterThanOrEqualTo()`, `LessThanOrEqualTo()`, `InclusiveBetween()`, `ExclusiveBetween()`
 
 **Collection validation**: `MinCount()`, `MaxCount()`, `Count()`, `Unique()`
 

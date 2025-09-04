@@ -2,8 +2,8 @@
 using ShadowrunGM.API.Importing.Abstractions;
 using ShadowrunGM.API.Importing.Chunking;
 using ShadowrunGM.API.Importing.Contracts;
-using ShadowrunGM.ApiSdk.Common.Results;
 using System.Text;
+using FlowRight.Core.Results;
 
 namespace ShadowrunGM.API.Importing.Builder;
 

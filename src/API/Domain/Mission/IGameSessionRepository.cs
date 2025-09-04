@@ -1,6 +1,6 @@
-using ShadowrunGM.ApiSdk.Common.Results;
 using ShadowrunGM.Domain.Character;
 using ShadowrunGM.Domain.Common;
+using FlowRight.Core.Results;
 
 namespace ShadowrunGM.Domain.Mission;
 

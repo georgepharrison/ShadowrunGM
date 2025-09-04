@@ -96,7 +96,7 @@ Concrete implementations of domain repository interfaces:
 Implements `ICharacterRepository` with comprehensive CRUD operations:
 
 - **Async/await patterns** with proper cancellation token support
-- **Result<T> pattern** for consistent error handling
+- **FlowRight Result<T> pattern** for consistent error handling
 - **Entity Framework Core** with PostgreSQL optimizations
 - **Comprehensive logging** with structured logging patterns
 
@@ -205,7 +205,7 @@ public class CharacterRepositoryTests : IDisposable
 
 - **Arrange-Act-Assert** structure
 - **Builder patterns** for test data construction
-- **Result<T> assertions** using Shouldly
+- **FlowRight Result<T> assertions** using Shouldly
 - **Async test patterns** with proper cancellation token testing
 
 ## Performance Considerations

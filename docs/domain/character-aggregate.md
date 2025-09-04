@@ -27,7 +27,7 @@ flowchart TB
             
             
             
-            resultClass["Result<T> Pattern"]
+            resultClass["FlowRight Result<T> Pattern"]
             domainEvents["Domain Events"]
             character["Character"]
             characterid["CharacterId"]

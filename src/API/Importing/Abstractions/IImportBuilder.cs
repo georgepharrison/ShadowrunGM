@@ -1,5 +1,5 @@
 ﻿using ShadowrunGM.API.Importing.Contracts;
-using ShadowrunGM.ApiSdk.Common.Results;
+using FlowRight.Core.Results;
 
 namespace ShadowrunGM.API.Importing.Abstractions;
 

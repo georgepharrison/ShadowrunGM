@@ -1,8 +1,8 @@
-using ShadowrunGM.ApiSdk.Common.Results;
-using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Character.Events;
 using ShadowrunGM.Domain.Character.ValueObjects;
 using ShadowrunGM.Domain.Common;
+using FlowRight.Validation.Builders;
+using FlowRight.Core.Results;
 
 namespace ShadowrunGM.Domain.Character;
 
@@ -170,7 +170,7 @@ public sealed class Character : AggregateRoot
     private static Character CreateCharacterWithSkills(string name, AttributeSet attributes, Edge edge, IEnumerable<Skill> skills)
     {
         Character character = CreateCharacterInstanceFromResults(name, attributes, edge);
-        
+
         if (skills != null)
         {
             foreach (Skill skill in skills)
@@ -201,7 +201,7 @@ public sealed class Character : AggregateRoot
 
         if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
             return Result.Failure<EdgeSpent>("Failed to update Edge");
-        
+
         Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
@@ -224,7 +224,7 @@ public sealed class Character : AggregateRoot
 
         if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
             return edgeResult;
-        
+
         Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
@@ -253,7 +253,7 @@ public sealed class Character : AggregateRoot
 
         if (!edgeResult.TryGetValue(out Edge? newEdge) || newEdge == null)
             return edgeResult;
-        
+
         Edge = newEdge;
         ModifiedAt = DateTime.UtcNow;
 
@@ -273,7 +273,7 @@ public sealed class Character : AggregateRoot
 
         if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
             return healthResult;
-        
+
         Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
@@ -293,7 +293,7 @@ public sealed class Character : AggregateRoot
 
         if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
             return healthResult;
-        
+
         Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
@@ -313,7 +313,7 @@ public sealed class Character : AggregateRoot
 
         if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
             return healthResult;
-        
+
         Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
@@ -333,7 +333,7 @@ public sealed class Character : AggregateRoot
 
         if (!healthResult.TryGetValue(out ConditionMonitor? newHealth) || newHealth == null)
             return healthResult;
-        
+
         Health = newHealth;
         ModifiedAt = DateTime.UtcNow;
 
@@ -367,7 +367,7 @@ public sealed class Character : AggregateRoot
 
         if (!skillResult.TryGetValue(out Skill? newSkill) || newSkill == null)
             return skillResult;
-        
+
         _skills.Add(newSkill);
         ModifiedAt = DateTime.UtcNow;
 
@@ -382,7 +382,7 @@ public sealed class Character : AggregateRoot
     /// <returns>A Result indicating success or failure.</returns>
     public Result<Skill> UpdateSkill(string name, int newRating)
     {
-        Skill? skill = _skills.FirstOrDefault(s => 
+        Skill? skill = _skills.FirstOrDefault(s =>
             string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
         if (skill == null)
@@ -395,7 +395,7 @@ public sealed class Character : AggregateRoot
         int index = _skills.IndexOf(skill);
         if (!updatedSkill.TryGetValue(out Skill? newSkill) || newSkill == null)
             return updatedSkill;
-        
+
         _skills[index] = newSkill;
         ModifiedAt = DateTime.UtcNow;
 
@@ -409,7 +409,7 @@ public sealed class Character : AggregateRoot
     /// <returns>True if the skill was removed; otherwise, false.</returns>
     public bool RemoveSkill(string name)
     {
-        Skill? skill = _skills.FirstOrDefault(s => 
+        Skill? skill = _skills.FirstOrDefault(s =>
             string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
         if (skill == null)

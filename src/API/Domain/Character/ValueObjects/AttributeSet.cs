@@ -1,6 +1,6 @@
-using ShadowrunGM.ApiSdk.Common.Results;
-using ShadowrunGM.API.Application.Common.Results;
 using ShadowrunGM.Domain.Common;
+using FlowRight.Core.Results;
+using FlowRight.Validation.Builders;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
 

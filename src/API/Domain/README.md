@@ -16,7 +16,7 @@ This layer contains the core business logic and domain models for ShadowrunGM, f
 - **Value Objects:** Immutable objects with equality based on value, encapsulating business rules and validation
 - **Domain Events:** Capture important business events for eventual consistency and cross-context integration
 - **Domain Services:** Encapsulate domain logic that spans multiple entities (e.g., dice rolling algorithms)
-- **Result Pattern:** Explicit success/failure handling without exceptions, integrated with validation framework
+- **FlowRight Result Pattern:** Explicit success/failure handling without exceptions, integrated with FlowRight validation framework
 - **Bounded Contexts:** Clear separation between Character and Mission domains with well-defined integration points
 
 ## Domain Concepts
@@ -40,7 +40,7 @@ This layer contains the core business logic and domain models for ShadowrunGM, f
 
 - **Identity References:** Mission aggregate references Character via CharacterId
 - **Domain Events:** Loose coupling through event-driven architecture
-- **Shared Kernel:** Result<T> pattern, validation framework, common value object patterns
+- **Shared Kernel:** FlowRight Result<T> pattern, validation framework, common value object patterns
 
 ## Detailed Documentation
 
@@ -52,5 +52,5 @@ This layer contains the core business logic and domain models for ShadowrunGM, f
 ## Related Documentation
 
 - [Application Layer CQRS](../Application/README.md) - Command/Query handlers and validation
-- [Result Pattern](../Application/Common/Results/) - Validation framework and error handling  
+- [FlowRight Libraries](https://www.nuget.org/profiles/FlowRight) - Validation framework and error handling  
 - [Architecture Overview](../../docs/architecture/README.md) - System-wide architectural decisions

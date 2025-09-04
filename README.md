@@ -54,7 +54,7 @@ See [Database Setup Guide](docs/database-setup.md) for detailed configuration.
 
 * **Docker Compose** - PostgreSQL + pgvector for local development
 * **Entity Framework Core** - Domain entity persistence with PostgreSQL
-* **Repository Pattern** - Data access with comprehensive Result<T> error handling
+* **Repository Pattern** - Data access with comprehensive FlowRight Result<T> error handling
 * **Data Seeding** - Automatic Shadowrun 6e equipment and content population
 * **TDD Implementation** - Full test coverage with xUnit and Shouldly
 
@@ -84,7 +84,7 @@ All documentation lives in the [docs/](docs/) folder. Key entry point: [docs/REA
 * ✅ Entity Framework migrations with Character aggregate support
 * ✅ CharacterRepository implementation with comprehensive TDD
 * ✅ Game items seed data with baseline Shadowrun 6e equipment
-* ✅ Result<T> pattern integration throughout data layer
+* ✅ FlowRight Result<T> pattern integration throughout data layer
 
 **Next Steps:**
 * Hook up Semantic Kernel plugins for AI orchestration

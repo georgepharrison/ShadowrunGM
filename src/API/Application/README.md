@@ -1,6 +1,6 @@
 # Application Layer
 
-The Application layer serves as the orchestration layer between the domain and infrastructure, implementing Command Query Responsibility Segregation (CQRS) patterns with comprehensive validation and error handling through the Result&lt;T&gt; pattern.
+The Application layer serves as the orchestration layer between the domain and infrastructure, implementing Command Query Responsibility Segregation (CQRS) patterns with comprehensive validation and error handling through the FlowRight Result&lt;T&gt; pattern.
 
 ## Architecture Overview
 
@@ -22,9 +22,9 @@ flowchart TB
         end
         
         subgraph Common["Common Infrastructure"]
-            ResultPattern["Result<T> Pattern"]
-            ValidationBuilder["ValidationBuilder<T>"]
-            PropertyValidators["Property Validators"]
+            ResultPattern["FlowRight Result<T> Pattern"]
+            ValidationBuilder["FlowRight ValidationBuilder<T>"]
+            PropertyValidators["FlowRight Validators"]
         end
         
         CommandHandlers --> Validation
@@ -39,7 +39,7 @@ flowchart TB
 
 ## CQRS Implementation Patterns
 
-The ShadowrunGM application implements CQRS through a custom pattern built on the ApiSdk infrastructure:
+The ShadowrunGM application implements CQRS through FlowRight libraries infrastructure:
 
 ### Command Pattern
 
@@ -60,11 +60,12 @@ public sealed class CreateCharacterCommandHandler : ICommandHandler<CreateCharac
 
     public async Task<Result<CharacterId>> HandleAsync(CreateCharacterCommand command, CancellationToken cancellationToken)
     {
-        // 1. Domain validation through ValidationBuilder
+        // 1. Domain validation through FlowRight ValidationBuilder
         Result<Character> characterResult = new ValidationBuilder<Character>()
             .RuleFor(x => x.Name, command.Name)
                 .NotEmpty()
-                .MaximumLength(100)
+                .MaxLength(100)
+                .WithMessage("Character name must be between 1 and 100 characters")
             .RuleFor(x => x.Attributes, AttributeSet.Create(command.Attributes), out AttributeSet? validatedAttributes)
             .RuleFor(x => x.Edge, Edge.Create(command.StartingEdge), out Edge? validatedEdge)
             .Build(() => Character.Create(command.Name, validatedAttributes!, validatedEdge!));
@@ -109,7 +110,7 @@ public sealed class GetCharacterQueryHandler : IQueryHandler<GetCharacterQuery, 
 
 ## Validation Framework Integration
 
-The Application layer leverages a comprehensive validation framework that integrates seamlessly with the Result&lt;T&gt; pattern:
+The Application layer leverages the comprehensive FlowRight validation framework that integrates seamlessly with the Result&lt;T&gt; pattern:
 
 ### Basic Validation Patterns
 
@@ -125,7 +126,7 @@ public async Task<Result<GameSession>> StartSessionCommandHandler(StartSessionCo
             .WithMessage("Character ID is required")
         .RuleFor(x => x.SessionName, command.SessionName)
             .NotEmpty()
-            .MaximumLength(100)
+            .MaxLength(100)
             .WithMessage("Session name must be between 1 and 100 characters")
         .Build(() => GameSession.Start(command.CharacterId));
 
@@ -269,7 +270,7 @@ Result<Character> characterResult = new ValidationBuilder<Character>()
     .RuleFor(x => x.Name, request.Name)
         .NotEmpty()
         .WithMessage("Character name is required")
-        .MaximumLength(100)
+        .MaxLength(100)
         .WithMessage("Character name cannot exceed 100 characters")
     .RuleFor(x => x.Email, request.Email)
         .EmailAddress()
@@ -355,7 +356,7 @@ public sealed class MissionOrchestrator
 
 ### String Validation
 - `NotEmpty()` - Ensures non-null, non-empty strings
-- `MinimumLength(int)` / `MaximumLength(int)` - Length constraints
+- `MinLength(int)` / `MaxLength(int)` - Length constraints
 - `ExactLength(int)` - Exact length requirement
 - `Length(int, int)` - Range-based length validation
 - `EmailAddress()` - Email format validation
