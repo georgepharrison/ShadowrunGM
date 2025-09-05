@@ -107,7 +107,7 @@ public sealed class CharacterValidationBuilderContractTests
     public void Create_WithNameTooLong_ShouldTriggerMaximumLengthRule()
     {
         // Arrange - Name that's not empty but too long (should pass NotEmpty, fail MaximumLength)
-        string tooLongName = new string('A', 101);
+        string tooLongName = new('A', 101);
         AttributeSet validAttributes = new AttributeSetBuilder().Build();
         int validEdge = 3;
 

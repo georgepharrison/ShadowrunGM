@@ -351,7 +351,7 @@ public sealed class CharacterIdTests
             ];
 
             // Act
-            List<CharacterId> sortedIds = ids.OrderBy(id => id.Value).ToList();
+            List<CharacterId> sortedIds = [.. ids.OrderBy(id => id.Value)];
 
             // Assert
             sortedIds.Count.ShouldBe(4);

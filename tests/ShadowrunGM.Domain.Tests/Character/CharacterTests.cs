@@ -676,7 +676,7 @@ public sealed class CharacterTests
             character.AddSkill("Athletics", 2);
 
             // Assert - All skill names should be unique (case insensitive)
-            List<string> skillNames = character.Skills.Select(s => s.Name.ToLowerInvariant()).ToList();
+            List<string> skillNames = [.. character.Skills.Select(s => s.Name.ToLowerInvariant())];
             skillNames.Distinct().Count().ShouldBe(skillNames.Count);
         }
 

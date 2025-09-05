@@ -341,7 +341,7 @@ public sealed class SessionIdTests
             ];
 
             // Act
-            List<SessionId> sortedIds = ids.OrderBy(id => id.Value).ToList();
+            List<SessionId> sortedIds = [.. ids.OrderBy(id => id.Value)];
 
             // Assert
             sortedIds.Count.ShouldBe(4);

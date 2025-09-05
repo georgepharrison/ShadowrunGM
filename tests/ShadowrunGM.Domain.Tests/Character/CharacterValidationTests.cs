@@ -56,7 +56,7 @@ public sealed class CharacterValidationTests
         public void Create_WithTooLongName_ShouldReturnStructuredValidationError()
         {
             // Arrange
-            string tooLongName = new string('A', 101);
+            string tooLongName = new('A', 101);
             AttributeSet attributes = new AttributeSetBuilder().Build();
             int startingEdge = 3;
 
@@ -257,7 +257,7 @@ public sealed class CharacterValidationTests
         public void Create_WithValidationBuilder_ShouldProvideStructuredErrorFormat()
         {
             // Arrange
-            string tooLongName = new string('A', 101);
+            string tooLongName = new('A', 101);
             AttributeSet attributes = new AttributeSetBuilder().Build();
             int validEdge = 3;
 
@@ -317,7 +317,7 @@ public sealed class CharacterValidationTests
             // builder.RuleFor(x => x.Name, name).MaximumLength(100)
             
             // Arrange
-            string tooLongName = new string('A', 101);
+            string tooLongName = new('A', 101);
             AttributeSet attributes = new AttributeSetBuilder().Build();
             int validEdge = 3;
 

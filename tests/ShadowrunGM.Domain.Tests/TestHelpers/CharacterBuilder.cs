@@ -65,7 +65,7 @@ public sealed class CharacterBuilder
     /// <returns>The builder instance.</returns>
     public CharacterBuilder WithSkills(IEnumerable<Skill> skills)
     {
-        _skills = skills.ToList();
+        _skills = [.. skills];
         return this;
     }
 
@@ -105,7 +105,7 @@ public sealed class CharacterBuilder
     /// <returns>The builder instance.</returns>
     public CharacterBuilder WithTooLongName()
     {
-        _name = new string('A', 101); // Exceeds 100 character limit
+        _name = new('A', 101); // Exceeds 100 character limit
         return this;
     }
 
@@ -115,7 +115,7 @@ public sealed class CharacterBuilder
     /// <returns>The builder instance.</returns>
     public CharacterBuilder WithMaxLengthName()
     {
-        _name = new string('A', 100); // Exactly at 100 character limit
+        _name = new('A', 100); // Exactly at 100 character limit
         return this;
     }
 

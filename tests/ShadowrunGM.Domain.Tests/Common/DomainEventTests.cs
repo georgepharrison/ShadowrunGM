@@ -91,7 +91,7 @@ public sealed class DomainEventTests
                 string characterName = "Test Runner";
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 CharacterCreated event1 = new(characterId, characterName) { OccurredAt = fixedTime };
                 CharacterCreated event2 = new(characterId, characterName) { OccurredAt = fixedTime };
 
@@ -265,7 +265,7 @@ public sealed class DomainEventTests
                 string purpose = "Push the Limit";
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 EdgeSpent event1 = new(characterId, amount, purpose) { OccurredAt = fixedTime };
                 EdgeSpent event2 = new(characterId, amount, purpose) { OccurredAt = fixedTime };
 
@@ -350,7 +350,7 @@ public sealed class DomainEventTests
                 CharacterId characterId = CharacterId.New();
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 SessionStarted event1 = new(sessionId, characterId) { OccurredAt = fixedTime };
                 SessionStarted event2 = new(sessionId, characterId) { OccurredAt = fixedTime };
 
@@ -429,7 +429,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 SessionPaused event1 = new(sessionId) { OccurredAt = fixedTime };
                 SessionPaused event2 = new(sessionId) { OccurredAt = fixedTime };
 
@@ -462,7 +462,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 SessionResumed event1 = new(sessionId) { OccurredAt = fixedTime };
                 SessionResumed event2 = new(sessionId) { OccurredAt = fixedTime };
 
@@ -494,7 +494,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 SessionCompleted event1 = new(sessionId) { OccurredAt = fixedTime };
                 SessionCompleted event2 = new(sessionId) { OccurredAt = fixedTime };
 
@@ -512,7 +512,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
                 DicePoolBuilder poolBuilder = new();
                 DicePool pool = poolBuilder.WithTotalDice(6).Build();
-                DiceOutcome outcome = new DiceOutcome([6, 5, 4, 3, 2, 1], 2, 1, false, false);
+                DiceOutcome outcome = new([6, 5, 4, 3, 2, 1], 2, 1, false, false);
 
                 // Act
                 DiceRolled eventInstance = new(sessionId, pool, outcome);
@@ -531,7 +531,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
                 DicePoolBuilder poolBuilder = new();
                 DicePool pool = poolBuilder.Build();
-                DiceOutcome outcome = new DiceOutcome([4, 5, 6], 3, 0, false, false);
+                DiceOutcome outcome = new([4, 5, 6], 3, 0, false, false);
 
                 // Act
                 DiceRolled eventInstance = new(sessionId, pool, outcome);
@@ -547,7 +547,7 @@ public sealed class DomainEventTests
                 // Arrange
                 SessionId sessionId = SessionId.New();
                 DicePool nullPool = null!;
-                DiceOutcome outcome = new DiceOutcome([6], 1, 0, false, false);
+                DiceOutcome outcome = new([6], 1, 0, false, false);
 
                 // Act
                 DiceRolled eventInstance = new(sessionId, nullPool, outcome);
@@ -565,10 +565,10 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
                 DicePoolBuilder poolBuilder = new();
                 DicePool pool = poolBuilder.Build();
-                DiceOutcome outcome = new DiceOutcome([6, 5], 2, 0, false, false);
+                DiceOutcome outcome = new([6, 5], 2, 0, false, false);
 
                 // Act
-                DateTime fixedTime = new DateTime(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
+                DateTime fixedTime = new(2025, 8, 30, 6, 14, 0, DateTimeKind.Utc);
                 DiceRolled event1 = new(sessionId, pool, outcome) { OccurredAt = fixedTime };
                 DiceRolled event2 = new(sessionId, pool, outcome) { OccurredAt = fixedTime };
 
@@ -584,7 +584,7 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
                 DicePool pool1 = new DicePoolBuilder().WithTotalDice(4).Build();
                 DicePool pool2 = new DicePoolBuilder().WithTotalDice(6).Build();
-                DiceOutcome outcome = new DiceOutcome([6, 5], 2, 0, false, false);
+                DiceOutcome outcome = new([6, 5], 2, 0, false, false);
 
                 // Act
                 DiceRolled event1 = new(sessionId, pool1, outcome);
@@ -601,8 +601,8 @@ public sealed class DomainEventTests
                 SessionId sessionId = SessionId.New();
                 DicePoolBuilder poolBuilder = new();
                 DicePool pool = poolBuilder.Build();
-                DiceOutcome outcome1 = new DiceOutcome([6, 5], 2, 0, false, false);
-                DiceOutcome outcome2 = new DiceOutcome([4, 3], 0, 0, false, false);
+                DiceOutcome outcome1 = new([6, 5], 2, 0, false, false);
+                DiceOutcome outcome2 = new([4, 3], 0, 0, false, false);
 
                 // Act
                 DiceRolled event1 = new(sessionId, pool, outcome1);
@@ -710,7 +710,7 @@ public sealed class DomainEventTests
             SessionCompleted sessionCompleted = new(SessionId.New());
             DiceRolled diceRolled = new(SessionId.New(), 
                 new DicePoolBuilder().Build(), 
-                new DiceOutcome([6], 1, 0, false, false));
+                new([6], 1, 0, false, false));
 
             // Assert - All events should inherit from DomainEvent
             characterCreated.ShouldBeAssignableTo<DomainEvent>();
@@ -748,7 +748,7 @@ public sealed class DomainEventTests
             // Arrange
             SessionId sessionId = SessionId.New();
             DicePool pool = new DicePoolBuilder().WithTotalDice(5).Build();
-            DiceOutcome outcome = new DiceOutcome([6, 5, 4, 3, 2], 2, 0, false, false);
+            DiceOutcome outcome = new([6, 5, 4, 3, 2], 2, 0, false, false);
 
             // Act
             DiceRolled originalEvent = new(sessionId, pool, outcome);
