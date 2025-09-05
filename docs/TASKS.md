@@ -164,7 +164,7 @@ public sealed class SpendEdgeHandler : ICommandHandler<SpendEdgeCommand, EdgeSpe
     {
         Result<Character> characterResult = await _repository.GetByIdAsync(command.CharacterId);
         if (!characterResult.IsSuccess)
-            return Result<EdgeSpent>.Failure(characterResult.Error);
+            return Result.Failure<EdgeSpent>(characterResult.Error);
             
         Result<EdgeSpent> spendResult = characterResult.Value.SpendEdge(command.Amount, command.Purpose);
         if (!spendResult.IsSuccess)

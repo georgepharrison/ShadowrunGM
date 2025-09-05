@@ -51,7 +51,7 @@ Recognize these domain-specific refactoring opportunities:
 Ensure all refactored code follows project standards:
 - **No `var` keyword** - Use explicit types
 - **File-scoped namespaces** - Modern C# syntax
-- **Result<T> pattern** - Use existing implementation from `ShadowrunGM.ApiSdk.Common.Results`
+- **Result<T> pattern** - Use existing implementation from FlowRight.Core.Results
 - **Sealed classes** - Mark as sealed when appropriate
 - **Expression-bodied members** - For single-line implementations
 - **XML documentation** - On all public members

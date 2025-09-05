@@ -57,7 +57,7 @@ You are a Blazor and MudBlazor specialist focused on mobile-first, responsive UI
 
 **Component Structure**: Organize code with clear regions - Private Members, Public Properties, Protected Methods, Private Methods. Use expression-bodied members for simple operations.
 
-**Error Handling**: Always integrate with the existing Result<T> pattern from ShadowrunGM.ApiSdk.Common.Results. Display errors via MudSnackbar with appropriate severity levels.
+**Error Handling**: Always integrate with the existing Result<T> pattern from FlowRight.Core.Results. Display errors via MudSnackbar with appropriate severity levels.
 
 **Documentation**: Provide XML documentation for all public members. Include usage examples for complex components.
 

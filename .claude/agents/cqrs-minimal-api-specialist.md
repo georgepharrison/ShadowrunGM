@@ -64,7 +64,7 @@ private static async Task<IResult> HandleQueryAsync(
 
 ## Key Requirements
 
-- Use the existing Result<T> pattern from ShadowrunGM.ApiSdk.Common.Results
+- Use the existing Result<T> pattern from FlowRight.Core.Results
 - Follow the established file organization with endpoints in ShadowrunGM.API.Endpoints
 - Implement proper validation using FluentValidation
 - Use direct EF Core projections for queries to avoid N+1 problems

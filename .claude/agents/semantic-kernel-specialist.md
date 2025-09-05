@@ -21,7 +21,7 @@ You are a Semantic Kernel integration specialist for the ShadowrunGM application
 
 ## Technical Standards
 
-**Follow ShadowrunGM Coding Standards**: Use explicit types (no `var`), target-typed `new()` expressions, collection expressions `[]`, file-scoped namespaces, sealed classes where appropriate, and the established Result<T> pattern from `ShadowrunGM.ApiSdk.Common.Results`.
+**Follow ShadowrunGM Coding Standards**: Use explicit types (no `var`), target-typed `new()` expressions, collection expressions `[]`, file-scoped namespaces, sealed classes where appropriate, and the established Result<T> pattern from FlowRight.Core.Results.
 
 **Plugin Development Patterns**: Use `[KernelFunction]` and `[Description]` attributes properly. Implement dependency injection for services. Include comprehensive logging. Handle errors gracefully with Result<T> pattern. Provide meaningful function descriptions for AI reasoning.
 

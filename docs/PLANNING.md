@@ -67,7 +67,7 @@ public sealed class Character : AggregateRoot
         int startingEdge)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result<Character>.Failure("Character name required");
+            return Result.Failure<Character>("Character name required");
             
         Character character = new()
         {
@@ -79,20 +79,20 @@ public sealed class Character : AggregateRoot
         };
         
         character.RaiseDomainEvent(new CharacterCreated(character.Id, name));
-        return Result<Character>.Success(character);
+        return Result.Success(character);
     }
     
     public Result<EdgeSpent> SpendEdge(int amount, string purpose)
     {
         Result<Edge> edgeResult = Edge.Spend(amount);
         if (!edgeResult.IsSuccess)
-            return Result<EdgeSpent>.Failure(edgeResult.Error);
+            return Result.Failure<EdgeSpent>(edgeResult.Error);
             
         Edge = edgeResult.Value;
         EdgeSpent domainEvent = new(Id, amount, purpose);
         RaiseDomainEvent(domainEvent);
         
-        return Result<EdgeSpent>.Success(domainEvent);
+        return Result.Success(domainEvent);
     }
 }
 ```
@@ -130,7 +130,7 @@ public sealed class GameSession : AggregateRoot
         };
         
         session.RaiseDomainEvent(new SessionStarted(session.Id, characterId));
-        return Result<GameSession>.Success(session);
+        return Result.Success(session);
     }
     
     public Result<DiceOutcome> ResolveDiceRoll(
@@ -141,7 +141,7 @@ public sealed class GameSession : AggregateRoot
         _rolls.Add(new DiceRoll(pool, outcome, DateTime.UtcNow));
         
         RaiseDomainEvent(new DiceRolled(Id, pool, outcome));
-        return Result<DiceOutcome>.Success(outcome);
+        return Result.Success(outcome);
     }
 }
 ```
@@ -175,7 +175,7 @@ public sealed class Campaign : AggregateRoot
         Karma = Karma.Add(amount);
         KarmaAwarded domainEvent = new(Id, amount, reason);
         RaiseDomainEvent(domainEvent);
-        return Result<KarmaAwarded>.Success(domainEvent);
+        return Result.Success(domainEvent);
     }
 }
 ```
@@ -241,7 +241,7 @@ public sealed class CreateCharacterHandler : ICommandHandler<CreateCharacterComm
         // Validate through domain service
         Result<AttributeSet> attributesResult = AttributeSet.Create(command.Attributes);
         if (!attributesResult.IsSuccess)
-            return Result<CharacterId>.Failure(attributesResult.Error);
+            return Result.Failure<CharacterId>(attributesResult.Error);
         
         // Create through factory method
         Result<Character> characterResult = Character.Create(
@@ -250,12 +250,12 @@ public sealed class CreateCharacterHandler : ICommandHandler<CreateCharacterComm
             command.StartingEdge);
             
         if (!characterResult.IsSuccess)
-            return Result<CharacterId>.Failure(characterResult.Error);
+            return Result.Failure<CharacterId>(characterResult.Error);
         
         // Persist through repository
         await _repository.AddAsync(characterResult.Value, cancellationToken);
         
-        return Result<CharacterId>.Success(characterResult.Value.Id);
+        return Result.Success(characterResult.Value.Id);
     }
 }
 ```
@@ -285,8 +285,8 @@ public sealed class GetCharacterHandler : IQueryHandler<GetCharacterQuery, Chara
             .FirstOrDefaultAsync(cancellationToken);
             
         return character is not null
-            ? Result<CharacterDto>.Success(character)
-            : Result<CharacterDto>.Failure("Character not found");
+            ? Result.Success(character)
+            : Result.Failure<CharacterDto>("Character not found");
     }
 }
 ```
