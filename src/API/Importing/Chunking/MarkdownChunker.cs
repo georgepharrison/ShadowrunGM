@@ -150,7 +150,7 @@ public sealed partial class MarkdownChunker : IChunker
             ? s.PendingParentIndex
             : (s.SectionIndexStack.Count > 0 ? s.SectionIndexStack.Peek() : null);
 
-        var chunk = new Chunk(
+        Chunk chunk = new(
             Index: s.Chunks.Count,
             Text: s.Buffer.ToString().TrimEnd(),
             HeadingBreadcrumb: breadcrumb,

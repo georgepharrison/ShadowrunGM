@@ -26,7 +26,7 @@ public static class HtmlTableSplitter
     private static (HtmlNode? HeaderThead, int ColumnCount, string? EmbeddedGroupName) AnalyzeHeaderThead(HtmlNode table, HtmlNodeCollection theads)
     {
         // Pick first THEAD that has a columns row (TR with >1 TH).
-        foreach (var thd in theads)
+        foreach (HtmlNode thd in theads)
         {
             HtmlNodeCollection rows = thd.SelectNodes("./tr") ?? new HtmlNodeCollection(null);
             HtmlNode? columnsRow = rows.FirstOrDefault(r => CountCells(r, thOnly: true) > 1);
@@ -47,11 +47,11 @@ public static class HtmlTableSplitter
         int originals = output.Count; // important: capture BEFORE appending children
         for (int parentIdx = 0; parentIdx < originals; parentIdx++)
         {
-            var parent = output[parentIdx];
+            Chunk parent = output[parentIdx];
             if (LooksLikeSplitChild(parent)) continue;
             if (!ContainsHtmlTable(parent.Text)) continue;
 
-            foreach (var child in ExtractGroupChildren(parent))
+            foreach (Chunk child in ExtractGroupChildren(parent))
             {
                 int childIdx = output.Count;
                 output.Add(child with { Index = childIdx, ParentChunkIndex = parentIdx });
@@ -64,7 +64,7 @@ public static class HtmlTableSplitter
 
     private static Chunk BuildChildChunk(Chunk parent, HtmlNode? headerThead, TableGroup g)
     {
-        var sb = new StringBuilder(2048)
+        StringBuilder sb = new StringBuilder(2048)
             .AppendLine($"### {g.Name}")
             .AppendLine("<table>");
 
@@ -76,7 +76,7 @@ public static class HtmlTableSplitter
         }
 
         sb.AppendLine("<tbody>");
-        foreach (var tr in g.Rows) sb.AppendLine(tr.OuterHtml);
+        foreach (HtmlNode tr in g.Rows) sb.AppendLine(tr.OuterHtml);
         sb.AppendLine("</tbody>")
           .AppendLine("</table>");
 
@@ -99,44 +99,44 @@ public static class HtmlTableSplitter
 
     private static IEnumerable<Chunk> ExtractGroupChildren(Chunk parent)
     {
-        var doc = new HtmlDocument();
+        HtmlDocument doc = new();
         doc.LoadHtml(parent.Text);
 
-        var tables = doc.DocumentNode.SelectNodes("//table");
+        HtmlNodeCollection? tables = doc.DocumentNode.SelectNodes("//table");
         if (tables == null) yield break;
 
-        foreach (var table in tables)
+        foreach (HtmlNode table in tables)
         {
-            var theads = table.SelectNodes("./thead") ?? new HtmlNodeCollection(null);
-            var (headerThead, columnCount, embeddedGroupName) = AnalyzeHeaderThead(table, theads);
+            HtmlNodeCollection theads = table.SelectNodes("./thead") ?? new HtmlNodeCollection(null);
+            (HtmlNode? headerThead, int columnCount, string? embeddedGroupName) = AnalyzeHeaderThead(table, theads);
 
-            var groups = ParseGroups(table, headerThead, columnCount);
+            List<TableGroup> groups = ParseGroups(table, headerThead, columnCount);
 
             if (groups.Count == 0 && !string.IsNullOrWhiteSpace(embeddedGroupName))
             {
-                var tbodyRows = table.SelectNodes(".//tbody/tr") ?? new HtmlNodeCollection(null);
+                HtmlNodeCollection tbodyRows = table.SelectNodes(".//tbody/tr") ?? new HtmlNodeCollection(null);
                 if (tbodyRows.Count > 0)
                 {
-                    TableGroup group = new TableGroup(embeddedGroupName);
+                    TableGroup group = new(embeddedGroupName);
                     group.Rows.AddRange(tbodyRows.Cast<HtmlNode>());
                     groups.Add(group);
                 }
             }
 
-            foreach (var g in groups.Where(g => g.Rows.Count > 0))
+            foreach (TableGroup g in groups.Where(g => g.Rows.Count > 0))
                 yield return BuildChildChunk(parent, headerThead, g);
         }
     }
 
     private static string? FindEmbeddedHeaderBeforeColumns(HtmlNodeCollection rows, HtmlNode columnsRow, int colCount)
     {
-        foreach (var r in rows)
+        foreach (HtmlNode r in rows)
         {
             if (ReferenceEquals(r, columnsRow)) break;
-            var cells = r.SelectNodes("./th|./td") ?? new HtmlNodeCollection(null);
+            HtmlNodeCollection cells = r.SelectNodes("./th|./td") ?? new HtmlNodeCollection(null);
             if (IsGroupHeaderRow(cells, colCount))
             {
-                var name = Normalize(r.InnerText);
+                string name = Normalize(r.InnerText);
                 if (!string.IsNullOrWhiteSpace(name)) return name;
             }
         }
@@ -146,10 +146,10 @@ public static class HtmlTableSplitter
     private static int GuessColCount(HtmlNode table)
     {
         int max = 0;
-        foreach (var tr in table.SelectNodes(".//tbody//tr") ?? Enumerable.Empty<HtmlNode>())
+        foreach (HtmlNode tr in table.SelectNodes(".//tbody//tr") ?? Enumerable.Empty<HtmlNode>())
             max = Math.Max(max, CountCells(tr, thOnly: false));
         if (max == 0)
-            foreach (var tr in table.SelectNodes(".//tr") ?? Enumerable.Empty<HtmlNode>())
+            foreach (HtmlNode tr in table.SelectNodes(".//tr") ?? Enumerable.Empty<HtmlNode>())
                 max = Math.Max(max, CountCells(tr, thOnly: false));
         return Math.Max(max, 1);
     }
@@ -158,9 +158,9 @@ public static class HtmlTableSplitter
     {
         if (cells == null || cells.Count == 0) return false;
         if (cells.Count == 1) return true;
-        foreach (var c in cells)
+        foreach (HtmlNode c in cells)
         {
-            int cs = int.TryParse(c.GetAttributeValue("colspan", "1"), out var v) ? v : 1;
+            int cs = int.TryParse(c.GetAttributeValue("colspan", "1"), out int v) ? v : 1;
             if (cs >= columnCount) return true;
         }
         return false;
@@ -170,13 +170,13 @@ public static class HtmlTableSplitter
         c.Text.Length >= 3 && c.Text.AsSpan(0, 3).SequenceEqual("###");
 
     private static int? MapParent(int? oldParent, Dictionary<int, int> map) =>
-        oldParent is int p && map.TryGetValue(p, out var np) ? np : (int?)null;
+        oldParent is int p && map.TryGetValue(p, out int np) ? np : (int?)null;
 
     private static string Normalize(string s)
     {
         if (string.IsNullOrWhiteSpace(s)) return string.Empty;
-        var t = HtmlEntity.DeEntitize(s);
-        var sb = new StringBuilder(t.Length);
+        string t = HtmlEntity.DeEntitize(s);
+        StringBuilder sb = new(t.Length);
         bool ws = false;
         foreach (char ch in t)
         {
@@ -196,18 +196,18 @@ public static class HtmlTableSplitter
 
     private static List<TableGroup> ParseGroups(HtmlNode table, HtmlNode? headerThead, int columnCount)
     {
-        var result = new List<TableGroup>();
+        List<TableGroup> result = [];
         bool headerSeen = headerThead == null;
         TableGroup? cur = null;
 
-        foreach (var node in table.ChildNodes)
+        foreach (HtmlNode node in table.ChildNodes)
         {
             if (node.Name.Equals("thead", StringComparison.OrdinalIgnoreCase))
             {
                 if (!headerSeen && node == headerThead) { headerSeen = true; continue; }
                 if (!headerSeen) continue; // ignore pre-header theads
 
-                var name = Normalize(node.InnerText);
+                string name = Normalize(node.InnerText);
                 if (!string.IsNullOrWhiteSpace(name))
                 {
                     cur = new TableGroup(name);
@@ -216,13 +216,13 @@ public static class HtmlTableSplitter
             }
             else if (node.Name.Equals("tbody", StringComparison.OrdinalIgnoreCase))
             {
-                foreach (var tr in node.SelectNodes("./tr") ?? new HtmlNodeCollection(null))
+                foreach (HtmlNode tr in node.SelectNodes("./tr") ?? new HtmlNodeCollection(null))
                 {
-                    var cells = tr.SelectNodes("./th|./td") ?? new HtmlNodeCollection(null);
+                    HtmlNodeCollection cells = tr.SelectNodes("./th|./td") ?? new HtmlNodeCollection(null);
 
                     if (IsGroupHeaderRow(cells, columnCount))
                     {
-                        var name = Normalize(tr.InnerText);
+                        string name = Normalize(tr.InnerText);
                         if (!string.IsNullOrWhiteSpace(name))
                         {
                             cur = new TableGroup(name);
@@ -240,12 +240,12 @@ public static class HtmlTableSplitter
 
     private static (List<Chunk> Output, Dictionary<int, int> Map) ReindexOriginals(IReadOnlyList<Chunk> input)
     {
-        var output = new List<Chunk>(input.Count + 64);
-        var map = new Dictionary<int, int>(input.Count);
+        List<Chunk> output = new(input.Count + 64);
+        Dictionary<int, int> map = new(input.Count);
 
         for (int i = 0; i < input.Count; i++)
         {
-            var c = input[i];
+            Chunk c = input[i];
             int newIdx = output.Count;
             map[c.Index] = newIdx;
 

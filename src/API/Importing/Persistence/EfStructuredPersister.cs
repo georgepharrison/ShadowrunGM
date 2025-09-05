@@ -26,10 +26,9 @@ public sealed class EfStructuredPersister(ShadowrunContext db, ILogger<EfStructu
 
         Dictionary<int, string> hashByChunk = labeled.ToDictionary(c => c.Index, c => MD5Hex(c.Text));
 
-        string[] allHashes = labeled
+        string[] allHashes = [.. labeled
             .Select(c => MD5Hex(c.Text))
-            .Distinct()
-            .ToArray();
+            .Distinct()];
 
         var existingRows = await _db.Set<RuleContent>()
             .AsNoTracking()

@@ -26,7 +26,7 @@ public sealed class EfEmbedderIndexer(ShadowrunContext db, ILogger<EfEmbedderInd
         long sourcebookId = persisted.SourcebookId;
 
         // Map labeled chunks -> SourceHash for join
-        string[] hashes = labeled.Select(c => Hashing.MD5Hex(c.Text)).Distinct().ToArray();
+        string[] hashes = [.. labeled.Select(c => Hashing.MD5Hex(c.Text)).Distinct()];
 
         // Pull the rows we just saved for that sourcebook
         var rows = await _db.RuleContents
@@ -81,8 +81,7 @@ public sealed class EfEmbedderIndexer(ShadowrunContext db, ILogger<EfEmbedderInd
             }
 
             // Reload for update
-            long[] ids = batch.Select(b => b.Id)
-                .ToArray();
+            long[] ids = [.. batch.Select(b => b.Id)];
 
             List<RuleContent> tracked = await _db.RuleContents
                 .Where(rc => Enumerable.Contains(ids, rc.Id))

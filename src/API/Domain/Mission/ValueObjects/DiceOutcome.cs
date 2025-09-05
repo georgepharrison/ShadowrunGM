@@ -22,7 +22,7 @@ public sealed class DiceOutcome : ValueObject
         bool isGlitch,
         bool isCriticalGlitch)
     {
-        Rolls = rolls?.ToArray() ?? Array.Empty<int>(); // Defensive copy to prevent mutation
+        Rolls = rolls?.ToArray() ?? []; // Defensive copy to prevent mutation
         Hits = hits;
         Ones = ones;
         IsGlitch = isGlitch;

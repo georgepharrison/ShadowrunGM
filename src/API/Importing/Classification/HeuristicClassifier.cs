@@ -18,15 +18,15 @@ public sealed class HeuristicClassifier : IClassifier
 
     public Task<IReadOnlyList<LabeledChunk>> ClassifyAsync(IReadOnlyList<Chunk> chunks, CancellationToken ct)
     {
-        var labeled = new List<LabeledChunk>(chunks.Count);
+        List<LabeledChunk> labeled = new(chunks.Count);
 
-        foreach (var c in chunks)
+        foreach (Chunk c in chunks)
         {
             ct.ThrowIfCancellationRequested();
 
             // Fast heading hints
-            var hb = c.HeadingBreadcrumb ?? string.Empty;
-            var top = c.TopLevelSection ?? string.Empty;
+            string hb = c.HeadingBreadcrumb ?? string.Empty;
+            string top = c.TopLevelSection ?? string.Empty;
 
             bool headingSuggestsSpell = hb.Contains("Spell", StringComparison.OrdinalIgnoreCase) || top.Contains("Magic", StringComparison.OrdinalIgnoreCase);
             bool headingSuggestsWeapon = hb.Contains("Weapon", StringComparison.OrdinalIgnoreCase) || hb.Contains("Ranged", StringComparison.OrdinalIgnoreCase)

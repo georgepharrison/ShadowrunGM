@@ -153,26 +153,25 @@ public sealed class EfGameItemPersister(ShadowrunContext db) : IGameItemPersiste
     public async Task<int> UpsertAsync(IEnumerable<GameItemDraft> drafts, CancellationToken ct = default)
     {
         // 1) materialize + de-dupe by slug
-        var list = drafts
+        List<GameItemDraft> list = [.. drafts
             .Where(d => d is not null)
             .GroupBy(d => d.Slug, StringComparer.Ordinal)
-            .Select(g => g.First())
-            .ToList();
+            .Select(g => g.First())];
         if (list.Count == 0) return 0;
 
         // 2) load existing by slug
-        var slugs = list.Select(d => d.Slug).Distinct().ToArray();
-        var existing = await _db.Set<GameItem>()
+        string[] slugs = [.. list.Select(d => d.Slug).Distinct()];
+        List<GameItem> existing = await _db.Set<GameItem>()
             .Where(x => Enumerable.Contains(slugs, x.Slug))
             .ToListAsync(ct);
 
-        // 3) map includes DB rows; we’ll also add new rows as we create them
-        var map = existing.ToDictionary(x => x.Slug, x => x, StringComparer.Ordinal);
+        // 3) map includes DB rows; we'll also add new rows as we create them
+        Dictionary<string, GameItem> map = existing.ToDictionary(x => x.Slug, x => x, StringComparer.Ordinal);
         int changes = 0;
 
-        foreach (var d in list)
+        foreach (GameItemDraft d in list)
         {
-            if (!map.TryGetValue(d.Slug, out var row))
+            if (!map.TryGetValue(d.Slug, out GameItem? row))
             {
                 row = new GameItem
                 {
@@ -199,7 +198,7 @@ public sealed class EfGameItemPersister(ShadowrunContext db) : IGameItemPersiste
             if (row.SourcebookId != d.SourcebookId) { row.SourcebookId = d.SourcebookId; dirty = true; }
             if (row.Page != d.Page) { row.Page = d.Page; dirty = true; }
 
-            var stats = JsonSerializer.Serialize(d.Stats);
+            string stats = JsonSerializer.Serialize(d.Stats);
             if (!string.Equals(row.StatsJson, stats, StringComparison.Ordinal))
             { row.StatsJson = stats; dirty = true; }
 
@@ -225,24 +224,23 @@ public sealed class EfMagicAbilityPersister(ShadowrunContext db) : IMagicAbility
 
     public async Task<int> UpsertAsync(IEnumerable<MagicAbilityDraft> drafts, CancellationToken ct = default)
     {
-        var list = drafts
+        List<MagicAbilityDraft> list = [.. drafts
             .Where(d => d is not null)
             .GroupBy(d => d.Slug, StringComparer.Ordinal)
-            .Select(g => g.First())
-            .ToList();
+            .Select(g => g.First())];
         if (list.Count == 0) return 0;
 
-        var slugs = list.Select(d => d.Slug).Distinct().ToArray();
-        var existing = await _db.Set<MagicAbility>()
+        string[] slugs = [.. list.Select(d => d.Slug).Distinct()];
+        List<MagicAbility> existing = await _db.Set<MagicAbility>()
             .Where(x => Enumerable.Contains(slugs, x.Slug))
             .ToListAsync(ct);
 
-        var map = existing.ToDictionary(x => x.Slug, x => x, StringComparer.Ordinal);
+        Dictionary<string, MagicAbility> map = existing.ToDictionary(x => x.Slug, x => x, StringComparer.Ordinal);
         int changes = 0;
 
-        foreach (var d in list)
+        foreach (MagicAbilityDraft d in list)
         {
-            if (!map.TryGetValue(d.Slug, out var row))
+            if (!map.TryGetValue(d.Slug, out MagicAbility? row))
             {
                 row = new MagicAbility
                 {
@@ -284,7 +282,7 @@ public sealed class EfMagicAbilityPersister(ShadowrunContext db) : IMagicAbility
             Upd(row.SourcebookId, d.SourcebookId, () => row.SourcebookId = d.SourcebookId);
             Upd(row.Page, d.Page, () => row.Page = d.Page);
 
-            var extra = JsonSerializer.Serialize(d.Extra);
+            string extra = JsonSerializer.Serialize(d.Extra);
             Upd(row.ExtraJson, extra, () => row.ExtraJson = extra);
 
             if (dirty) { row.UpdatedAt = DateTimeOffset.UtcNow; changes++; }
@@ -310,11 +308,11 @@ public sealed class SpellExtractor : IMagicAbilityExtractor
         string name = ExtractorHelpers.FirstNonEmpty(ExtractorHelpers.FromBreadcrumb(c.HeadingBreadcrumb), ExtractorHelpers.FirstLine(c.Text)) ?? "";
         if (string.IsNullOrWhiteSpace(name)) return false;
 
-        var extra = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, object?> extra = new(StringComparer.OrdinalIgnoreCase);
 
-        var type = CanonType(ExtractorHelpers.PickAfter(c.Text, "TYPE"));
-        var range = Token(ExtractorHelpers.PickAfter(c.Text, "RANGE"), 50);
-        var duration = Token(ExtractorHelpers.PickAfter(c.Text, "DURATION"), 50);
+        string? type = CanonType(ExtractorHelpers.PickAfter(c.Text, "TYPE"));
+        string? range = Token(ExtractorHelpers.PickAfter(c.Text, "RANGE"), 50);
+        string? duration = Token(ExtractorHelpers.PickAfter(c.Text, "DURATION"), 50);
         int? drain = ParseIntSafe(ExtractorHelpers.PickAfter(c.Text, "DRAIN"));
 
         magicAbility = new(
@@ -341,7 +339,7 @@ public sealed class SpellExtractor : IMagicAbilityExtractor
 
     private static string? CanonType(string? s)
     {
-        var t = Token(s, 10);
+        string? t = Token(s, 10);
         if (string.IsNullOrEmpty(t)) return null;
         // normalize common spell type forms -> M/P
         if (t.StartsWith("M", StringComparison.OrdinalIgnoreCase) || t.StartsWith("Mana", StringComparison.OrdinalIgnoreCase)) return "M";
@@ -353,15 +351,15 @@ public sealed class SpellExtractor : IMagicAbilityExtractor
             null;
 
     private static int? ParseIntSafe(string? s) =>
-        int.TryParse(new string((s ?? "").Where(char.IsDigit).ToArray()), out int n) ? n : null;
+        int.TryParse(new string([.. (s ?? "").Where(char.IsDigit)]), out int n) ? n : null;
 
     private static string? Token(string? s, int max = 50)
     {
         if (string.IsNullOrWhiteSpace(s)) return null;
         // take first token before comma/semicolon/pipe or double-space, then trim
-        var t = Regex.Split(s, @"[,;|]|\s{2,}")[0].Trim();
-        // also cut off anything after first space for true “token” columns
-        var first = t.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+        string t = Regex.Split(s, @"[,;|]|\s{2,}")[0].Trim();
+        // also cut off anything after first space for true "token" columns
+        string? first = t.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
         if (string.IsNullOrWhiteSpace(first)) first = t;
         return first.Length > max ? first[..max] : first;
     }
@@ -428,7 +426,7 @@ internal static class ExtractorHelpers
         string.IsNullOrWhiteSpace(bc) ? null : bc.Split('>').Last().Trim();
 
     public static int? ParseIntSafe(string? s) =>
-        int.TryParse(new string((s ?? "").Where(char.IsDigit).ToArray()), out int n) ? n : null;
+        int.TryParse(new string([.. (s ?? "").Where(char.IsDigit)]), out int n) ? n : null;
 
     public static string? PickAfter(string text, string label)
     {

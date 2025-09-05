@@ -15,14 +15,14 @@ internal static class Hashing
     public static string MD5Hex(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
-        using var md5 = MD5.Create();
+        using MD5 md5 = MD5.Create();
         byte[] bytes = Encoding.UTF8.GetBytes(text);
         return ToLowerHex(md5.ComputeHash(bytes));
     }
 
     public static string MD5Hex(ReadOnlySpan<byte> data)
     {
-        using var md5 = MD5.Create();
+        using MD5 md5 = MD5.Create();
         Span<byte> hash = stackalloc byte[16];
         md5.TryComputeHash(data, hash, out _);
         return ToLowerHex(hash);
@@ -34,14 +34,14 @@ internal static class Hashing
     public static string SHA256Hex(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
-        using var sha = SHA256.Create();
+        using SHA256 sha = SHA256.Create();
         byte[] bytes = Encoding.UTF8.GetBytes(text);
         return ToLowerHex(sha.ComputeHash(bytes));
     }
 
     public static string SHA256Hex(ReadOnlySpan<byte> data)
     {
-        using var sha = SHA256.Create();
+        using SHA256 sha = SHA256.Create();
         Span<byte> hash = stackalloc byte[32];
         sha.TryComputeHash(data, hash, out _);
         return ToLowerHex(hash);
