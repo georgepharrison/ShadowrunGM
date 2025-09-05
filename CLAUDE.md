@@ -2,33 +2,74 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Standard Development Workflow
+## Enhanced Development Workflow
 
-**All tasks must follow this workflow automatically:**
+**All tasks follow this comprehensive workflow:**
 
-1. **Analyze First**: Use `@codebase-analyzer` to understand existing patterns before implementing new features
-2. **Test-Driven Development**: Use `tdd-implementation-specialist` and `tdd-test-writer` agents for tests-first approach
-3. **Mark Tasks Complete**: Update `docs/TASKS.md` to mark completed tasks with `[x]`
-4. **Auto-Documentation**: Run `@documentation-agent` after task completion to update docs and commit changes
+### 1. Context Setup (Choose One)
+- **API Work**: Run `/work-on-api` to focus on backend
+- **UI Work**: Run `/work-on-ui` to focus on frontend  
+- **New Feature**: Run `/new-feature [name] [context]` to start fresh feature
 
-**Example implementation flow:**
+### 2. Analysis Phase
+- Use `@codebase-analyzer` to understand existing patterns
+- Review relevant manifest in `.claude/manifests/`
+- Check `docs/TASKS.md` for current priorities
+
+### 3. TDD Implementation Cycle
+- **RED**: `@tdd-test-writer` - Create failing tests
+- **GREEN**: `@tdd-implementation-specialist` - Minimal passing code
+- **REFACTOR**: `@refactoring-specialist` - Apply patterns and SOLID principles
+
+### 4. Quality Enforcement
+**Concrete Values Only:**
+- NO abstract descriptions ("modern", "clean", "beautiful")
+- ALWAYS use hex codes with purpose (#00ff41 for Matrix green actions)
+- ALWAYS verify contrast ratios (4.5:1 minimum)
+- ALWAYS specify touch targets (44px minimum on mobile)
+
+**Result Pattern Enforcement:**
+- ALWAYS use existing Result<T> from `ShadowrunGM.ApiSdk.Common.Results`
+- NEVER create new Result classes
+- ALWAYS use ValidationBuilder for validation chains
+- ALWAYS return Result<T> from commands
+
+### 5. Progress Tracking
+- Update `.claude/manifests/[feature].md` with progress
+- Mark tasks complete in `docs/TASKS.md` with `[x]`
+- Commit with conventional commit messages
+
+### 6. Documentation
+- Run `@documentation-agent` after completing tasks
+- Ensure all public members have XML documentation
+- Update README if new patterns introduced
+
+## Worktree Development
+
+When using git worktrees for parallel development:
+
+### Setup
 ```bash
-# Step 1: Understand existing patterns (automatic)
-@codebase-analyzer I need to implement [feature]. Please analyze existing patterns for [relevant area].
+# Create focused worktrees
+git worktree add ../shadowrun-api main
+git worktree add ../shadowrun-ui main
 
-# Step 2: TDD Implementation (agents coordinate automatically)
-# Tests written first, then implementation follows
+# API worktree
+cd ../shadowrun-api
+/work-on-api
+# Focus on: Domain, CQRS, EF Core
 
-# Step 3: Mark tasks complete in TASKS.md (CRITICAL STEP)
-# Update [ ] to [x] for completed tasks in docs/TASKS.md
-
-# Step 4: Documentation and commit (automatic)
-@documentation-agent Please analyze the changes I just made and update any necessary documentation, then commit all changes with conventional commits following the project's existing commit patterns.
+# UI worktree  
+cd ../shadowrun-ui
+/work-on-ui
+# Focus on: Blazor, MudBlazor, Mobile
 ```
 
-**CRITICAL: Always update docs/TASKS.md task checkboxes when completing tasks. This is required for proper project tracking.**
-
-**This workflow applies to all tasks unless explicitly overridden.**
+### Coordination
+- Use manifests to track cross-cutting features
+- Sync regularly to main worktree
+- Keep ApiSdk changes atomic
+- Test integration after merging
 
 ## Coding Standards
 
