@@ -74,27 +74,28 @@ public sealed class DicePool : ValueObject
         int edgeBonus = 0,
         int limit = 0)
     {
+        // Simple validation that returns single error messages as expected by tests
+        if (attribute < 0)
+            return Result.Failure<DicePool>("Attribute dice cannot be negative.");
+
+        if (skill < 0)
+            return Result.Failure<DicePool>("Skill dice cannot be negative.");
+
+        if (edgeBonus < 0)
+            return Result.Failure<DicePool>("Edge bonus cannot be negative.");
+
+        if (limit < 0)
+            return Result.Failure<DicePool>("Limit cannot be negative.");
+
         int totalDice = Math.Max(0, attribute + skill + modifiers + edgeBonus);
 
-        return new ValidationBuilder<DicePool>()
-            .RuleFor(x => x.Attribute, attribute)
-                .GreaterThanOrEqualTo(0)
-                .WithMessage("Attribute dice cannot be negative")
-            .RuleFor(x => x.Skill, skill)
-                .GreaterThanOrEqualTo(0)
-                .WithMessage("Skill dice cannot be negative")
-            .RuleFor(x => x.EdgeBonus, edgeBonus)
-                .GreaterThanOrEqualTo(0)
-                .WithMessage("Edge bonus cannot be negative")
-            .RuleFor(x => x.Limit, limit)
-                .GreaterThanOrEqualTo(0)
-                .WithMessage("Limit cannot be negative")
-            .RuleFor(x => x.TotalDice, totalDice)
-                .GreaterThan(0)
-                .WithMessage("Dice pool must have at least 1 die")
-                .LessThanOrEqualTo(100)
-                .WithMessage("Dice pool cannot exceed 100 dice")
-            .Build(() => new DicePool(attribute, skill, modifiers, edgeBonus, limit));
+        if (totalDice <= 0)
+            return Result.Failure<DicePool>("Dice pool must have at least 1 die.");
+
+        if (totalDice > 100)
+            return Result.Failure<DicePool>("Dice pool cannot exceed 100 dice.");
+
+        return Result.Success(new DicePool(attribute, skill, modifiers, edgeBonus, limit));
     }
 
     /// <summary>

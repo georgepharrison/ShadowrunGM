@@ -67,22 +67,26 @@ public sealed class ChatMessage : ValueObject
     /// </summary>
     private static Result<ChatMessage> ValidateAndCreate(string sender, string content, MessageType type, DateTime timestamp)
     {
+        // Trim values before validation
+        string trimmedSender = sender?.Trim() ?? string.Empty;
+        string trimmedContent = content?.Trim() ?? string.Empty;
+
         ValidationBuilder<ChatMessage> builder = new();
 
         return builder
-            .RuleFor(x => x.Sender, sender, "Message sender")
+            .RuleFor(x => x.Sender, trimmedSender)
                 .NotEmpty()
                 .WithMessage("Message sender is required")
                 .MaximumLength(50)
                 .WithMessage("Sender name cannot exceed 50 characters")
-            .RuleFor(x => x.Content, content, "Message content")
+            .RuleFor(x => x.Content, trimmedContent)
                 .NotEmpty()
                 .WithMessage("Message content is required")
                 .MaximumLength(5000)
                 .WithMessage("Message content cannot exceed 5000 characters")
             .Build(() => new ChatMessage(
-                sender.Trim(),
-                content.Trim(),
+                trimmedSender,
+                trimmedContent,
                 type,
                 timestamp));
     }

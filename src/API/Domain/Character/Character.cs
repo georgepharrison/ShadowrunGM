@@ -91,9 +91,9 @@ public sealed class Character : AggregateRoot
         new ValidationBuilder<Character>()
             .RuleFor(x => x.Name, name)
                 .NotEmpty()
-                .WithMessage("Character name is required")
+                .WithMessage("Character name is required and cannot be empty")
                 .MaximumLength(100)
-                .WithMessage("Name maximum length is 100")
+                .WithMessage("Character name maximum length is 100")
             .RuleFor(x => x.Attributes, AttributeSet.Create(body, agility, reaction, strength, willpower, logic, intuition, charisma), out AttributeSet? validatedAttributes)
             .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
             .Build(() => CreateCharacterInstanceFromResults(name, validatedAttributes!, validatedEdge!));
@@ -112,9 +112,9 @@ public sealed class Character : AggregateRoot
         new ValidationBuilder<Character>()
             .RuleFor(x => x.Name, name)
                 .NotEmpty()
-                .WithMessage("Character name is required")
+                .WithMessage("Character name is required and cannot be empty")
                 .MaximumLength(100)
-                .WithMessage("Name maximum length is 100")
+                .WithMessage("Character name maximum length is 100")
             .RuleFor(x => x.Attributes, AttributeSet.Create(attributes), out AttributeSet? validatedAttributes)
             .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
             .Build(() => CreateCharacterInstanceFromResults(name, validatedAttributes!, validatedEdge!));
@@ -153,16 +153,42 @@ public sealed class Character : AggregateRoot
         string name,
         AttributeSet attributes,
         int startingEdge,
-        IEnumerable<Skill> skills) =>
-        new ValidationBuilder<Character>()
-            .RuleFor(x => x.Name, name)
-                .NotEmpty()
-                .WithMessage("Character name is required")
-                .MaximumLength(100)
-                .WithMessage("Name maximum length is 100")
-            .RuleFor(x => x.Attributes, Result.Success(attributes ?? throw new ArgumentNullException(nameof(attributes))), out AttributeSet? validatedAttributes)
-            .RuleFor(x => x.Edge, Edge.Create(startingEdge), out Edge? validatedEdge)
-            .Build(() => CreateCharacterWithSkills(name, validatedAttributes!, validatedEdge!, skills));
+        IEnumerable<Skill> skills)
+    {
+        // Collect all validation errors
+        Dictionary<string, string[]> errors = [];
+
+        // Validate name
+        List<string> nameErrors = [];
+        if (string.IsNullOrEmpty(name))
+            nameErrors.Add("Character name is required and cannot be empty");
+        if (name != null && name.Length > 100)
+            nameErrors.Add("Character name maximum length is 100");
+        if (nameErrors.Count > 0)
+            errors["Name"] = [.. nameErrors];
+
+        // Validate attributes
+        if (attributes == null)
+            errors["Attributes"] = ["Attributes cannot be null"];
+
+        // Validate starting edge
+        if (startingEdge < 1 || startingEdge > 7)
+            errors["StartingEdge"] = ["StartingEdge must be between 1 and 7"];
+
+        // If we have validation errors, return them as validation failure
+        if (errors.Count > 0)
+            return Result.ValidationFailure<Character>(errors);
+
+        // Create edge from validated starting edge
+        Result<Edge> edgeResult = Edge.Create(startingEdge);
+        if (!edgeResult.IsSuccess)
+            return Result.Failure<Character>(edgeResult.Error);
+
+        if (!edgeResult.TryGetValue(out Edge? validatedEdge) || validatedEdge == null)
+            return Result.Failure<Character>("Failed to create Edge");
+
+        return Result.Success(CreateCharacterWithSkills(name, attributes, validatedEdge, skills));
+    }
 
     /// <summary>
     /// Factory method for creating character with skills from validated objects.

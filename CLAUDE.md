@@ -148,6 +148,25 @@ public static Result<AttributeSet> Create(int body, int agility, int reaction, i
 - **Nested Validation**: Compose validation across value object creation methods
 - **Type-Safe Building**: Build() method only executes factory when all validations pass
 
+#### ValidationBuilder Best Practices
+- **Parse, Don't Validate Pattern**: Always normalize/sanitize inputs BEFORE validation:
+  ```csharp
+  public static Result<Skill> Create(string name, int rating)
+  {
+      // Normalize inputs first
+      string trimmedName = name?.Trim() ?? string.Empty;
+      
+      // Then validate normalized values
+      return new ValidationBuilder<Skill>()
+          .RuleFor(x => x.Name, trimmedName)
+              .NotEmpty()
+              .WithMessage("Skill name is required")
+          .Build(() => new Skill(trimmedName, rating));
+  }
+  ```
+- **Consistent Error Messages**: Include the entity name in validation messages (e.g., "Character name is required" not just "Name is required")
+- **Whitespace Handling**: Trim string inputs before validation to properly reject whitespace-only values
+
 #### Pattern Matching
 ```csharp
 // Simple pattern matching

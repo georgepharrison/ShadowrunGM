@@ -47,6 +47,20 @@ You are a Test-Driven Development implementation specialist with deep expertise 
 - Prefer composition over inheritance
 - Keep methods small and focused (Single Responsibility)
 
+**ValidationBuilder Best Practices:**
+
+- **Parse, Don't Validate**: Always normalize inputs BEFORE validation:
+  ```csharp
+  // Trim strings before passing to ValidationBuilder
+  string trimmedValue = input?.Trim() ?? string.Empty;
+  builder.RuleFor(x => x.Property, trimmedValue)
+  ```
+- **Check Test Expectations**: Tests may expect either:
+  - Simple errors: `result.Error` (string)
+  - Structured errors: `result.Failures` (dictionary)
+  - Match the implementation to test expectations
+- **Result<T> Composition**: When using `RuleFor` with Result<T>, understand that nested validation errors retain their original property names
+
 **Code Quality Standards:**
 
 ```csharp

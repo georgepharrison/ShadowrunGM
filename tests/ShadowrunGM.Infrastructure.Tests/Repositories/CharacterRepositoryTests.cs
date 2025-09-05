@@ -7,6 +7,8 @@ namespace ShadowrunGM.Infrastructure.Tests.Repositories;
 /// These tests define the expected behavior for Entity Framework Core integration.
 /// ALL TESTS WILL INITIALLY FAIL - implementation comes after Red phase.
 /// </summary>
+[Trait("Category", "Integration")]
+[Trait("RequiresDatabase", "true")]
 public sealed class CharacterRepositoryTests
 {
     #region Base Repository Interface Tests

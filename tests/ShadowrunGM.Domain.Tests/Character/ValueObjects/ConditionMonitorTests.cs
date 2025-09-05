@@ -138,7 +138,9 @@ public sealed class ConditionMonitorTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Physical boxes must be at least 8.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("PhysicalBoxes");
+            result.Failures["PhysicalBoxes"][0].ShouldBe("Physical boxes must be at least 8");
         }
 
         [Theory]
@@ -156,7 +158,9 @@ public sealed class ConditionMonitorTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Stun boxes must be at least 8.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("StunBoxes");
+            result.Failures["StunBoxes"][0].ShouldBe("Stun boxes must be at least 8");
         }
 
         [Theory]
@@ -173,7 +177,9 @@ public sealed class ConditionMonitorTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Physical damage cannot be negative.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("PhysicalDamage");
+            result.Failures["PhysicalDamage"][0].ShouldBe("Physical damage cannot be negative");
         }
 
         [Theory]
@@ -190,7 +196,9 @@ public sealed class ConditionMonitorTests
 
             // Assert
             result.IsFailure.ShouldBeTrue();
-            result.Error.ShouldBe("Stun damage cannot be negative.");
+            result.FailureType.ShouldBe(ResultFailureType.Validation);
+            result.Failures.ShouldContainKey("StunDamage");
+            result.Failures["StunDamage"][0].ShouldBe("Stun damage cannot be negative");
         }
 
         [Fact]

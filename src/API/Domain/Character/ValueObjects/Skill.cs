@@ -53,9 +53,14 @@ public sealed class Skill : ValueObject
     /// <param name="rating">The skill rating.</param>
     /// <param name="specialization">Optional skill specialization.</param>
     /// <returns>A Result containing the new Skill or an error.</returns>
-    public static Result<Skill> Create(string name, int rating, string? specialization = null) =>
-        new ValidationBuilder<Skill>()
-            .RuleFor(x => x.Name, name)
+    public static Result<Skill> Create(string name, int rating, string? specialization = null)
+    {
+        // Trim values before validation
+        string trimmedName = name?.Trim() ?? string.Empty;
+        string? trimmedSpecialization = string.IsNullOrWhiteSpace(specialization) ? null : specialization.Trim();
+        
+        return new ValidationBuilder<Skill>()
+            .RuleFor(x => x.Name, trimmedName)
                 .NotEmpty()
                 .WithMessage("Skill name is required")
                 .MaximumLength(50)
@@ -63,14 +68,15 @@ public sealed class Skill : ValueObject
             .RuleFor(x => x.Rating, rating)
                 .InclusiveBetween(0, 12)
                 .WithMessage("Skill rating must be between 0 and 12")
-            .RuleFor(x => x.Specialization, specialization ?? string.Empty)
+            .RuleFor(x => x.Specialization, trimmedSpecialization ?? string.Empty)
                 .MaximumLength(50)
                 .WithMessage("Specialization cannot exceed 50 characters")
-                .When(spec => !string.IsNullOrWhiteSpace(specialization))
+                .When(spec => !string.IsNullOrWhiteSpace(trimmedSpecialization))
             .Build(() => new Skill(
-                name.Trim(),
+                trimmedName,
                 rating,
-                string.IsNullOrWhiteSpace(specialization) ? null : specialization.Trim()));
+                trimmedSpecialization));
+    }
 
     /// <summary>
     /// Creates a new Skill with an updated rating.
