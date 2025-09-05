@@ -1,0 +1,277 @@
+@page "/characters"
+@using ShadowrunGM.UI.Components
+@inject ISnackbar Snackbar
+
+<PageTitle>Characters - ShadowrunGM</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mobile-optimized">
+    <div class="pa-4">
+        <!-- Page Header -->
+        <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+            <MudText Typo="Typo.h4" Class="font-weight-bold">Your Characters</MudText>
+            <MudButton Href="/characters/create"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.PersonAdd"
+                       Class="mobile-button">
+                Create Character
+            </MudButton>
+        </MudStack>
+
+        @if (_isLoading)
+        {
+            <!-- Loading State -->
+            <MudGrid>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Class="mobile-card pa-4">
+                            <MudSkeleton Height="40px" />
+                            <MudSkeleton Height="120px" Class="mt-2" />
+                            <MudSkeleton Height="60px" Class="mt-2" />
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else if (_characters.Any())
+        {
+            <!-- Characters Grid -->
+            <MudGrid>
+                @foreach (CharacterDisplay.CharacterDto character in _characters)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <CharacterDisplay Character="character"
+                                        ShowActions="true"
+                                        OnViewClicked="ViewCharacter"
+                                        OnEditClicked="EditCharacter"
+                                        OnDeleteClicked="DeleteCharacter"
+                                        OnEdgeSpent="HandleEdgeSpent" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <MudPaper Class="mobile-card pa-6">
+                <MudStack AlignItems="AlignItems.Center" Spacing="4">
+                    <MudIcon Icon="@Icons.Material.Filled.PersonOff" 
+                             Size="Size.Large" 
+                             Color="Color.Surface" 
+                             Style="font-size: 4rem;" />
+                    
+                    <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.h5" Class="font-weight-medium">No Characters Yet</MudText>
+                        <MudText Typo="Typo.body1" Class="text-center mud-text-secondary" Style="max-width: 400px;">
+                            Create your first shadowrunner to get started. Build your character using the point-buy system
+                            and start your journey in the shadows.
+                        </MudText>
+                    </MudStack>
+                    
+                    <MudButton Href="/characters/create"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               Size="Size.Large"
+                               StartIcon="@Icons.Material.Filled.PersonAdd"
+                               Class="mobile-button">
+                        Create Your First Character
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        }
+    </div>
+</MudContainer>
+
+<!-- Delete Confirmation Dialog -->
+<MudDialog @bind-IsVisible="_showDeleteDialog" Options="_deleteDialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" Class="mr-3" />
+            Delete Character
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (_characterToDelete is not null)
+        {
+            <MudText>
+                Are you sure you want to delete <strong>@_characterToDelete.Name</strong>?
+            </MudText>
+            <MudText Typo="Typo.body2" Class="mt-2 mud-text-secondary">
+                This action cannot be undone. All character data, including skills, gear, and campaign history will be permanently lost.
+            </MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => _showDeleteDialog = false)">Cancel</MudButton>
+        <MudButton Color="Color.Error" 
+                   Variant="Variant.Filled"
+                   OnClick="ConfirmDelete"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete Character
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private bool _isLoading = true;
+    private bool _showDeleteDialog = false;
+    private CharacterDisplay.CharacterDto? _characterToDelete;
+    private List<CharacterDisplay.CharacterDto> _characters = [];
+
+    private readonly DialogOptions _deleteDialogOptions = new()
+    {
+        MaxWidth = MaxWidth.Small,
+        FullWidth = true,
+        CloseOnEscapeKey = true
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCharacters();
+    }
+
+    private async Task LoadCharacters()
+    {
+        _isLoading = true;
+        
+        try
+        {
+            // Simulate loading delay
+            await Task.Delay(1000);
+            
+            // TODO: Replace with actual API call when CQRS handlers are implemented
+            // For now, create sample characters for demonstration
+            _characters = CreateSampleCharacters();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to load characters: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private List<CharacterDisplay.CharacterDto> CreateSampleCharacters()
+    {
+        return [
+            new CharacterDisplay.CharacterDto(
+                Id: "1",
+                Name: "Jack \"Shadowstep\" Morrison",
+                CreatedAt: DateTime.Now.AddDays(-5),
+                Body: 4, Agility: 6, Reaction: 5, Strength: 3,
+                Willpower: 4, Logic: 3, Intuition: 5, Charisma: 2,
+                EdgeCurrent: 2, EdgeMax: 4,
+                PhysicalDamage: 1, PhysicalBoxes: 10,
+                StunDamage: 0, StunBoxes: 10),
+            
+            new CharacterDisplay.CharacterDto(
+                Id: "2", 
+                Name: "Maria \"Byte\" Rodriguez",
+                CreatedAt: DateTime.Now.AddDays(-12),
+                Body: 2, Agility: 3, Reaction: 4, Strength: 2,
+                Willpower: 5, Logic: 6, Intuition: 4, Charisma: 3,
+                EdgeCurrent: 3, EdgeMax: 3,
+                PhysicalDamage: 0, PhysicalBoxes: 9,
+                StunDamage: 2, StunBoxes: 11),
+            
+            new CharacterDisplay.CharacterDto(
+                Id: "3",
+                Name: "Viktor \"Iron\" Petrov", 
+                CreatedAt: DateTime.Now.AddDays(-20),
+                Body: 6, Agility: 2, Reaction: 3, Strength: 6,
+                Willpower: 3, Logic: 2, Intuition: 3, Charisma: 4,
+                EdgeCurrent: 4, EdgeMax: 5,
+                PhysicalDamage: 3, PhysicalBoxes: 12,
+                StunDamage: 1, StunBoxes: 9)
+        ];
+    }
+
+    private async Task ViewCharacter(CharacterDisplay.CharacterDto character)
+    {
+        // TODO: Navigate to character sheet page
+        Snackbar.Add($"Viewing {character.Name} (feature coming soon)", Severity.Info);
+        await Task.CompletedTask;
+    }
+
+    private async Task EditCharacter(CharacterDisplay.CharacterDto character)
+    {
+        // TODO: Navigate to character edit page
+        Snackbar.Add($"Editing {character.Name} (feature coming soon)", Severity.Info);
+        await Task.CompletedTask;
+    }
+
+    private async Task DeleteCharacter(CharacterDisplay.CharacterDto character)
+    {
+        _characterToDelete = character;
+        _showDeleteDialog = true;
+        await Task.CompletedTask;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (_characterToDelete is null) return;
+
+        try
+        {
+            // TODO: Call delete API when implemented
+            _characters.Remove(_characterToDelete);
+            
+            Snackbar.Add($"{_characterToDelete.Name} has been deleted", Severity.Success);
+            _showDeleteDialog = false;
+            _characterToDelete = null;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to delete character: {ex.Message}", Severity.Error);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleEdgeSpent(CharacterDisplay.EdgeSpentEventArgs args)
+    {
+        try
+        {
+            // Find the character and update their Edge
+            CharacterDisplay.CharacterDto? character = _characters.FirstOrDefault(c => c.Id == args.CharacterId);
+            if (character is not null)
+            {
+                int newCurrent = Math.Max(0, Math.Min(character.EdgeMax, character.EdgeCurrent - args.Amount));
+                
+                // TODO: Call Edge spending API when implemented
+                // For now, create updated character record
+                CharacterDisplay.CharacterDto updatedCharacter = character with { EdgeCurrent = newCurrent };
+                
+                int index = _characters.IndexOf(character);
+                _characters[index] = updatedCharacter;
+                
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to update Edge: {ex.Message}", Severity.Error);
+        }
+
+        await Task.CompletedTask;
+    }
+}
+
+<style>
+    .characters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    @@media (max-width: 600px) {
+        .characters-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+</style>

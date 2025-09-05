@@ -177,8 +177,24 @@ public sealed class AttributeSet : ValueObject
     /// </summary>
     /// <param name="attributes">Dictionary mapping attribute names to values.</param>
     /// <returns>A Result containing the new AttributeSet or an error.</returns>
-    public static Result<AttributeSet> Create(Dictionary<string, int> attributes) =>
-        new ValidationBuilder<AttributeSet>()
+    public static Result<AttributeSet> Create(Dictionary<string, int> attributes)
+    {
+        if (attributes == null)
+            return Result.Failure<AttributeSet>("Attributes dictionary cannot be null.");
+
+        string[] requiredAttributes = ["Body", "Agility", "Reaction", "Strength", "Willpower", "Logic", "Intuition", "Charisma"];
+        List<string> missingAttributes = [];
+        
+        foreach (string attributeName in requiredAttributes)
+        {
+            if (!TryGetAttribute(attributes, attributeName, out _))
+                missingAttributes.Add(attributeName);
+        }
+
+        if (missingAttributes.Count > 0)
+            return Result.Failure<AttributeSet>($"Missing required attributes: {string.Join(", ", missingAttributes)}");
+
+        return new ValidationBuilder<AttributeSet>()
             .RuleFor(x => x.Body, GetAttributeValue(attributes, "Body"))
                 .InclusiveBetween(1, 10)
                 .WithMessage("Body attribute must be between 1 and 10")
@@ -212,6 +228,7 @@ public sealed class AttributeSet : ValueObject
                 GetAttributeValue(attributes, "Logic"),
                 GetAttributeValue(attributes, "Intuition"),
                 GetAttributeValue(attributes, "Charisma")));
+    }
 
     /// <summary>
     /// Creates a new AttributeSet bypassing validation for testing purposes.

@@ -1,7 +1,7 @@
+using FlowRight.Core.Results;
 using ShadowrunGM.Domain.Character;
 using ShadowrunGM.Domain.Common;
 using ShadowrunGM.Domain.Mission.Events;
-using FlowRight.Core.Results;
 
 namespace ShadowrunGM.Domain.Mission;
 

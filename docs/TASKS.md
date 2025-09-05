@@ -13,6 +13,18 @@
 
 **This workflow is automatic for all tasks** - no need to specify in individual prompts.
 
+## Definition of Task Completion
+
+**A task is only considered complete when ALL of the following criteria are met:**
+
+1. **Solution builds successfully**: `dotnet build` from repository root must pass without errors
+2. **All tests pass**: `dotnet test` from repository root must pass without failures  
+3. **Task marked complete**: Update `docs/TASKS.md` to mark task with `[x]`
+4. **Code follows standards**: Implementation follows CLAUDE.md patterns and coding standards
+5. **Documentation updated**: All public members have XML documentation
+
+**If any of these criteria fail, the task is NOT complete and must be fixed before proceeding to the next task.**
+
 ---
 
 ## Week 1: Foundation & Architecture
@@ -31,10 +43,10 @@
 - [x] **TASK-009**: Setup basic seed data for game_items table
 
 ### Day 6-7: Mobile UI Foundation
-- [ ] **TASK-010**: Configure MudBlazor with mobile-first dark theme
-- [ ] **TASK-011**: Create responsive layout optimized for Pixel 8 (375px width)
-- [ ] **TASK-012**: Build point-buy character creation form with MudCard
-- [ ] **TASK-013**: Implement character display component with Edge tracking
+- [x] **TASK-010**: Configure MudBlazor with mobile-first dark theme
+- [x] **TASK-011**: Create responsive layout optimized for Pixel 8 (375px width)
+- [x] **TASK-012**: Build point-buy character creation form with MudCard
+- [x] **TASK-013**: Implement character display component with Edge tracking
 
 **Week 1 Success Criteria**: Domain models compile, DB migrations run, mobile UI renders
 
@@ -216,11 +228,12 @@ public sealed class SpendEdgeHandler : ICommandHandler<SpendEdgeCommand, EdgeSpe
 ## Definition of Done
 
 ### Per Task
+- [ ] **Solution builds successfully** (`dotnet build` from root passes)
+- [ ] **All tests pass** (`dotnet test` from root passes)
 - [ ] Code follows CLAUDE.md standards
-- [ ] Domain logic has unit tests
-- [ ] CQRS handlers execute successfully
 - [ ] Mobile UI works on Pixel 8
 - [ ] **Standard development workflow completed (analyze → TDD → document)**
+- [ ] **Task marked complete in docs/TASKS.md**
 - [ ] No compiler warnings
 
 ### Per Week

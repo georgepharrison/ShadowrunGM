@@ -1,5 +1,5 @@
-using ShadowrunGM.Domain.Common;
 using FlowRight.Core.Results;
+using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Character.ValueObjects;
 

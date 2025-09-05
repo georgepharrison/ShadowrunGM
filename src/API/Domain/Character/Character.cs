@@ -1,8 +1,8 @@
+using FlowRight.Core.Results;
+using FlowRight.Validation.Builders;
 using ShadowrunGM.Domain.Character.Events;
 using ShadowrunGM.Domain.Character.ValueObjects;
 using ShadowrunGM.Domain.Common;
-using FlowRight.Validation.Builders;
-using FlowRight.Core.Results;
 
 namespace ShadowrunGM.Domain.Character;
 

@@ -1,6 +1,6 @@
+using FlowRight.Core.Results;
 using Microsoft.EntityFrameworkCore;
 using ShadowrunGM.Domain.Character;
-using FlowRight.Core.Results;
 
 namespace ShadowrunGM.API.Infrastructure.Repositories;
 

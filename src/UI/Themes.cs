@@ -44,17 +44,25 @@ public static class Themes
         LayoutProperties = new LayoutProperties
         {
             DefaultBorderRadius = "6px",
-            AppbarHeight = "48px",
-            DrawerWidthRight = "360px"
+            // Mobile-optimized heights - larger touch targets
+            AppbarHeight = "56px", // Increased from 48px for better touch
+            DrawerWidthRight = "360px",
+            DrawerWidthLeft = "280px" // Narrower left drawer for mobile
         },
         Typography = new Typography
         {
             Default = new DefaultTypography { FontFamily = ["Inter", "Roboto", "system-ui", "-apple-system", "Segoe UI", "sans-serif"], FontSize = "0.95rem" },
-            H1 = new H1Typography { FontSize = "2rem", FontWeight = "600" },
-            H2 = new H2Typography { FontSize = "1.5rem", FontWeight = "500" },
-            H3 = new H3Typography { FontSize = "1.25rem", FontWeight = "500" },
-            Body1 = new Body1Typography { FontSize = "0.95rem" },
-            Body2 = new Body2Typography { FontSize = "0.85rem" }
+            // Mobile-optimized typography - larger sizes for readability
+            H1 = new H1Typography { FontSize = "1.75rem", FontWeight = "600" }, // Reduced for mobile screens
+            H2 = new H2Typography { FontSize = "1.375rem", FontWeight = "500" }, // Reduced for mobile screens
+            H3 = new H3Typography { FontSize = "1.125rem", FontWeight = "500" }, // Reduced for mobile screens
+            H4 = new H4Typography { FontSize = "1rem", FontWeight = "500" }, // Added for better hierarchy
+            H5 = new H5Typography { FontSize = "0.875rem", FontWeight = "500" }, // Added for better hierarchy
+            H6 = new H6Typography { FontSize = "0.75rem", FontWeight = "500" }, // Added for better hierarchy
+            Body1 = new Body1Typography { FontSize = "1rem" }, // Slightly larger for mobile readability
+            Body2 = new Body2Typography { FontSize = "0.875rem" }, // Adjusted for consistency
+            Button = new ButtonTypography { FontSize = "0.875rem", FontWeight = "500" }, // Optimized button text
+            Caption = new CaptionTypography { FontSize = "0.75rem" } // For small text like labels
         }
     };
 

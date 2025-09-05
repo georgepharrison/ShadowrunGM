@@ -1,0 +1,327 @@
+@page "/characters/create"
+@inject ISnackbar Snackbar
+
+<PageTitle>Create Character - ShadowrunGM</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mobile-optimized">
+    <div class="character-form">
+        <!-- Header -->
+        <MudPaper Class="mobile-card pa-4 mb-4">
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.h4" Class="text-center">Create Character</MudText>
+                <MudText Typo="Typo.body1" Class="text-center mud-text-secondary">
+                    Build your shadowrunner using the point-buy system
+                </MudText>
+            </MudStack>
+        </MudPaper>
+
+        <!-- Points Remaining Display -->
+        <div class="points-remaining">
+            <MudText Typo="Typo.h6" Class="text-center">
+                Points Remaining: @_pointsRemaining / @_totalPoints
+            </MudText>
+        </div>
+
+        <!-- Character Name -->
+        <MudPaper Class="mobile-card pa-4">
+            <MudTextField @bind-Value="_characterName"
+                          Label="Character Name"
+                          Placeholder="Enter your runner's name"
+                          Class="mobile-input"
+                          MaxLength="100"
+                          Immediate="true"
+                          HelperText="@($"Characters remaining: {100 - (_characterName?.Length ?? 0)}")"/>
+        </MudPaper>
+
+        <!-- Attributes Section -->
+        <MudPaper Class="mobile-card attribute-section">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.h5" Class="font-weight-medium mb-2">Attributes</MudText>
+                
+                <div class="attributes-grid">
+                    @foreach (KeyValuePair<string, AttributeInfo> attribute in _attributes)
+                    {
+                        <div class="attribute-item">
+                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.body1" Class="font-weight-medium">
+                                        @(attribute.Value.DisplayName)
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Class="mud-text-secondary">
+                                        @(attribute.Value.Description)
+                                    </MudText>
+                                </MudStack>
+                                
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Remove"
+                                                   OnClick="@(() => DecreaseAttribute(attribute.Key))"
+                                                   Disabled="@(attribute.Value.Value <= 1)"
+                                                   Size="Size.Small"
+                                                   Class="mobile-button" />
+                                    
+                                    <MudChip T="string" Color="@GetAttributeColor(attribute.Value.Value)"
+                                             Size="Size.Large"
+                                             Class="attribute-value">
+                                        @(attribute.Value.Value)
+                                    </MudChip>
+                                    
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                                                   OnClick="@(() => IncreaseAttribute(attribute.Key))"
+                                                   Disabled="@(!CanIncreaseAttribute(attribute.Key))"
+                                                   Size="Size.Small"
+                                                   Class="mobile-button" />
+                                </MudStack>
+                            </MudStack>
+                            
+                            <!-- Cost indicator -->
+                            <MudText Typo="Typo.caption" Class="text-right mt-1">
+                                Cost: @GetAttributeCost(attribute.Value.Value) points
+                            </MudText>
+                        </div>
+                    }
+                </div>
+            </MudStack>
+        </MudPaper>
+
+        <!-- Derived Attributes Display -->
+        <MudPaper Class="mobile-card pa-4">
+            <MudText Typo="Typo.h6" Class="mb-3">Derived Attributes</MudText>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption">Initiative</MudText>
+                        <MudChip T="string" Color="Color.Info">@(_attributes["Reaction"].Value + _attributes["Intuition"].Value)</MudChip>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption">Physical Limit</MudText>
+                        <MudChip T="string" Color="Color.Success">@CalculatePhysicalLimit()</MudChip>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption">Mental Limit</MudText>
+                        <MudChip T="string" Color="Color.Warning">@CalculateMentalLimit()</MudChip>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption">Social Limit</MudText>
+                        <MudChip T="string" Color="Color.Secondary">@CalculateSocialLimit()</MudChip>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <!-- Edge Selection -->
+        <MudPaper Class="mobile-card pa-4">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.h6">Starting Edge</MudText>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Edge represents luck, karma, and plot armor. Choose between 1-7.
+                </MudText>
+                
+                <MudSlider @bind-Value="_startingEdge"
+                           Min="1" Max="7" Step="1"
+                           Color="Color.Primary"
+                           Class="mt-4">
+                    <MudText Typo="Typo.h6">Edge: @_startingEdge</MudText>
+                </MudSlider>
+            </MudStack>
+        </MudPaper>
+
+        <!-- Action Buttons -->
+        <MudStack Row Spacing="2" Justify="Justify.Center" Class="mt-6">
+            <MudButton Href="/campaigns" 
+                       Color="Color.Secondary" 
+                       Variant="Variant.Outlined"
+                       Class="mobile-button"
+                       StartIcon="@Icons.Material.Filled.ArrowBack">
+                Cancel
+            </MudButton>
+            
+            <MudButton OnClick="CreateCharacter"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Disabled="@(!IsFormValid())"
+                       Class="mobile-button"
+                       StartIcon="@Icons.Material.Filled.PersonAdd">
+                Create Character
+            </MudButton>
+        </MudStack>
+    </div>
+</MudContainer>
+
+@code {
+    private const int _totalPoints = 27; // Standard point-buy total
+    private const int _maxAttributeValue = 6; // Max at character creation
+    
+    private string _characterName = string.Empty;
+    private int _startingEdge = 3;
+    private int _pointsRemaining = _totalPoints;
+
+    private readonly Dictionary<string, AttributeInfo> _attributes = new()
+    {
+        ["Body"] = new("Body", "Physical durability and health", 1, "Resists physical damage and toxins"),
+        ["Agility"] = new("Agility", "Physical coordination and dexterity", 1, "Affects movement, stealth, and ranged combat"),
+        ["Reaction"] = new("Reaction", "Speed of response to stimuli", 1, "Determines initiative and defensive abilities"),
+        ["Strength"] = new("Strength", "Physical power and muscle", 1, "Affects melee damage and carrying capacity"),
+        ["Willpower"] = new("Willpower", "Mental fortitude and determination", 1, "Resists mental influence and maintains focus"),
+        ["Logic"] = new("Logic", "Reasoning ability and intellect", 1, "Used for technical skills and problem-solving"),
+        ["Intuition"] = new("Intuition", "Instinctive awareness and gut feelings", 1, "Affects perception and surprise avoidance"),
+        ["Charisma"] = new("Charisma", "Social presence and leadership", 1, "Influences social interactions and leadership")
+    };
+
+    private sealed record AttributeInfo(string DisplayName, string Description, int Value, string GameEffect)
+    {
+        public int Value { get; set; } = Value;
+    }
+
+    protected override void OnInitialized()
+    {
+        CalculatePointsRemaining();
+    }
+
+    private void CalculatePointsRemaining()
+    {
+        int totalCost = _attributes.Values.Sum(attr => GetAttributeCost(attr.Value));
+        _pointsRemaining = _totalPoints - totalCost;
+    }
+
+    private int GetAttributeCost(int value)
+    {
+        // Point-buy costs: 1=0pts, 2=1pts, 3=2pts, 4=3pts, 5=5pts, 6=7pts
+        return value switch
+        {
+            1 => 0,
+            2 => 1,
+            3 => 2,
+            4 => 3,
+            5 => 5,
+            6 => 7,
+            _ => 0
+        };
+    }
+
+    private bool CanIncreaseAttribute(string attributeKey)
+    {
+        AttributeInfo attr = _attributes[attributeKey];
+        if (attr.Value >= _maxAttributeValue) return false;
+        
+        int nextCost = GetAttributeCost(attr.Value + 1);
+        int currentCost = GetAttributeCost(attr.Value);
+        int pointsNeeded = nextCost - currentCost;
+        
+        return _pointsRemaining >= pointsNeeded;
+    }
+
+    private void IncreaseAttribute(string attributeKey)
+    {
+        if (!CanIncreaseAttribute(attributeKey)) return;
+        
+        _attributes[attributeKey].Value++;
+        CalculatePointsRemaining();
+    }
+
+    private void DecreaseAttribute(string attributeKey)
+    {
+        if (_attributes[attributeKey].Value <= 1) return;
+        
+        _attributes[attributeKey].Value--;
+        CalculatePointsRemaining();
+    }
+
+    private Color GetAttributeColor(int value)
+    {
+        return value switch
+        {
+            1 => Color.Error,
+            2 => Color.Warning,
+            3 => Color.Info,
+            4 => Color.Primary,
+            5 => Color.Success,
+            6 => Color.Tertiary,
+            _ => Color.Default
+        };
+    }
+
+    private int CalculatePhysicalLimit()
+    {
+        return (_attributes["Strength"].Value * 2 + _attributes["Body"].Value + _attributes["Reaction"].Value) / 3;
+    }
+
+    private int CalculateMentalLimit()
+    {
+        return (_attributes["Logic"].Value * 2 + _attributes["Intuition"].Value + _attributes["Willpower"].Value) / 3;
+    }
+
+    private int CalculateSocialLimit()
+    {
+        return (_attributes["Charisma"].Value * 2 + _attributes["Willpower"].Value + _attributes["Body"].Value) / 3;
+    }
+
+    private bool IsFormValid()
+    {
+        return !string.IsNullOrWhiteSpace(_characterName) && _pointsRemaining >= 0;
+    }
+
+    private async Task CreateCharacter()
+    {
+        if (!IsFormValid())
+        {
+            Snackbar.Add("Please complete all required fields", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            Dictionary<string, int> attributeValues = _attributes.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Value
+            );
+
+            // TODO: Call character creation API when CQRS handlers are implemented
+            // For now, just show success message
+            Snackbar.Add($"Character '{_characterName}' created successfully!", Severity.Success);
+            
+            // TODO: Navigate to character sheet or campaigns page
+            // NavigationManager.NavigateTo("/campaigns");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to create character: {ex.Message}", Severity.Error);
+        }
+    }
+}
+
+<style>
+    .attributes-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .attribute-item {
+        padding: 12px;
+        border: 1px solid var(--mud-palette-divider);
+        border-radius: 8px;
+        background: var(--mud-palette-background);
+    }
+
+    .attribute-value {
+        min-width: 48px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    @@media (max-width: 600px) {
+        .attributes-grid {
+            gap: 12px;
+        }
+        
+        .attribute-item {
+            padding: 8px;
+        }
+    }
+</style>

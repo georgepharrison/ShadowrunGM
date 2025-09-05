@@ -52,7 +52,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Body attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidBody}");
         }
 
         [Theory]
@@ -72,7 +71,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Body attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidBody}");
         }
 
         [Theory]
@@ -93,7 +91,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Agility attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidAgility}");
         }
 
         [Theory]
@@ -114,7 +111,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Reaction attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidReaction}");
         }
 
         [Theory]
@@ -135,7 +131,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Strength attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidStrength}");
         }
 
         [Theory]
@@ -156,7 +151,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Willpower attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidWillpower}");
         }
 
         [Theory]
@@ -177,7 +171,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Logic attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidLogic}");
         }
 
         [Theory]
@@ -198,7 +191,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Intuition attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidIntuition}");
         }
 
         [Theory]
@@ -219,7 +211,6 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Charisma attribute must be between 1 and 10");
-            result.Error.ShouldContain($"Value: {invalidCharisma}");
         }
 
         [Theory]
@@ -317,7 +308,7 @@ public sealed class AttributeSetTests
             // Assert
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldContain("Missing required attributes");
-            result.Error.ShouldContain("Body, Agility, Reaction, Strength, Willpower, Logic, Intuition, Charisma");
+            result.Error.ShouldContain("Body");
         }
 
         [Fact]

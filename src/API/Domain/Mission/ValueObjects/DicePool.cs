@@ -1,6 +1,6 @@
-using ShadowrunGM.Domain.Common;
 using FlowRight.Core.Results;
 using FlowRight.Validation.Builders;
+using ShadowrunGM.Domain.Common;
 
 namespace ShadowrunGM.Domain.Mission;
 
