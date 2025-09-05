@@ -28,6 +28,7 @@ For detailed breakdowns, see:
 * [Solution Structure](docs/engineering/solution_structure.md)
 * [Semantic Kernel Plugins](docs/engineering/semantic_kernel_plugins.md)
 * [AI Models](docs/engineering/ai_models.md)
+* **[Agent Catalog](docs/AGENT_CATALOG.md)** - Specialized development agents for TDD, DDD, and architecture
 
 ---
 
@@ -73,7 +74,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, branching strategy, and 
 
 ## 📖 Documentation
 
-All documentation lives in the [docs/](docs/) folder. Key entry point: [docs/README.md](docs/README.md)
+**Start Here:** [📚 Complete Documentation Hub](docs/README.md)
+
+### Quick Navigation
+- **[📋 Current Tasks](docs/TASKS.md)** - Development progress and priorities
+- **[⚙️ Developer Guide](CLAUDE.md)** - Workflow, standards, and agent integration
+- **[🤖 Agent Catalog](docs/AGENT_CATALOG.md)** - Specialized development assistants
+- **[🏗️ Architecture](docs/engineering/)** - Technical architecture and patterns
+- **[🎯 Domain Models](docs/domain/)** - Business logic and DDD implementation
+
+**Full documentation index:** [docs/README.md](docs/README.md)
 
 ---
 
