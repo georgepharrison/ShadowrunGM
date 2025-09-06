@@ -22,7 +22,7 @@ ShadowrunGM/
 │
 ├── ShadowrunGM.API/            # ASP.NET Core Web API backend
 │   ├── Controllers/            # REST endpoints
-│   ├── Application/            # CQRS handlers, MediatR
+│   ├── Application/            # CQRS handlers, FlowRight.Cqrs.Http
 │   ├── Domain/                 # Entities, Value Objects, Aggregates (DDD)
 │   ├── Infrastructure/         # EF Core, Repositories, Persistence
 │   └── SemanticKernel/         # Plugins, connectors, AI orchestration

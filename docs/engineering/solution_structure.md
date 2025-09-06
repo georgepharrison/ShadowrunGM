@@ -16,7 +16,7 @@ ShadowrunGM/
 │   └── wwwroot/                    # Static assets (JS interop, CSS, service worker)
 │
 ├── ShadowrunGM.API/                # ASP.NET Core Web API backend
-│   ├── Application/                # CQRS layer: Commands, Queries, MediatR handlers
+│   ├── Application/                # CQRS layer: Commands, Queries, FlowRight.Cqrs.Http handlers
 │   │   └── Import/                 # Import commands/queries/DTOs (PdfPig pipeline)
 │   ├── Domain/                     # DDD layer: Aggregates, Entities, Value Objects, Events
 │   ├── Endpoints/                  # REST endpoints (incl. ImportController)

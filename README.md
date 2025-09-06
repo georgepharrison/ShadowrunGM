@@ -100,4 +100,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, branching strategy, and 
 * Hook up Semantic Kernel plugins for AI orchestration
 * Begin local Ollama testing on RTX 3090  
 * Extend Overseer AI for player/GM interaction
-* Implement CQRS command/query handlers for Character operations
+* Implement CQRS endpoints using FlowRight.Cqrs.Http for Character operations

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ShadowrunGM.ApiSdk.Common;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
+using FlowRight.Cqrs.Http;
 
 namespace ShadowrunGM.ApiSdk;
 
@@ -16,25 +14,21 @@ public static class ConfigureServices
         ShadowrunGmApiOptions options = new();
         createOptions(options);
 
-        services.AddHttpClient()
-            .AddSingleton<IServiceResolver, ServiceResolver>()
-            .AddSingleton(new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                TypeInfoResolver = JsonTypeInfoResolver.Combine(),
-                WriteIndented = true
-            });
+        if (options.BaseAddress == null)
+        {
+            throw new InvalidOperationException("BaseAddress must be configured in ShadowrunGmApiOptions.");
+        }
 
-        services.RegisterHttpClients(options);
-
-        return services;
+        // FlowRight.Cqrs.Http source generator provides this method automatically!
+        return services.AddFlowRightCqrs(options.BaseAddress);
     }
 
     public static IServiceProvider UseShadowrunGmApiSdk(this IServiceProvider serviceProvider)
     {
-        Config.ServiceResolver = serviceProvider.GetRequiredService<IServiceResolver>();
-
-        return serviceProvider;
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+        
+        // FlowRight.Cqrs.Http source generator provides this method automatically!
+        return serviceProvider.UseFlowRightCqrs();
     }
 
     #endregion Public Methods

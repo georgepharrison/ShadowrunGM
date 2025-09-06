@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - ALWAYS specify touch targets (44px minimum on mobile)
 
 **Result Pattern Enforcement:**
-- ALWAYS use existing Result<T> from `ShadowrunGM.ApiSdk.Common.Results`
+- ALWAYS use existing Result<T> from `FlowRight.Core.Results`
 - NEVER create new Result classes
 - ALWAYS use ValidationBuilder for validation chains
 - ALWAYS return Result<T> from commands
@@ -344,11 +344,11 @@ No test projects exist yet - when implemented, use `dotnet test`.
 ### Solution Structure
 - **src/API/** - ASP.NET Core backend with CQRS architecture, Domain-Driven Design
 - **src/UI/** - Blazor WebAssembly frontend using MudBlazor components  
-- **src/ApiSdk/** - Shared SDK for API communication with Result<T> pattern
+- **src/ApiSdk/** - Shared SDK for API communication with FlowRight.Cqrs.Http integration
 - **src/SourceGen/** - Source generators for CQRS pattern automation
 
 ### Key Architectural Patterns
-- **CQRS with MediatR** - Commands/queries in `src/API/Application/`
+- **CQRS with FlowRight.Cqrs.Http** - Commands/queries as minimal API endpoints
 - **Domain-Driven Design** - Domain entities in `src/API/Domain/`
 - **Import Pipeline** - PDF parsing and structured data import in `src/API/Importing/`
 - **Semantic Kernel Integration** - AI plugins for GM assistance in `src/API/SemanticKernel/`

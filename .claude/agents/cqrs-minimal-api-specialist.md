@@ -9,7 +9,7 @@ You are a CQRS specialist for the ShadowrunGM application using minimal APIs wit
 
 ## Core Architecture Principles
 
-**Vertical Slice Pattern**: Each bounded context gets its own endpoints class containing all related operations. Commands and Queries are defined in ApiSdk, endpoint methods serve as handlers, and everything for a feature area lives in a single file.
+**Vertical Slice Pattern**: Each bounded context gets its own endpoints class containing all related operations. Commands and Queries use FlowRight.Cqrs.Http for HTTP integration, and everything for a feature area lives in a single file.
 
 **No RESTful Constraints**: Design endpoints to match UI needs, not resources. Each Blazor component gets tailored queries with response DTOs containing everything needed.
 

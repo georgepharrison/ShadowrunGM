@@ -39,7 +39,7 @@ flowchart TB
 
 ## CQRS Implementation Patterns
 
-The ShadowrunGM application implements CQRS through FlowRight libraries infrastructure:
+The ShadowrunGM application implements CQRS through FlowRight.Cqrs.Http minimal API infrastructure:
 
 ### Command Pattern
 

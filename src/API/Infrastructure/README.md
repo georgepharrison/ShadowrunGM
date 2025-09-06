@@ -162,7 +162,7 @@ builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 
 ### CQRS Handler Integration
 
-Repositories integrate seamlessly with MediatR handlers:
+Repositories integrate seamlessly with FlowRight.Cqrs.Http endpoint handlers:
 
 ```csharp
 public class GetCharacterByIdHandler : IRequestHandler<GetCharacterByIdQuery, Result<CharacterDto>>
